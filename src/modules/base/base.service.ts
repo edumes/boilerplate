@@ -1,7 +1,14 @@
-import { DeepPartial, FindOptionsOrder, Repository } from "typeorm";
+import {
+  DeepPartial,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  Repository,
+} from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { PaginationOptions } from "../../utils/api-response.util";
 import { IBaseEntity } from "./base.entity";
+
+type WhereConditions<T> = FindOptionsWhere<T>;
 
 export class BaseService<T extends IBaseEntity> {
   constructor(protected repository: Repository<T>) {}
@@ -37,5 +44,24 @@ export class BaseService<T extends IBaseEntity> {
 
   async delete(id: number): Promise<void> {
     await this.repository.delete(id);
+  }
+
+  async findByConditions(
+    where: WhereConditions<T>,
+    options: PaginationOptions = {}
+  ): Promise<[T[], number]> {
+    const page = options.page || 1;
+    const limit = options.limit || 10;
+    const skip = (page - 1) * limit;
+    const order = (options.order || {
+      createdAt: "DESC",
+    }) as FindOptionsOrder<T>;
+
+    return this.repository.findAndCount({
+      where,
+      skip,
+      take: limit,
+      order,
+    });
   }
 }

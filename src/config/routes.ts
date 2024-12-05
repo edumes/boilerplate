@@ -7,6 +7,7 @@ import { logger } from "../utils/logger";
 interface GenericController {
   findAll: (request: any, reply: any) => Promise<void> | void;
   findById: (request: any, reply: any) => Promise<void> | void;
+  findByConditions: (request: any, reply: any) => Promise<void> | void;
   create: (request: any, reply: any) => Promise<void> | void;
   update: (request: any, reply: any) => Promise<void> | void;
   delete: (request: any, reply: any) => Promise<void> | void;
@@ -68,6 +69,7 @@ export function registerGenericRoutes(
   controller: GenericController
 ) {
   server.get("/", controller.findAll.bind(controller));
+  server.get("/filter", controller.findByConditions.bind(controller));
   server.get("/:id", controller.findById.bind(controller));
   server.post("/", controller.create.bind(controller));
   server.put("/:id", controller.update.bind(controller));

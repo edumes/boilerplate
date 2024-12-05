@@ -1,6 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { DeepPartial } from "typeorm";
-import { ApiResponseBuilder, PaginationOptions } from "../../utils/api-response.util";
+import {
+  ApiResponseBuilder,
+  PaginationOptions,
+} from "../../utils/api-response.util";
 import { IBaseEntity } from "./base.entity";
 import { BaseService } from "./base.service";
 
@@ -36,6 +39,18 @@ export class BaseController<T extends IBaseEntity> {
   ) {
     try {
       const id = parseInt(request.params.id);
+
+      if (isNaN(id)) {
+        return reply
+          .status(400)
+          .send(
+            ApiResponseBuilder.error(
+              "INVALID_ID",
+              "The provided ID must be a valid number"
+            )
+          );
+      }
+
       const item = await this.service.findById(id);
 
       if (!item) {
@@ -137,6 +152,36 @@ export class BaseController<T extends IBaseEntity> {
             "DELETE_FAILED",
             `Unable to delete item with ID ${request.params.id}.`,
             error instanceof Error ? error.stack : undefined
+          )
+        );
+    }
+  }
+
+  async findByConditions(
+    request: FastifyRequest<{
+      Querystring: PaginationOptions & Record<string, any>;
+    }>,
+    reply: FastifyReply
+  ) {
+    try {
+      const { page, limit, order, ...whereConditions } = request.query;
+      const options = { page, limit, order };
+
+      const [items, total] = await this.service.findByConditions(
+        whereConditions as any,
+        options
+      );
+
+      const meta = ApiResponseBuilder.buildPaginationMeta(total, options);
+      return reply.send(ApiResponseBuilder.success(items, meta));
+    } catch (error) {
+      return reply
+        .status(500)
+        .send(
+          ApiResponseBuilder.error(
+            "INTERNAL_SERVER_ERROR",
+            "Unable to fetch filtered items",
+            error instanceof Error ? error.message : undefined
           )
         );
     }
