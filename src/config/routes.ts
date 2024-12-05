@@ -49,7 +49,7 @@ export async function registerRoutes(server: FastifyInstance) {
     // Sanitiza o prefixo para segurança
     const sanitizedPrefix = encodeURIComponent(routePrefix);
 
-    console.log({ routeModule, sanitizedPrefix });
+    console.log({ sanitizedPrefix });
     server.register(routeModule.default, {
       prefix: `/api/v1/${sanitizedPrefix}`,
     });

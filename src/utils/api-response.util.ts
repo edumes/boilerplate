@@ -9,6 +9,7 @@ export interface PaginationMeta {
 
 export interface ApiResponse<T> {
   success: boolean;
+  timestamp: string;
   data?: T;
   error?: {
     code: string;
@@ -28,6 +29,7 @@ export class ApiResponseBuilder {
   static success<T>(data: T, meta?: PaginationMeta): ApiResponse<T> {
     return {
       success: true,
+      timestamp: new Date().toISOString(),
       data,
       meta,
     };
@@ -40,6 +42,7 @@ export class ApiResponseBuilder {
   ): ApiResponse<null> {
     return {
       success: false,
+      timestamp: new Date().toISOString(),
       error: {
         code,
         message,

@@ -1,5 +1,5 @@
-import { BaseRepository } from "../base/base.repository";
 import { AppDataSource } from "../../config/database";
+import { BaseRepository } from "../base/base.repository";
 import { User } from "./user.entity";
 
 export class UserRepository extends BaseRepository<User> {

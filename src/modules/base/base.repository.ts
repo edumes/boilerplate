@@ -1,4 +1,4 @@
-import { Repository, DataSource } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { IBaseEntity } from "./base.entity";
 
 export class BaseRepository<T extends IBaseEntity> extends Repository<T> {

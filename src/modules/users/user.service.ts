@@ -7,7 +7,7 @@ export class UserService extends BaseService<User> {
     super(userRepository);
   }
 
-  // Métodos específicos do UserService
+  // Métodos específicos
   async findByEmail(email: string): Promise<User | null> {
     return userRepository.findByEmail(email);
   }
