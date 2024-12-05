@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { readdir } from "fs/promises";
 import path from "path";
+import { logger } from "../utils/logger";
 
 // Define a interface para o controller com assinaturas explícitas
 interface GenericController {
@@ -23,7 +24,10 @@ async function* getRouteFiles(dir: string): AsyncGenerator<string> {
 
     if (entry.isDirectory()) {
       yield* getRouteFiles(fullPath);
-    } else if (entry.isFile() && (entry.name.endsWith(".routes.ts") || entry.name.endsWith(".routes.js"))) {
+    } else if (
+      entry.isFile() &&
+      (entry.name.endsWith(".routes.ts") || entry.name.endsWith(".routes.js"))
+    ) {
       yield fullPath;
     }
   }
@@ -49,7 +53,7 @@ export async function registerRoutes(server: FastifyInstance) {
     // Sanitiza o prefixo para segurança
     const sanitizedPrefix = encodeURIComponent(routePrefix);
 
-    console.log({ sanitizedPrefix });
+    logger.info(`registered routes: ${sanitizedPrefix}`);
     server.register(routeModule.default, {
       prefix: `/api/v1/${sanitizedPrefix}`,
     });

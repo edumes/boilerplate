@@ -1,25 +1,42 @@
 import Fastify from "fastify";
 import { AppDataSource } from "./config/database";
-import { registerRoutes } from "./config/routes";
 import { env } from "./config/env";
+import { registerRoutes } from "./config/routes";
+import { httpLogger } from "./utils/http-logger.middleware";
+import { logger } from "./utils/logger";
 
-const server = Fastify({ logger: true });
+const server = Fastify({
+  logger: false,
+});
+
+server.addHook("onRequest", httpLogger);
 
 server.get("/health", async () => ({ status: "ok" }));
 
 const start = async () => {
   try {
     await AppDataSource.initialize();
-    server.log.info("Database connected!");
+    logger.info("Database connected successfully");
 
     await registerRoutes(server);
+    logger.info("Routes registered successfully");
 
     await server.listen({ port: env.PORT });
-    server.log.info(`Server running ${env.PORT}`);
+    logger.info(`Server running on port ${env.PORT}`);
   } catch (err) {
-    server.log.error(err);
+    logger.error("Failed to start server", { error: err });
     process.exit(1);
   }
 };
+
+process.on("uncaughtException", (error) => {
+  logger.error("Uncaught Exception", { error });
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.error("Unhandled Rejection", { reason });
+  process.exit(1);
+});
 
 start();

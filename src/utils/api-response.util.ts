@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 export interface PaginationMeta {
   page: number;
   limit: number;
@@ -27,12 +29,15 @@ export interface PaginationOptions {
 
 export class ApiResponseBuilder {
   static success<T>(data: T, meta?: PaginationMeta): ApiResponse<T> {
-    return {
+    const response = {
       success: true,
       timestamp: new Date().toISOString(),
       data,
       meta,
     };
+
+    logger.info("API Success Response", { response });
+    return response;
   }
 
   static error(
@@ -40,7 +45,7 @@ export class ApiResponseBuilder {
     message: string,
     details?: any
   ): ApiResponse<null> {
-    return {
+    const response = {
       success: false,
       timestamp: new Date().toISOString(),
       error: {
@@ -49,6 +54,9 @@ export class ApiResponseBuilder {
         details,
       },
     };
+
+    logger.error("API Error Response", { response });
+    return response;
   }
 
   static buildPaginationMeta(
