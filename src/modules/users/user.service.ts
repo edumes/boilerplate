@@ -4,7 +4,7 @@ import { userRepository } from "./user.repository";
 
 export class UserService extends BaseService<User> {
   constructor() {
-    super(userRepository);
+    super(userRepository, "User");
   }
 
   // Métodos específicos

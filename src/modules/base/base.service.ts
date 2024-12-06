@@ -7,6 +7,8 @@ import {
 } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { PaginationOptions } from "../../utils/api-response.util";
+import { AuditAction } from "../audit/audit.entity";
+import { auditService } from "../audit/audit.service";
 import { IBaseEntity } from "./base.entity";
 
 type WhereConditions<T> = FindOptionsWhere<T>;
@@ -17,7 +19,10 @@ export interface SearchOptions extends PaginationOptions {
 }
 
 export class BaseService<T extends IBaseEntity> {
-  constructor(protected repository: Repository<T>) {}
+  constructor(
+    protected repository: Repository<T>,
+    protected entityName: string
+  ) {}
 
   async findAll(options: PaginationOptions = {}): Promise<[T[], number]> {
     const page = options.page || 1;
@@ -40,16 +45,48 @@ export class BaseService<T extends IBaseEntity> {
 
   async create(data: DeepPartial<T>): Promise<T> {
     const entity = this.repository.create(data);
-    return this.repository.save(entity);
+    const savedEntity = await this.repository.save(entity);
+
+    await auditService.logChange({
+      entityName: this.entityName,
+      entityId: savedEntity.id,
+      action: AuditAction.CREATE,
+      newValues: data,
+    });
+
+    return savedEntity;
   }
 
   async update(id: number, data: QueryDeepPartialEntity<T>): Promise<T | null> {
+    const oldEntity = await this.findById(id);
+    if (!oldEntity) return null;
+
     await this.repository.update(id, data);
-    return this.findById(id);
+    const updatedEntity = await this.findById(id);
+
+    await auditService.logChange({
+      entityName: this.entityName,
+      entityId: id,
+      action: AuditAction.UPDATE,
+      oldValues: oldEntity,
+      newValues: data,
+    });
+
+    return updatedEntity;
   }
 
   async delete(id: number): Promise<void> {
-    await this.repository.delete(id);
+    const entity = await this.findById(id);
+    if (entity) {
+      await this.repository.delete(id);
+
+      await auditService.logChange({
+        entityName: this.entityName,
+        entityId: id,
+        action: AuditAction.DELETE,
+        oldValues: entity,
+      });
+    }
   }
 
   async findByConditions(
