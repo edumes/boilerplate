@@ -27,18 +27,18 @@ const start = async () => {
     logger.info(`Server running on port ${env.PORT}`);
   } catch (err) {
     logger.error("Failed to start server", { error: err });
-    process.exit(1);
+    // process.exit(1);
   }
 };
 
 process.on("uncaughtException", (error) => {
   logger.error("Uncaught Exception", { error });
-  process.exit(1);
+  // process.exit(1);
 });
 
 process.on("unhandledRejection", (reason) => {
   logger.error("Unhandled Rejection", { reason });
-  process.exit(1);
+  // process.exit(1);
 });
 
 start();
