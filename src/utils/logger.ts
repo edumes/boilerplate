@@ -31,7 +31,7 @@ const transports = [
     format: winston.format.combine(
       winston.format.colorize({ all: true }),
       winston.format.printf(
-        (info) => `${info.timestamp} ${info.level}: ${info.message}`
+        (info) => `[${info.timestamp}] ${info.level.toUpperCase()}: ${info.message}`
       )
     ),
   }),
