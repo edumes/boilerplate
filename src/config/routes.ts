@@ -11,6 +11,7 @@ interface GenericController {
   create: (request: any, reply: any) => Promise<void> | void;
   update: (request: any, reply: any) => Promise<void> | void;
   delete: (request: any, reply: any) => Promise<void> | void;
+  search: (request: any, reply: any) => Promise<void> | void;
 }
 
 /**
@@ -74,4 +75,5 @@ export function registerGenericRoutes(
   server.post("/", controller.create.bind(controller));
   server.put("/:id", controller.update.bind(controller));
   server.delete("/:id", controller.delete.bind(controller));
+  server.get("/search", controller.search.bind(controller));
 }

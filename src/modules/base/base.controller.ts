@@ -5,7 +5,7 @@ import {
   PaginationOptions,
 } from "../../utils/api-response.util";
 import { IBaseEntity } from "./base.entity";
-import { BaseService } from "./base.service";
+import { BaseService, SearchOptions } from "./base.service";
 
 export class BaseController<T extends IBaseEntity> {
   constructor(protected service: BaseService<T>) {}
@@ -181,6 +181,40 @@ export class BaseController<T extends IBaseEntity> {
           ApiResponseBuilder.error(
             "INTERNAL_SERVER_ERROR",
             "Unable to fetch filtered items",
+            error instanceof Error ? error.message : undefined
+          )
+        );
+    }
+  }
+
+  async search(
+    request: FastifyRequest<{
+      Querystring: SearchOptions & { searchFields?: string };
+    }>,
+    reply: FastifyReply
+  ) {
+    try {
+      const { searchFields, searchTerm, ...paginationOptions } = request.query;
+
+      const searchFieldsArray = searchFields ? searchFields.split(",") : [];
+
+      const options: SearchOptions = {
+        ...paginationOptions,
+        searchFields: searchFieldsArray,
+        searchTerm,
+      };
+
+      const [items, total] = await this.service.search(options);
+      const meta = ApiResponseBuilder.buildPaginationMeta(total, options);
+
+      return reply.send(ApiResponseBuilder.success(items, meta));
+    } catch (error) {
+      return reply
+        .status(500)
+        .send(
+          ApiResponseBuilder.error(
+            "SEARCH_FAILED",
+            "Unable to perform search operation",
             error instanceof Error ? error.message : undefined
           )
         );
