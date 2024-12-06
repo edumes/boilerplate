@@ -18,7 +18,9 @@ export class User implements IBaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({
+    length: 60,
+  })
   password: string;
 
   @CreateDateColumn()

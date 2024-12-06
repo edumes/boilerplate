@@ -7,8 +7,23 @@ export class UserRepository extends BaseRepository<User> {
     super(User, AppDataSource);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.findOne({ where: { email } });
+  async findByEmail(
+    email: string,
+    includePassword: boolean = false
+  ): Promise<User | null> {
+    return this.findOne({
+      where: { email },
+      select: includePassword
+        ? {
+            id: true,
+            email: true,
+            password: true,
+            name: true,
+            createdAt: true,
+            updatedAt: true,
+          }
+        : undefined,
+    });
   }
 }
 

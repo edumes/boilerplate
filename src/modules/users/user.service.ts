@@ -1,7 +1,8 @@
+import bcrypt from "bcrypt";
+import { authConfig } from "../../config/auth";
 import { BaseService } from "../base/base.service";
 import { User } from "./user.entity";
 import { userRepository } from "./user.repository";
-// import { validateEmail, validatePassword } from "../../utils/validation";
 
 export class UserService extends BaseService<User> {
   constructor() {
@@ -9,36 +10,31 @@ export class UserService extends BaseService<User> {
 
     this.setHooks({
       beforeCreate: async (data) => {
-        console.log({ data });
-        // if (!validateEmail(data.email)) {
-        //   throw new Error("Invalid email format");
-        // }
-        // if (!validatePassword(data.password)) {
-        //   throw new Error("Password must be at least 8 characters long");
-        // }
-      },
-      afterCreate: async (entity) => {
-        // Send welcome email
-        await this.sendWelcomeEmail(entity);
+        if (data.password) {
+          data.password = await bcrypt.hash(
+            String(data.password),
+            authConfig.passwordSaltRounds
+          );
+        }
       },
       beforeUpdate: async (id, data) => {
-        // if (data.email && !validateEmail(data.email)) {
-        //   throw new Error("Invalid email format");
-        // }
-        // if (data.password && !validatePassword(data.password)) {
-        //   throw new Error("Password must be at least 8 characters long");
-        // }
+        if (data.password) {
+          data.password = await bcrypt.hash(
+            String(data.password),
+            authConfig.passwordSaltRounds
+          );
+        }
+      },
+      afterCreate: async (entity) => {
+        await this.sendWelcomeEmail(entity);
       },
       afterUpdate: async (entity) => {
-        // Clear user cache
         await this.clearUserCache(entity.id);
       },
       beforeDelete: async (id) => {
-        // Check if user can be deleted
         await this.checkUserDeletionAllowed(id);
       },
       afterDelete: async (entity) => {
-        // Clean up user related data
         await this.cleanupUserData(entity.id);
       },
     });
