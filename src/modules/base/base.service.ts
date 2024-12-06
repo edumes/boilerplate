@@ -2,8 +2,8 @@ import {
   DeepPartial,
   FindOptionsOrder,
   FindOptionsWhere,
-  Repository,
   ILike,
+  Repository,
 } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { PaginationOptions } from "../../utils/api-response.util";
@@ -89,12 +89,18 @@ export class BaseService<T extends IBaseEntity> {
     const whereConditions = searchFields.map((field) => ({
       [field]: ILike(`%${searchTerm}%`),
     })) as FindOptionsWhere<T>[];
- 
+
     return this.repository.findAndCount({
       where: whereConditions,
       skip,
       take: limit,
       order: order as FindOptionsOrder<T>,
     });
+  }
+
+  async count(
+    where: FindOptionsWhere<T> | FindOptionsWhere<T>[] = {}
+  ): Promise<number> {
+    return this.repository.count({ where });
   }
 }

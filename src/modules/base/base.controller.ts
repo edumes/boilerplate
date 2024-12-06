@@ -220,4 +220,28 @@ export class BaseController<T extends IBaseEntity> {
         );
     }
   }
+
+  async count(
+    request: FastifyRequest<{
+      Querystring: Record<string, any>;
+    }>,
+    reply: FastifyReply
+  ) {
+    try {
+      const whereConditions = request.query;
+      const count = await this.service.count(whereConditions as any);
+
+      return reply.send(ApiResponseBuilder.success({ count }));
+    } catch (error) {
+      return reply
+        .status(500)
+        .send(
+          ApiResponseBuilder.error(
+            "COUNT_FAILED",
+            "Unable to count items",
+            error instanceof Error ? error.message : undefined
+          )
+        );
+    }
+  }
 }
