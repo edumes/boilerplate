@@ -9,7 +9,6 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await userService.findByEmail(email);
 
-    console.log({ user });
     if (!user) {
       throw new ValidationError("Invalid email or password");
     }
@@ -23,7 +22,7 @@ export class AuthService {
     const token = this.generateToken(user);
 
     return {
-      user: this.sanitizeUser(user),
+      user,
       token,
     };
   }
@@ -39,11 +38,6 @@ export class AuthService {
         expiresIn: authConfig.jwt.expiresIn,
       }
     );
-  }
-
-  private sanitizeUser(user: User) {
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
   }
 }
 

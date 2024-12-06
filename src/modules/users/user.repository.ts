@@ -13,16 +13,14 @@ export class UserRepository extends BaseRepository<User> {
   ): Promise<User | null> {
     return this.findOne({
       where: { email },
-      select: includePassword
-        ? {
-            id: true,
-            email: true,
-            password: true,
-            name: true,
-            createdAt: true,
-            updatedAt: true,
-          }
-        : undefined,
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 }
