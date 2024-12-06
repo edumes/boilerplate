@@ -4,6 +4,7 @@ import {
   ApiResponseBuilder,
   PaginationOptions,
 } from "../../utils/api-response.util";
+import { NotFoundError, ValidationError } from "../../utils/errors";
 import { IBaseEntity } from "./base.entity";
 import { BaseService, SearchOptions } from "./base.service";
 
@@ -37,45 +38,19 @@ export class BaseController<T extends IBaseEntity> {
     request: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply
   ) {
-    try {
-      const id = parseInt(request.params.id);
+    const id = parseInt(request.params.id);
 
-      if (isNaN(id)) {
-        return reply
-          .status(400)
-          .send(
-            ApiResponseBuilder.error(
-              "INVALID_ID",
-              "The provided ID must be a valid number"
-            )
-          );
-      }
-
-      const item = await this.service.findById(id);
-
-      if (!item) {
-        return reply
-          .status(404)
-          .send(
-            ApiResponseBuilder.error(
-              "ITEM_NOT_FOUND",
-              `Item with ID ${id} not found.`
-            )
-          );
-      }
-
-      return reply.send(ApiResponseBuilder.success(item));
-    } catch (error) {
-      return reply
-        .status(500)
-        .send(
-          ApiResponseBuilder.error(
-            "INTERNAL_SERVER_ERROR",
-            "Error fetching the item. Please try again later.",
-            error instanceof Error ? error.stack : undefined
-          )
-        );
+    if (isNaN(id)) {
+      throw new ValidationError("The provided ID must be a valid number");
     }
+
+    const item = await this.service.findById(id);
+
+    if (!item) {
+      throw new NotFoundError(this.service.getEntityName(), id);
+    }
+
+    return reply.send(ApiResponseBuilder.success(item));
   }
 
   async create(

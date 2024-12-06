@@ -35,6 +35,10 @@ export class BaseService<T extends IBaseEntity> {
     protected entityName: string
   ) {}
 
+  public getEntityName(): string {
+    return this.entityName;
+  }
+
   setHooks(hooks: IServiceHooks<T>) {
     this.hooks = hooks;
   }

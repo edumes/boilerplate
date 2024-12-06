@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import { AppDataSource } from "./config/database";
 import { env } from "./config/env";
 import { registerRoutes } from "./config/routes";
+import { errorHandler } from "./utils/error-handle.middleware";
 import { httpLogger } from "./utils/http-logger.middleware";
 import { logger } from "./utils/logger";
 
@@ -9,6 +10,7 @@ const server = Fastify({
   logger: false,
 });
 
+server.setErrorHandler(errorHandler);
 server.addHook("onRequest", httpLogger);
 
 server.get("/health", async () => ({ status: "ok" }));
