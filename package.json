@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Boilerplate",
   "main": "build/index.js",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
@@ -13,8 +13,8 @@
     "migration:revert": "npm run typeorm -- migration:revert"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Eduardo Santarosa",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
