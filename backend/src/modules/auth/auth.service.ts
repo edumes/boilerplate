@@ -7,7 +7,9 @@ import { userService } from "../users/user.service";
 
 export class AuthService {
   async login(email: string, password: string) {
+    // console.log({ email, password });
     const user = await userService.findByEmail(email);
+    console.log({ user });
 
     if (!user) {
       throw new ValidationError("Invalid email or password");

@@ -48,7 +48,7 @@ export class BaseService<T extends IBaseEntity> {
     const limit = options.limit || 10;
     const skip = (page - 1) * limit;
     const order = (options.order || {
-      createdAt: "DESC",
+      created_at: "DESC",
     }) as FindOptionsOrder<T>;
 
     return this.repository.findAndCount({
@@ -72,10 +72,9 @@ export class BaseService<T extends IBaseEntity> {
       const savedEntity = await this.repository.save(entity);
 
       await auditService.logChange({
-        entityName: this.entityName,
-        entityId: savedEntity.id,
+        entity_name: this.entityName,
         action: AuditAction.CREATE,
-        newValues: data,
+        new_values: data,
       });
 
       if (this.hooks.afterCreate) {
@@ -101,11 +100,10 @@ export class BaseService<T extends IBaseEntity> {
       const updatedEntity = await this.findById(id);
 
       await auditService.logChange({
-        entityName: this.entityName,
-        entityId: id,
+        entity_name: this.entityName,
         action: AuditAction.UPDATE,
-        oldValues: oldEntity,
-        newValues: data,
+        old_values: oldEntity,
+        new_values: data,
       });
 
       if (this.hooks.afterUpdate && updatedEntity) {
@@ -130,10 +128,9 @@ export class BaseService<T extends IBaseEntity> {
       await this.repository.delete(id);
 
       await auditService.logChange({
-        entityName: this.entityName,
-        entityId: id,
+        entity_name: this.entityName,
         action: AuditAction.DELETE,
-        oldValues: entity,
+        old_values: entity,
       });
 
       if (this.hooks.afterDelete) {
@@ -169,7 +166,7 @@ export class BaseService<T extends IBaseEntity> {
       limit = 10,
       searchFields = [],
       searchTerm = "",
-      order = { createdAt: "DESC" as const },
+      order = { created_at: "DESC" as const },
     } = options;
 
     const skip = (page - 1) * limit;

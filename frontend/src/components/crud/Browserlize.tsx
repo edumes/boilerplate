@@ -3,23 +3,22 @@ import {
     Button,
     Card,
     Divider,
-    Grid,
     IconButton,
-    Paper,
     Stack,
     Typography,
 } from '@mui/material';
 import { HiOutlineMenu, HiOutlinePlus } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 import BrowseTable from './BrowseTable';
 import SearchBar from './SearchBar';
-import { FormConfig } from '@/@types/forms';
-// import { item } from '../motion/MotionSettings';
+import { motion } from 'framer-motion';
+import { item } from '../ui/motion/MotionSettings';
+import { useNavigate } from 'react-router-dom';
+import { BrowserlizeProps } from '@/@types/forms';
 
-export default function Browserlize(form) {
+export default function Browserlize({ form }: BrowserlizeProps) {
+    const { config } = form;
+    console.log({ form });
     const navigate = useNavigate();
-    const { config, fields } = form.form;
-    console.log(form.form);
 
     const generateFieldLabels = (fieldsObject: any) => {
         const labels: string[] = [];
@@ -42,52 +41,70 @@ export default function Browserlize(form) {
 
     return (
         <>
-            {/* <motion.div initial="hidden" animate="visible" variants={item}> */}
-            <Card>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton
-                        size="large"
-                        aria-label="list"
-                        sx={{ marginBottom: 1 }}
+            <motion.div initial="hidden" animate="visible" variants={item}>
+                <Card>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: 1,
+                        }}
                     >
-                        <HiOutlineMenu fontSize="large" />
-                    </IconButton>
-                    <Typography
-                        gutterBottom
-                        noWrap
-                        variant="h5"
-                        sx={{ flexGrow: 1 }}
-                    >
-                        Listando {config.pluralName}
-                    </Typography>
-                    <Stack
-                        direction="row"
-                        divider={<Divider flexItem orientation="vertical" />}
-                        spacing={2}
-                    >
-                        <Button
-                            variant="contained"
-                            startIcon={<HiOutlinePlus />}
+                        <IconButton
+                            size="large"
+                            aria-label="list"
+                            sx={{ marginBottom: 1 }}
                         >
-                            Adicionar {config.singularName}
-                        </Button>
-                    </Stack>
-                </Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        mb: 2,
-                    }}
-                >
-                    <SearchBar placeholder={generateFieldLabels(form.fields)} />
-                </Box>
-            </Card>
-            {/* </motion.div> */}
+                            <HiOutlineMenu fontSize="large" />
+                        </IconButton>
+                        <Typography
+                            gutterBottom
+                            noWrap
+                            variant="h5"
+                            sx={{ flexGrow: 1 }}
+                        >
+                            Listando {config.pluralName}
+                        </Typography>
+                        <Stack
+                            direction="row"
+                            divider={
+                                <Divider flexItem orientation="vertical" />
+                            }
+                            spacing={2}
+                        >
+                            <Button
+                                variant="contained"
+                                startIcon={<HiOutlinePlus />}
+                                onClick={() =>
+                                    navigate(`${window.location.pathname}/add`)
+                                }
+                            >
+                                Adicionar {config.singularName}
+                            </Button>
+                        </Stack>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            mb: 2,
+                        }}
+                    >
+                        <SearchBar
+                            placeholder={generateFieldLabels(form.fields)}
+                        />
+                    </Box>
+                </Card>
+            </motion.div>
 
-            {/* <motion.div initial="hidden" animate="visible" variants={item}> */}
-            <BrowseTable fields={fields} />
-            {/* </motion.div> */}
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={item}
+                style={{ marginTop: 15 }}
+            >
+                <BrowseTable form={form} />
+            </motion.div>
         </>
     );
 }

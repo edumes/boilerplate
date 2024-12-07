@@ -5,12 +5,12 @@ import { authService } from "./auth.service";
 export class AuthController {
   async login(
     request: FastifyRequest<{
-      Body: { email: string; password: string };
+      Body: { user_email: string; user_password: string };
     }>,
     reply: FastifyReply
   ) {
-    const { email, password } = request.body;
-    const result = await authService.login(email, password);
+    const { user_email, user_password } = request.body;
+    const result = await authService.login(user_email, user_password);
     return reply.send(ApiResponseBuilder.success(result));
   }
 }

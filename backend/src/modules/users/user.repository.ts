@@ -15,7 +15,7 @@ export class UserRepository extends BaseRepository<User> {
       select: {
         id: true,
         user_email: true,
-        user_password: false,
+        user_password: true,
         user_name: true,
         created_at: true,
         updated_at: true,

@@ -28,11 +28,11 @@ const ClientFormConfig: FormFieldConfig = {
         ],
         version: '05-09-2024|10-55-45',
     },
-    fields: [
-        {
-            name: 'name',
+    fields: {
+        user_name: {
+            name: 'user_name',
             order: 1,
-            width: 3,
+            width: 4,
             browserOrder: 1,
             browserWidth: 1,
             type: FIELD_TYPE_TEXT,
@@ -40,26 +40,26 @@ const ClientFormConfig: FormFieldConfig = {
             canRead: true,
             canEdit: true,
             canAdd: true,
-            label: 'Código do Projeto',
+            label: 'Nome',
             required: true,
             tabs: ['main'],
             showOnTop: false,
         },
-        {
-            name: 'email',
+        user_email: {
+            name: 'user_email',
             order: 65,
-            width: 12,
+            width: 5,
             browserWidth: 6,
             type: FIELD_TYPE_RICHTEXT,
             canBrowse: false,
             canRead: true,
             canEdit: true,
             canAdd: true,
-            label: 'Observações',
+            label: 'Email',
             tabs: ['main'],
             showOnTop: false,
         },
-    ],
+    },
 };
 
 export default ClientFormConfig;

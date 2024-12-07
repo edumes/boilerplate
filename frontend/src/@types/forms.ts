@@ -44,5 +44,12 @@ export interface FormField {
 
 export interface FormFieldConfig {
     config: FormConfig;
-    fields: FormField[];
+    fields: Record<string, FormField>;
+}
+
+export interface BrowserlizeProps {
+    form: {
+        config: FormConfig;
+        fields: Record<string, FormField>;
+    };
 }

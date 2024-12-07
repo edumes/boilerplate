@@ -17,6 +17,12 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/pages/crud/customers/Clients')),
         authority: [],
     },
+    {
+        key: 'customers.clients',
+        path: '/customers/clients/add',
+        component: lazy(() => import('@/pages/crud/customers/Clients')),
+        authority: [],
+    },
     // {
     //     key: 'customers.client_users',
     //     path: '/customers/client-users',

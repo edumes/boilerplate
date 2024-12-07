@@ -1,29 +1,29 @@
+import { BrowserlizeProps } from '@/@types/forms';
+import { listClients } from '@/services/crud/ClientsService';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Card, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAPI } from '@/utils/hooks/useAPI';
-import { listClients } from '@/services/crud/ClientsService';
+import { useNavigate } from 'react-router-dom';
 
-export default function BrowseTable({ fields }: any) {
+export default function BrowseTable({ form }: BrowserlizeProps) {
     const navigate = useNavigate();
+    const { fields } = form;
     const [loading, setLoading] = useState<boolean>(true);
     const [list, setList] = useState<any>([]);
-    // const { list: fetchList } = useAPI();
-    const { page, perPage } = useParams();
-
-    // const memoizedFetchList = useMemo(() => fetchList, []);
+    const [paginationModel, setPaginationModel] = useState({
+        page: 0,
+        pageSize: 10,
+    });
+    const [rowCount, setRowCount] = useState(0);
 
     useEffect(() => {
         const fetchListData = async () => {
             try {
                 const { data, meta } = await listClients();
-                // console.log(data)
-                // const ListData = await memoizedFetchList(data);
                 setList(addIdsToListItems(data));
+                setRowCount(meta.totalItems);
             } catch (error) {
                 console.error('Erro ao buscar os menus:', error);
             } finally {
@@ -32,14 +32,12 @@ export default function BrowseTable({ fields }: any) {
         };
 
         fetchListData();
-    }, []);
+    }, [paginationModel]);
 
     function transformObjectToGridFormat(object: any) {
         const fields = [];
 
         for (const key in object) {
-            if (key === '$GLOBALS') continue;
-
             const field = object[key];
             const gridField: any = {
                 field: field.name,
@@ -61,17 +59,12 @@ export default function BrowseTable({ fields }: any) {
 
     const handleEditClick = (id: number) => {
         console.log('Editar linha com ID:', id);
+        navigate(`${form.config.singularName}/add`)
     };
 
     const handleDeleteClick = (id: number) => {
         console.log('Excluir linha com ID:', id);
     };
-
-    const { data } = useDemoData({
-        dataSet: 'Commodity',
-        rowLength: 10,
-        maxColumns: 10,
-    });
 
     const columns = useMemo(() => {
         const baseColumns = transformObjectToGridFormat(fields);
@@ -106,27 +99,22 @@ export default function BrowseTable({ fields }: any) {
     }, [fields]);
 
     return (
-        <>
-            {loading ? (
-                <div>Loading...</div>
-            ) : list.length > 0 ? (
-                <Card>
-                    <DataGrid
-                        localeText={
-                            ptBR.components.MuiDataGrid.defaultProps.localeText
-                        }
-                        columns={columns}
-                        rows={list}
-                        loading={loading}
-                        initialState={data.initialState}
-                        slots={{
-                            toolbar: GridToolbar,
-                        }}
-                    />
-                </Card>
-            ) : (
-                <div>No data available.</div>
-            )}
-        </>
+        <Card>
+            <DataGrid
+                sx={{ border: 'none', borderWidth: 0 }}
+                localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+                columns={columns}
+                rows={list}
+                loading={loading}
+                slots={{
+                    toolbar: GridToolbar,
+                }}
+                paginationModel={paginationModel}
+                pageSizeOptions={[10, 25, 50]}
+                paginationMode="server"
+                rowCount={rowCount}
+                onPaginationModelChange={setPaginationModel}
+            />
+        </Card>
     );
 }
