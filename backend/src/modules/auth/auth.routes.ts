@@ -6,4 +6,5 @@ export default async function authRoutes(
   options: FastifyPluginOptions
 ) {
   server.post("/login", authController.login.bind(authController));
+  server.get("/me", authController.getCurrentUser.bind(authController));
 }

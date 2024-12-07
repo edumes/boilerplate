@@ -5,6 +5,7 @@ import { ValidationError } from "../../utils/errors";
 import { User } from "../users/user.entity";
 import { userService } from "../users/user.service";
 import { companyService } from "../companies/company.service";
+import { FastifyRequest } from "fastify";
 
 export class AuthService {
   async login(email: string, password: string) {
@@ -22,7 +23,6 @@ export class AuthService {
       throw new ValidationError("Invalid email or password");
     }
 
-    // Carrega os dados da empresa
     const company = await companyService.findById(user.user_fk_company_id);
 
     return {
@@ -46,6 +46,35 @@ export class AuthService {
         expiresIn: authConfig.jwt.expiresIn,
       }
     );
+  }
+
+  async getCurrentUser(request: FastifyRequest): Promise<User | null> {
+    const token = request.headers.authorization?.replace('Bearer ', '');
+    
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const decoded = jwt.verify(token, authConfig.jwt.secret) as {
+        id: number;
+        email: string;
+        companyId: number;
+      };
+
+      const user = await userService.findById(decoded.id);
+      if (!user) {
+        return null;
+      }
+
+      const company = await companyService.findById(user.user_fk_company_id);
+      return {
+        ...user,
+        company,
+      } as User;
+    } catch (error) {
+      return null;
+    }
   }
 }
 

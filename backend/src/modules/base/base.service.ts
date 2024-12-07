@@ -43,6 +43,18 @@ export class BaseService<T extends IBaseEntity> {
     this.hooks = hooks;
   }
 
+  private getRelationFields(): string[] {
+    const metadata = this.repository.metadata;
+    return metadata.relations
+      .filter(relation => 
+        metadata.columns.some(column => 
+          column.propertyName.includes('_fk_') && 
+          column.propertyName.includes(relation.propertyName)
+        )
+      )
+      .map(relation => relation.propertyName);
+  }
+
   async findAll(options: PaginationOptions = {}): Promise<[T[], number]> {
     const page = options.page || 1;
     const limit = options.limit || 10;
@@ -51,15 +63,22 @@ export class BaseService<T extends IBaseEntity> {
       created_at: "DESC",
     }) as FindOptionsOrder<T>;
 
+    const relations = this.getRelationFields();
+
     return this.repository.findAndCount({
       skip,
       take: limit,
       order,
+      relations
     });
   }
 
   async findById(id: number): Promise<T | null> {
-    return this.repository.findOneBy({ id } as any);
+    const relations = this.getRelationFields();
+    return this.repository.findOne({
+      where: { id } as any,
+      relations
+    });
   }
 
   async create(data: DeepPartial<T>): Promise<T> {
@@ -71,11 +90,11 @@ export class BaseService<T extends IBaseEntity> {
       const entity = this.repository.create(data);
       const savedEntity = await this.repository.save(entity);
 
-      console.log(this.entityName);
       await auditService.logChange({
         audit_entity_name: this.entityName,
         audit_action: AuditAction.CREATE,
         audit_new_values: data,
+        // audit_fk_user_id: user?.id,
       });
 
       if (this.hooks.afterCreate) {
@@ -105,6 +124,7 @@ export class BaseService<T extends IBaseEntity> {
         audit_action: AuditAction.UPDATE,
         audit_old_values: oldEntity,
         audit_new_values: data,
+        // audit_fk_user_id: user?.id,
       });
 
       if (this.hooks.afterUpdate && updatedEntity) {
@@ -132,6 +152,7 @@ export class BaseService<T extends IBaseEntity> {
         audit_entity_name: this.entityName,
         audit_action: AuditAction.DELETE,
         audit_old_values: entity,
+        // audit_fk_user_id: user?.id,
       });
 
       if (this.hooks.afterDelete) {
@@ -150,14 +171,17 @@ export class BaseService<T extends IBaseEntity> {
     const limit = options.limit || 10;
     const skip = (page - 1) * limit;
     const order = (options.order || {
-      createdAt: "DESC",
+      created_at: "DESC",
     }) as FindOptionsOrder<T>;
+
+    const relations = this.getRelationFields();
 
     return this.repository.findAndCount({
       where,
       skip,
       take: limit,
       order,
+      relations
     });
   }
 
@@ -171,6 +195,7 @@ export class BaseService<T extends IBaseEntity> {
     } = options;
 
     const skip = (page - 1) * limit;
+    const relations = this.getRelationFields();
 
     if (!searchTerm || searchFields.length === 0) {
       return this.findAll(options);
@@ -185,6 +210,7 @@ export class BaseService<T extends IBaseEntity> {
       skip,
       take: limit,
       order: order as FindOptionsOrder<T>,
+      relations
     });
   }
 

@@ -17,8 +17,12 @@ export class UserController extends BaseController<User> {
     reply: FastifyReply
   ) {
     const userData = request.body;
-    const existingUser = await userService.findByEmail(userData.user_email);
 
+    if (!userData.user_fk_company_id) {
+      throw new ValidationError("Company ID is required");
+    }
+
+    const existingUser = await userService.findByEmail(userData.user_email);
     if (existingUser) {
       throw new ValidationError("Email already in use");
     }

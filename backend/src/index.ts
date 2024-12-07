@@ -26,19 +26,21 @@ const start = async () => {
     await server.listen({ port: env.PORT });
     logger.info(`Server running on port ${env.PORT}`);
   } catch (err) {
-    logger.error("Failed to start server", { error: err instanceof Error ? err.stack : err });
-    // console.error(err);
+    logger.error("Failed to start server", { error: err });
+    console.error(err);
     // process.exit(1);
   }
 };
 
 process.on("uncaughtException", (error) => {
-  logger.error("Uncaught Exception", { error: error instanceof Error ? error.stack : error });
+  logger.error("Uncaught Exception", { error: error });
+  console.error(error);
   // process.exit(1);
 });
 
 process.on("unhandledRejection", (reason) => {
-  logger.error("Unhandled Rejection", { error: reason instanceof Error ? reason.stack : reason });
+  logger.error("Unhandled Rejection", { error: reason });
+  console.error(reason);
   // process.exit(1);
 });
 
