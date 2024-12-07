@@ -1,5 +1,9 @@
-build
-node_modules
-.env
-logs
-*.log
+backend/build
+backend/node_modules
+backend/.env
+backend/logs
+backend/*.log
+
+frontend/build
+frontend/node_modules
+frontend/.env
