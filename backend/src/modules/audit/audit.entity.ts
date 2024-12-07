@@ -3,8 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { IBaseEntity } from "../base/base.entity";
+import { User } from "../users/user.entity";
 
 export enum AuditAction {
   CREATE = "CREATE",
@@ -12,32 +15,33 @@ export enum AuditAction {
   DELETE = "DELETE",
 }
 
-@Entity()
+@Entity({ name: "audits" })
 export class Audit implements IBaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: "audit_id" })
   id: number;
 
   @Column()
-  entityName: string;
-
-  @Column()
-  entityId: number;
+  audit_entity_name: string;
 
   @Column({
     type: "enum",
     enum: AuditAction,
   })
-  action: AuditAction;
+  audit_action: AuditAction;
 
   @Column({ type: "jsonb", nullable: true })
-  oldValues: Record<string, any>;
+  audit_old_values: Record<string, any>;
 
   @Column({ type: "jsonb", nullable: true })
-  newValues: Record<string, any>;
+  audit_new_values: Record<string, any>;
 
   @Column({ nullable: true })
-  userId: number;
+  audit_fk_user_id: number;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "audit_fk_user_id" })
+  user: User;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 }

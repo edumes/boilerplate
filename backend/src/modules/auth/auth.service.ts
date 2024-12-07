@@ -13,7 +13,7 @@ export class AuthService {
       throw new ValidationError("Invalid email or password");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.user_password);
 
     if (!isPasswordValid) {
       throw new ValidationError("Invalid email or password");
@@ -31,7 +31,7 @@ export class AuthService {
     return jwt.sign(
       {
         id: user.id,
-        email: user.email,
+        email: user.user_email,
       },
       authConfig.jwt.secret,
       {

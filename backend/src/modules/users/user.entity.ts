@@ -7,25 +7,25 @@ import {
 } from "typeorm";
 import { IBaseEntity } from "../base/base.entity";
 
-@Entity()
+@Entity({ name: "users" })
 export class User implements IBaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: "user_id" })
   id: number;
 
   @Column({ length: 100 })
-  name: string;
+  user_name: string;
 
   @Column({ unique: true })
-  email: string;
+  user_email: string;
 
   @Column({
     length: 60,
   })
-  password: string;
+  user_password: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @CreateDateColumn({ name: "user_created_at" })
+  created_at: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @UpdateDateColumn({ name: "user_updated_at" })
+  updated_at: Date;
 }

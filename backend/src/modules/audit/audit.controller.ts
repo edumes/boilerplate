@@ -19,8 +19,7 @@ export class AuditController extends BaseController<Audit> {
     try {
       const { entityName, entityId } = request.params;
       const history = await auditService.getEntityHistory(
-        entityName,
-        parseInt(entityId)
+        entityName
       );
 
       return reply.send(ApiResponseBuilder.success(history));

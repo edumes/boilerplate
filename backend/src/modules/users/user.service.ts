@@ -10,17 +10,17 @@ export class UserService extends BaseService<User> {
 
     this.setHooks({
       beforeCreate: async (data) => {
-        if (data.password) {
-          data.password = await bcrypt.hash(
-            String(data.password),
+        if (data.user_password) {
+          data.user_password = await bcrypt.hash(
+            String(data.user_password),
             authConfig.passwordSaltRounds
           );
         }
       },
       beforeUpdate: async (id, data) => {
-        if (data.password) {
-          data.password = await bcrypt.hash(
-            String(data.password),
+        if (data.user_password) {
+          data.user_password = await bcrypt.hash(
+            String(data.user_password),
             authConfig.passwordSaltRounds
           );
         }

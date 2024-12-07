@@ -16,7 +16,7 @@ export class UserController extends BaseController<User> {
     reply: FastifyReply
   ) {
     const userData = request.body;
-    const existingUser = await userService.findByEmail(userData.email);
+    const existingUser = await userService.findByEmail(userData.user_email);
 
     if (existingUser) {
       throw new ValidationError("Email already in use");

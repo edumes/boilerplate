@@ -17,19 +17,18 @@ export class AuditService extends BaseService<Audit> {
   }): Promise<Audit> {
     const audit = this.repository.create({
       ...params,
-      createdAt: new Date(),
+      created_at: new Date(),
     });
 
     return this.repository.save(audit);
   }
 
   async getEntityHistory(
-    entityName: string,
-    entityId: number
+    entityName: string
   ): Promise<Audit[]> {
     return this.repository.find({
-      where: { entityName, entityId },
-      order: { createdAt: "DESC" },
+      where: { audit_entity_name: entityName },
+      order: { created_at: "DESC" },
     });
   }
 }
