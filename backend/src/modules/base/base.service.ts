@@ -71,10 +71,11 @@ export class BaseService<T extends IBaseEntity> {
       const entity = this.repository.create(data);
       const savedEntity = await this.repository.save(entity);
 
+      console.log(this.entityName);
       await auditService.logChange({
-        entity_name: this.entityName,
-        action: AuditAction.CREATE,
-        new_values: data,
+        audit_entity_name: this.entityName,
+        audit_action: AuditAction.CREATE,
+        audit_new_values: data,
       });
 
       if (this.hooks.afterCreate) {
@@ -100,10 +101,10 @@ export class BaseService<T extends IBaseEntity> {
       const updatedEntity = await this.findById(id);
 
       await auditService.logChange({
-        entity_name: this.entityName,
-        action: AuditAction.UPDATE,
-        old_values: oldEntity,
-        new_values: data,
+        audit_entity_name: this.entityName,
+        audit_action: AuditAction.UPDATE,
+        audit_old_values: oldEntity,
+        audit_new_values: data,
       });
 
       if (this.hooks.afterUpdate && updatedEntity) {
@@ -128,9 +129,9 @@ export class BaseService<T extends IBaseEntity> {
       await this.repository.delete(id);
 
       await auditService.logChange({
-        entity_name: this.entityName,
-        action: AuditAction.DELETE,
-        old_values: entity,
+        audit_entity_name: this.entityName,
+        audit_action: AuditAction.DELETE,
+        audit_old_values: entity,
       });
 
       if (this.hooks.afterDelete) {

@@ -4,8 +4,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { IBaseEntity } from "../base/base.entity";
+import { Company } from "../companies/company.entity";
 
 @Entity({ name: "users" })
 export class User implements IBaseEntity {
@@ -22,6 +25,16 @@ export class User implements IBaseEntity {
     length: 60,
   })
   user_password: string;
+
+  @Column({ length: 20, nullable: true })
+  user_telephone: string;
+
+  @Column({ nullable: false })
+  user_fk_company_id: number;
+
+  @ManyToOne(() => Company)
+  @JoinColumn({ name: "user_fk_company_id" })
+  company: Company;
 
   @CreateDateColumn({ name: "user_created_at" })
   created_at: Date;

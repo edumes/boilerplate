@@ -8,11 +8,11 @@ export class AuditService extends BaseService<Audit> {
   }
 
   async logChange(params: {
-    entity_name: string;
-    action: AuditAction;
-    old_values?: Record<string, any>;
-    new_values?: Record<string, any>;
-    user_id?: number;
+    audit_entity_name: string;
+    audit_action: AuditAction;
+    audit_old_values?: Record<string, any>;
+    audit_new_values?: Record<string, any>;
+    audit_fk_user_id?: number;
   }): Promise<Audit> {
     const audit = this.repository.create({
       ...params,

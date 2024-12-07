@@ -17,9 +17,11 @@ export class UserRepository extends BaseRepository<User> {
         user_email: true,
         user_password: true,
         user_name: true,
+        user_fk_company_id: true,
         created_at: true,
         updated_at: true,
       },
+      relations: ['company']
     });
   }
 }

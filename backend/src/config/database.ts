@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { Audit } from "../modules/audit/audit.entity";
 import { User } from "../modules/users/user.entity";
 import { env } from "./env";
+import { Company } from "../modules/companies/company.entity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -14,6 +15,6 @@ export const AppDataSource = new DataSource({
   synchronize: env.NODE_ENV === "development", // Apenas em desenvolvimento
   // logging: env.NODE_ENV === 'development',
   logging: false,
-  entities: [User, Audit],
+  entities: [User, Audit, Company],
   migrations: ["src/migrations/*.ts"],
 });

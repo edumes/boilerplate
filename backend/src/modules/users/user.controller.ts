@@ -4,6 +4,7 @@ import { ValidationError } from "../../utils/errors";
 import { BaseController } from "../base/base.controller";
 import { User } from "./user.entity";
 import { userService } from "./user.service";
+import { companyService } from "../companies/company.service";
 
 export class UserController extends BaseController<User> {
   constructor() {
@@ -20,6 +21,11 @@ export class UserController extends BaseController<User> {
 
     if (existingUser) {
       throw new ValidationError("Email already in use");
+    }
+
+    const company = await companyService.findById(userData.user_fk_company_id);
+    if (!company) {
+      throw new ValidationError("Company not found");
     }
 
     const newUser = await super.create(request, reply);

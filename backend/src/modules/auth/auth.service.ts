@@ -4,6 +4,7 @@ import { authConfig } from "../../config/auth";
 import { ValidationError } from "../../utils/errors";
 import { User } from "../users/user.entity";
 import { userService } from "../users/user.service";
+import { companyService } from "../companies/company.service";
 
 export class AuthService {
   async login(email: string, password: string) {
@@ -21,11 +22,15 @@ export class AuthService {
       throw new ValidationError("Invalid email or password");
     }
 
-    const token = this.generateToken(user);
+    // Carrega os dados da empresa
+    const company = await companyService.findById(user.user_fk_company_id);
 
     return {
-      user,
-      token,
+      user: {
+        ...user,
+        company,
+      },
+      token: this.generateToken(user),
     };
   }
 
@@ -34,6 +39,7 @@ export class AuthService {
       {
         id: user.id,
         email: user.user_email,
+        companyId: user.user_fk_company_id,
       },
       authConfig.jwt.secret,
       {
