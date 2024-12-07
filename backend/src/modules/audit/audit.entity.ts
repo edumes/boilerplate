@@ -2,9 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { IBaseEntity } from "../base/base.entity";
 import { User } from "../users/user.entity";
@@ -34,6 +34,9 @@ export class Audit implements IBaseEntity {
 
   @Column({ type: "jsonb", nullable: true })
   audit_new_values: Record<string, any>;
+
+  @Column({ nullable: true })
+  audit_observation?: string;
 
   @Column({ nullable: true })
   audit_fk_user_id: number;

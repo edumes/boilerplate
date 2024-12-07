@@ -1,7 +1,15 @@
 import { FastifyInstance } from "fastify";
 import { readdir } from "fs/promises";
 import path from "path";
+import { User } from "../modules/users/user.entity";
 import { logger } from "../utils/logger";
+
+declare module "fastify" {
+  interface FastifyRequest {
+    user?: User;
+    token?: string;
+  }
+}
 
 // Define a interface para o controller com assinaturas explícitas
 interface GenericController {
@@ -13,6 +21,7 @@ interface GenericController {
   delete: (request: any, reply: any) => Promise<void> | void;
   search: (request: any, reply: any) => Promise<void> | void;
   count: (request: any, reply: any) => Promise<void> | void;
+  clone: (request: any, reply: any) => Promise<void> | void;
 }
 
 /**
@@ -78,4 +87,5 @@ export function registerGenericRoutes(
   server.delete("/:id", controller.delete.bind(controller));
   server.get("/search", controller.search.bind(controller));
   server.get("/count", controller.count.bind(controller));
+  server.post("/:id/clone", controller.clone.bind(controller));
 }

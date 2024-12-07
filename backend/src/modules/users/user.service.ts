@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { authConfig } from "../../config/auth";
+import { ForbiddenError } from "../../utils/errors";
 import { BaseService } from "../base/base.service";
 import { User } from "./user.entity";
 import { userRepository } from "./user.repository";
@@ -10,6 +11,17 @@ export class UserService extends BaseService<User> {
 
     this.setHooks({
       beforeCreate: async (data) => {
+        const currentUser = this.getCurrentUser();
+
+        if (
+          currentUser &&
+          data.user_fk_company_id != currentUser.user_fk_company_id
+        ) {
+          throw new ForbiddenError(
+            "You can only create users for your own company"
+          );
+        }
+
         if (data.user_password) {
           data.user_password = await bcrypt.hash(
             String(data.user_password),

@@ -11,6 +11,13 @@ import { BaseService, SearchOptions } from "./base.service";
 export class BaseController<T extends IBaseEntity> {
   constructor(protected service: BaseService<T>) {}
 
+  protected setServiceContext(request: FastifyRequest) {
+    this.service.setContext({
+      user: request.user,
+      token: request.token,
+    });
+  }
+
   async findAll(
     request: FastifyRequest<{ Querystring: PaginationOptions }>,
     reply: FastifyReply
@@ -58,6 +65,7 @@ export class BaseController<T extends IBaseEntity> {
     reply: FastifyReply
   ) {
     try {
+      this.setServiceContext(request);
       const newItem = await this.service.create(request.body as DeepPartial<T>);
       return reply
         .status(201)
@@ -215,6 +223,34 @@ export class BaseController<T extends IBaseEntity> {
             "COUNT_FAILED",
             "Unable to count items",
             error instanceof Error ? error.message : undefined
+          )
+        );
+    }
+  }
+
+  async clone(
+    request: FastifyRequest<{
+      Params: { id: string };
+      Body: DeepPartial<T>;
+    }>,
+    reply: FastifyReply
+  ) {
+    try {
+      this.setServiceContext(request);
+      const id = Number(request.params.id);
+      const overrideData = request.body as DeepPartial<T>;
+
+      const clonedItem = await this.service.clone(id, overrideData);
+
+      return reply.status(201).send(ApiResponseBuilder.success(clonedItem));
+    } catch (error) {
+      return reply
+        .status(500)
+        .send(
+          ApiResponseBuilder.error(
+            "CLONE_FAILED",
+            "Unable to clone the item",
+            error instanceof Error ? error.stack : undefined
           )
         );
     }

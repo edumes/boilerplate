@@ -13,6 +13,7 @@ export class AuditService extends BaseService<Audit> {
     audit_old_values?: Record<string, any>;
     audit_new_values?: Record<string, any>;
     audit_fk_user_id?: number;
+    audit_observation?: string;
   }): Promise<Audit> {
     const audit = this.repository.create({
       ...params,
@@ -22,9 +23,7 @@ export class AuditService extends BaseService<Audit> {
     return this.repository.save(audit);
   }
 
-  async getEntityHistory(
-    entityName: string
-  ): Promise<Audit[]> {
+  async getEntityHistory(entityName: string): Promise<Audit[]> {
     return this.repository.find({
       where: { audit_entity_name: entityName },
       order: { created_at: "DESC" },

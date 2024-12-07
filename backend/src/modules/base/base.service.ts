@@ -9,6 +9,7 @@ import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity
 import { PaginationOptions } from "../../utils/api-response.util";
 import { AuditAction } from "../audit/audit.entity";
 import { auditService } from "../audit/audit.service";
+import { User } from "../users/user.entity";
 import { IBaseEntity } from "./base.entity";
 
 type WhereConditions<T> = FindOptionsWhere<T>;
@@ -27,8 +28,14 @@ export interface IServiceHooks<T> {
   afterDelete?(entity: T): Promise<void>;
 }
 
+export interface ServiceContext {
+  user?: User;
+  token?: string;
+}
+
 export class BaseService<T extends IBaseEntity> {
   protected hooks: IServiceHooks<T> = {};
+  protected context: ServiceContext = {};
 
   constructor(
     protected repository: Repository<T>,
@@ -43,16 +50,25 @@ export class BaseService<T extends IBaseEntity> {
     this.hooks = hooks;
   }
 
+  setContext(context: ServiceContext) {
+    this.context = context;
+  }
+
+  protected getCurrentUser(): User | undefined {
+    return this.context.user;
+  }
+
   private getRelationFields(): string[] {
     const metadata = this.repository.metadata;
     return metadata.relations
-      .filter(relation => 
-        metadata.columns.some(column => 
-          column.propertyName.includes('_fk_') && 
-          column.propertyName.includes(relation.propertyName)
+      .filter((relation) =>
+        metadata.columns.some(
+          (column) =>
+            column.propertyName.includes("_fk_") &&
+            column.propertyName.includes(relation.propertyName)
         )
       )
-      .map(relation => relation.propertyName);
+      .map((relation) => relation.propertyName);
   }
 
   async findAll(options: PaginationOptions = {}): Promise<[T[], number]> {
@@ -69,7 +85,7 @@ export class BaseService<T extends IBaseEntity> {
       skip,
       take: limit,
       order,
-      relations
+      relations,
     });
   }
 
@@ -77,12 +93,14 @@ export class BaseService<T extends IBaseEntity> {
     const relations = this.getRelationFields();
     return this.repository.findOne({
       where: { id } as any,
-      relations
+      relations,
     });
   }
 
   async create(data: DeepPartial<T>): Promise<T> {
     try {
+      const user = this.getCurrentUser();
+
       if (this.hooks.beforeCreate) {
         await this.hooks.beforeCreate(data);
       }
@@ -94,7 +112,7 @@ export class BaseService<T extends IBaseEntity> {
         audit_entity_name: this.entityName,
         audit_action: AuditAction.CREATE,
         audit_new_values: data,
-        // audit_fk_user_id: user?.id,
+        audit_fk_user_id: user?.id,
       });
 
       if (this.hooks.afterCreate) {
@@ -112,6 +130,8 @@ export class BaseService<T extends IBaseEntity> {
       const oldEntity = await this.findById(id);
       if (!oldEntity) return null;
 
+      const user = this.getCurrentUser();
+
       if (this.hooks.beforeUpdate) {
         await this.hooks.beforeUpdate(id, data);
       }
@@ -124,7 +144,7 @@ export class BaseService<T extends IBaseEntity> {
         audit_action: AuditAction.UPDATE,
         audit_old_values: oldEntity,
         audit_new_values: data,
-        // audit_fk_user_id: user?.id,
+        audit_fk_user_id: user?.id,
       });
 
       if (this.hooks.afterUpdate && updatedEntity) {
@@ -142,6 +162,8 @@ export class BaseService<T extends IBaseEntity> {
       const entity = await this.findById(id);
       if (!entity) return;
 
+      const user = this.getCurrentUser();
+
       if (this.hooks.beforeDelete) {
         await this.hooks.beforeDelete(id);
       }
@@ -152,7 +174,7 @@ export class BaseService<T extends IBaseEntity> {
         audit_entity_name: this.entityName,
         audit_action: AuditAction.DELETE,
         audit_old_values: entity,
-        // audit_fk_user_id: user?.id,
+        audit_fk_user_id: user?.id,
       });
 
       if (this.hooks.afterDelete) {
@@ -181,7 +203,7 @@ export class BaseService<T extends IBaseEntity> {
       skip,
       take: limit,
       order,
-      relations
+      relations,
     });
   }
 
@@ -210,7 +232,7 @@ export class BaseService<T extends IBaseEntity> {
       skip,
       take: limit,
       order: order as FindOptionsOrder<T>,
-      relations
+      relations,
     });
   }
 
@@ -218,5 +240,39 @@ export class BaseService<T extends IBaseEntity> {
     where: FindOptionsWhere<T> | FindOptionsWhere<T>[] = {}
   ): Promise<number> {
     return this.repository.count({ where });
+  }
+
+  async clone(id: number, overrideData?: DeepPartial<T>): Promise<T> {
+    try {
+      const originalEntity = await this.findById(id);
+      if (!originalEntity) {
+        throw new Error(`Entity with ID ${id} not found`);
+      }
+
+      const user = this.getCurrentUser();
+
+      const cloneData = {
+        ...originalEntity,
+        id: undefined,
+        created_at: undefined,
+        updated_at: undefined,
+        ...overrideData,
+      };
+
+      const entity = this.repository.create(cloneData);
+      const savedEntity = await this.repository.save(entity);
+
+      await auditService.logChange({
+        audit_entity_name: this.entityName,
+        audit_action: AuditAction.CREATE,
+        audit_new_values: cloneData,
+        audit_fk_user_id: user?.id,
+        audit_observation: `Cloned from ${this.entityName} ID: ${id}`,
+      });
+
+      return savedEntity;
+    } catch (error) {
+      throw new Error(`Clone operation failed: ${error.message}`);
+    }
   }
 }
