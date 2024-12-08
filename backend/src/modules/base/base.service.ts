@@ -27,6 +27,16 @@ export interface ServiceContext {
   token?: string;
 }
 
+interface SelectOption {
+  value: number;
+  label: string;
+}
+
+export interface SelectPickerOptions {
+  labelFields?: string[];
+  delimiter?: string;
+}
+
 export class BaseService<T extends IBaseEntity> {
   protected hooks: IServiceHooks<T> = {};
   protected context: ServiceContext = {};
@@ -265,6 +275,48 @@ export class BaseService<T extends IBaseEntity> {
       return savedEntity;
     } catch (error) {
       throw new Error(`Clone operation failed: ${error.message}`);
+    }
+  }
+
+  async getSelectOptions(options: SelectPickerOptions = {}): Promise<SelectOption[]> {
+    try {
+      const entities = await this.repository.find();
+      const metadata = this.repository.metadata;
+
+      let labelFields = options.labelFields;
+      if (!labelFields) {
+        const nameField = metadata.columns.find(column =>
+          column.propertyName.endsWith('_name'),
+        )?.propertyName;
+
+        if (nameField) {
+          labelFields = [nameField];
+        } else {
+          const firstField = metadata.columns.find(
+            column => column.propertyName !== 'id',
+          )?.propertyName;
+
+          if (firstField) {
+            labelFields = [firstField];
+          }
+        }
+      }
+
+      if (!labelFields || labelFields.length === 0) {
+        throw new Error('No suitable fields found for label');
+      }
+
+      const delimiter = options.delimiter || ' - ';
+
+      return entities.map(entity => ({
+        value: entity.id,
+        label: labelFields
+          .map(field => entity[field])
+          .filter(Boolean)
+          .join(delimiter),
+      }));
+    } catch (error) {
+      throw new Error(`Failed to get select options: ${error.message}`);
     }
   }
 }

@@ -22,6 +22,7 @@ interface GenericController {
   search: (request: any, reply: any) => Promise<void> | void;
   count: (request: any, reply: any) => Promise<void> | void;
   clone: (request: any, reply: any) => Promise<void> | void;
+  getSelectOptions: (request: any, reply: any) => Promise<void> | void;
 }
 
 /**
@@ -85,4 +86,5 @@ export function registerGenericRoutes(server: FastifyInstance, controller: Gener
   server.get('/search', controller.search.bind(controller));
   server.get('/count', controller.count.bind(controller));
   server.post('/:id/clone', controller.clone.bind(controller));
+  server.get('/select-options', controller.getSelectOptions.bind(controller));
 }

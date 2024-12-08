@@ -3,7 +3,7 @@ import { DeepPartial } from 'typeorm';
 import { ApiResponseBuilder, PaginationOptions } from '../../utils/api-response.util';
 import { NotFoundError, ValidationError } from '../../utils/errors';
 import { IBaseEntity } from './base.entity';
-import { BaseService, SearchOptions } from './base.service';
+import { BaseService, SearchOptions, SelectPickerOptions } from './base.service';
 
 export class BaseController<T extends IBaseEntity> {
   constructor(protected service: BaseService<T>) {}
@@ -228,6 +228,38 @@ export class BaseController<T extends IBaseEntity> {
           ApiResponseBuilder.error(
             'CLONE_FAILED',
             'Unable to clone the item',
+            error instanceof Error ? error.stack : undefined,
+          ),
+        );
+    }
+  }
+
+  async getSelectOptions(
+    request: FastifyRequest<{
+      Querystring: {
+        labelFields?: string;
+        delimiter?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const { labelFields, delimiter } = request.query;
+
+      const options: SelectPickerOptions = {
+        labelFields: labelFields?.split(','),
+        delimiter,
+      };
+
+      const selectOptions = await this.service.getSelectOptions(options);
+      return reply.send(ApiResponseBuilder.success(selectOptions));
+    } catch (error) {
+      return reply
+        .status(500)
+        .send(
+          ApiResponseBuilder.error(
+            'SELECT_OPTIONS_FAILED',
+            'Unable to fetch select options',
             error instanceof Error ? error.stack : undefined,
           ),
         );
