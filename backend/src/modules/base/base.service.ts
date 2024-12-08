@@ -1,16 +1,10 @@
-import {
-  DeepPartial,
-  FindOptionsOrder,
-  FindOptionsWhere,
-  ILike,
-  Repository,
-} from "typeorm";
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
-import { PaginationOptions } from "../../utils/api-response.util";
-import { AuditAction } from "../audit/audit.entity";
-import { auditService } from "../audit/audit.service";
-import { User } from "../users/user.entity";
-import { IBaseEntity } from "./base.entity";
+import { DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { PaginationOptions } from '../../utils/api-response.util';
+import { AuditAction } from '../audit/audit.entity';
+import { auditService } from '../audit/audit.service';
+import { User } from '../users/user.entity';
+import { IBaseEntity } from './base.entity';
 
 type WhereConditions<T> = FindOptionsWhere<T>;
 
@@ -39,7 +33,7 @@ export class BaseService<T extends IBaseEntity> {
 
   constructor(
     protected repository: Repository<T>,
-    protected entityName: string
+    protected entityName: string,
   ) {}
 
   public getEntityName(): string {
@@ -61,14 +55,14 @@ export class BaseService<T extends IBaseEntity> {
   private getRelationFields(): string[] {
     const metadata = this.repository.metadata;
     return metadata.relations
-      .filter((relation) =>
+      .filter(relation =>
         metadata.columns.some(
-          (column) =>
-            column.propertyName.includes("_fk_") &&
-            column.propertyName.includes(relation.propertyName)
-        )
+          column =>
+            column.propertyName.includes('_fk_') &&
+            column.propertyName.includes(relation.propertyName),
+        ),
       )
-      .map((relation) => relation.propertyName);
+      .map(relation => relation.propertyName);
   }
 
   async findAll(options: PaginationOptions = {}): Promise<[T[], number]> {
@@ -76,7 +70,7 @@ export class BaseService<T extends IBaseEntity> {
     const limit = options.limit || 10;
     const skip = (page - 1) * limit;
     const order = (options.order || {
-      created_at: "DESC",
+      created_at: 'DESC',
     }) as FindOptionsOrder<T>;
 
     const relations = this.getRelationFields();
@@ -187,13 +181,13 @@ export class BaseService<T extends IBaseEntity> {
 
   async findByConditions(
     where: WhereConditions<T>,
-    options: PaginationOptions = {}
+    options: PaginationOptions = {},
   ): Promise<[T[], number]> {
     const page = options.page || 1;
     const limit = options.limit || 10;
     const skip = (page - 1) * limit;
     const order = (options.order || {
-      created_at: "DESC",
+      created_at: 'DESC',
     }) as FindOptionsOrder<T>;
 
     const relations = this.getRelationFields();
@@ -212,8 +206,8 @@ export class BaseService<T extends IBaseEntity> {
       page = 1,
       limit = 10,
       searchFields = [],
-      searchTerm = "",
-      order = { created_at: "DESC" as const },
+      searchTerm = '',
+      order = { created_at: 'DESC' as const },
     } = options;
 
     const skip = (page - 1) * limit;
@@ -223,7 +217,7 @@ export class BaseService<T extends IBaseEntity> {
       return this.findAll(options);
     }
 
-    const whereConditions = searchFields.map((field) => ({
+    const whereConditions = searchFields.map(field => ({
       [field]: ILike(`%${searchTerm}%`),
     })) as FindOptionsWhere<T>[];
 
@@ -236,9 +230,7 @@ export class BaseService<T extends IBaseEntity> {
     });
   }
 
-  async count(
-    where: FindOptionsWhere<T> | FindOptionsWhere<T>[] = {}
-  ): Promise<number> {
+  async count(where: FindOptionsWhere<T> | FindOptionsWhere<T>[] = {}): Promise<number> {
     return this.repository.count({ where });
   }
 

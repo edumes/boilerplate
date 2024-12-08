@@ -1,15 +1,13 @@
-import { AppDataSource } from "../../config/database";
-import { BaseRepository } from "../base/base.repository";
-import { User } from "./user.entity";
+import { AppDataSource } from '../../config/database';
+import { BaseRepository } from '../base/base.repository';
+import { User } from './user.entity';
 
 export class UserRepository extends BaseRepository<User> {
   constructor() {
     super(User, AppDataSource);
   }
 
-  async findByEmail(
-    email: string
-  ): Promise<User | null> {
+  async findByEmail(email: string): Promise<User | null> {
     return this.findOne({
       where: { user_email: email },
       select: {
@@ -21,7 +19,7 @@ export class UserRepository extends BaseRepository<User> {
         created_at: true,
         updated_at: true,
       },
-      relations: ['company']
+      relations: ['company'],
     });
   }
 }

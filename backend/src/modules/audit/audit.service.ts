@@ -1,10 +1,10 @@
-import { AppDataSource } from "../../config/database";
-import { BaseService } from "../base/base.service";
-import { Audit, AuditAction } from "./audit.entity";
+import { AppDataSource } from '../../config/database';
+import { BaseService } from '../base/base.service';
+import { Audit, AuditAction } from './audit.entity';
 
 export class AuditService extends BaseService<Audit> {
   constructor() {
-    super(AppDataSource.getRepository(Audit), "Audit");
+    super(AppDataSource.getRepository(Audit), 'Audit');
   }
 
   async logChange(params: {
@@ -26,7 +26,7 @@ export class AuditService extends BaseService<Audit> {
   async getEntityHistory(entityName: string): Promise<Audit[]> {
     return this.repository.find({
       where: { audit_entity_name: entityName },
-      order: { created_at: "DESC" },
+      order: { created_at: 'DESC' },
     });
   }
 }

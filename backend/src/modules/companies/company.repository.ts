@@ -1,6 +1,6 @@
-import { AppDataSource } from "../../config/database";
-import { BaseRepository } from "../base/base.repository";
-import { Company } from "./company.entity";
+import { AppDataSource } from '../../config/database';
+import { BaseRepository } from '../base/base.repository';
+import { Company } from './company.entity';
 
 export class CompanyRepository extends BaseRepository<Company> {
   constructor() {

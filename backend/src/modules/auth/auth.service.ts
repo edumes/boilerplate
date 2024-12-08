@@ -1,11 +1,11 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { authConfig } from "../../config/auth";
-import { ValidationError } from "../../utils/errors";
-import { User } from "../users/user.entity";
-import { userService } from "../users/user.service";
-import { companyService } from "../companies/company.service";
-import { FastifyRequest } from "fastify";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { authConfig } from '../../config/auth';
+import { ValidationError } from '../../utils/errors';
+import { User } from '../users/user.entity';
+import { userService } from '../users/user.service';
+import { companyService } from '../companies/company.service';
+import { FastifyRequest } from 'fastify';
 
 export class AuthService {
   async login(email: string, password: string) {
@@ -14,13 +14,13 @@ export class AuthService {
     console.log({ user });
 
     if (!user) {
-      throw new ValidationError("Invalid email or password");
+      throw new ValidationError('Invalid email or password');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.user_password);
 
     if (!isPasswordValid) {
-      throw new ValidationError("Invalid email or password");
+      throw new ValidationError('Invalid email or password');
     }
 
     const company = await companyService.findById(user.user_fk_company_id);
@@ -44,13 +44,13 @@ export class AuthService {
       authConfig.jwt.secret,
       {
         expiresIn: authConfig.jwt.expiresIn,
-      }
+      },
     );
   }
 
   async getCurrentUser(request: FastifyRequest): Promise<User | null> {
     const token = request.headers.authorization?.replace('Bearer ', '');
-    
+
     if (!token) {
       return null;
     }

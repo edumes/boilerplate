@@ -1,12 +1,9 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { DeepPartial } from "typeorm";
-import {
-  ApiResponseBuilder,
-  PaginationOptions,
-} from "../../utils/api-response.util";
-import { NotFoundError, ValidationError } from "../../utils/errors";
-import { IBaseEntity } from "./base.entity";
-import { BaseService, SearchOptions } from "./base.service";
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { DeepPartial } from 'typeorm';
+import { ApiResponseBuilder, PaginationOptions } from '../../utils/api-response.util';
+import { NotFoundError, ValidationError } from '../../utils/errors';
+import { IBaseEntity } from './base.entity';
+import { BaseService, SearchOptions } from './base.service';
 
 export class BaseController<T extends IBaseEntity> {
   constructor(protected service: BaseService<T>) {}
@@ -18,10 +15,7 @@ export class BaseController<T extends IBaseEntity> {
     });
   }
 
-  async findAll(
-    request: FastifyRequest<{ Querystring: PaginationOptions }>,
-    reply: FastifyReply
-  ) {
+  async findAll(request: FastifyRequest<{ Querystring: PaginationOptions }>, reply: FastifyReply) {
     try {
       const options = request.query;
       const [items, total] = await this.service.findAll(options);
@@ -33,22 +27,19 @@ export class BaseController<T extends IBaseEntity> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "INTERNAL_SERVER_ERROR",
-            "Unable to fetch items. Please try again later.",
-            error instanceof Error ? error.stack : undefined
-          )
+            'INTERNAL_SERVER_ERROR',
+            'Unable to fetch items. Please try again later.',
+            error instanceof Error ? error.stack : undefined,
+          ),
         );
     }
   }
 
-  async findById(
-    request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
-  ) {
+  async findById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const id = parseInt(request.params.id);
 
     if (isNaN(id)) {
-      throw new ValidationError("The provided ID must be a valid number");
+      throw new ValidationError('The provided ID must be a valid number');
     }
 
     const item = await this.service.findById(id);
@@ -62,23 +53,21 @@ export class BaseController<T extends IBaseEntity> {
 
   async create(
     request: FastifyRequest<{ Body: Partial<T> & Record<string, unknown> }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       this.setServiceContext(request);
       const newItem = await this.service.create(request.body as DeepPartial<T>);
-      return reply
-        .status(201)
-        .send(ApiResponseBuilder.success(newItem, undefined));
+      return reply.status(201).send(ApiResponseBuilder.success(newItem, undefined));
     } catch (error) {
       return reply
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "CREATE_FAILED",
-            "Unable to create the item. Please try again later.",
-            error instanceof Error ? error.stack : undefined
-          )
+            'CREATE_FAILED',
+            'Unable to create the item. Please try again later.',
+            error instanceof Error ? error.stack : undefined,
+          ),
         );
     }
   }
@@ -88,7 +77,7 @@ export class BaseController<T extends IBaseEntity> {
       Params: { id: string };
       Body: Partial<T> & Record<string, unknown>;
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       const id = parseInt(request.params.id);
@@ -97,12 +86,7 @@ export class BaseController<T extends IBaseEntity> {
       if (!updatedItem) {
         return reply
           .status(404)
-          .send(
-            ApiResponseBuilder.error(
-              "ITEM_NOT_FOUND",
-              `Item with ID ${id} not found.`
-            )
-          );
+          .send(ApiResponseBuilder.error('ITEM_NOT_FOUND', `Item with ID ${id} not found.`));
       }
 
       return reply.send(ApiResponseBuilder.success(updatedItem));
@@ -111,18 +95,15 @@ export class BaseController<T extends IBaseEntity> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "UPDATE_FAILED",
-            "Unable to update the item. Please try again later.",
-            error instanceof Error ? error.stack : undefined
-          )
+            'UPDATE_FAILED',
+            'Unable to update the item. Please try again later.',
+            error instanceof Error ? error.stack : undefined,
+          ),
         );
     }
   }
 
-  async delete(
-    request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
-  ) {
+  async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     try {
       const id = parseInt(request.params.id);
       await this.service.delete(id);
@@ -132,10 +113,10 @@ export class BaseController<T extends IBaseEntity> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "DELETE_FAILED",
+            'DELETE_FAILED',
             `Unable to delete item with ID ${request.params.id}.`,
-            error instanceof Error ? error.stack : undefined
-          )
+            error instanceof Error ? error.stack : undefined,
+          ),
         );
     }
   }
@@ -144,16 +125,13 @@ export class BaseController<T extends IBaseEntity> {
     request: FastifyRequest<{
       Querystring: PaginationOptions & Record<string, any>;
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       const { page, limit, order, ...whereConditions } = request.query;
       const options = { page, limit, order };
 
-      const [items, total] = await this.service.findByConditions(
-        whereConditions as any,
-        options
-      );
+      const [items, total] = await this.service.findByConditions(whereConditions as any, options);
 
       const meta = ApiResponseBuilder.buildPaginationMeta(total, options);
       return reply.send(ApiResponseBuilder.success(items, meta));
@@ -162,10 +140,10 @@ export class BaseController<T extends IBaseEntity> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "INTERNAL_SERVER_ERROR",
-            "Unable to fetch filtered items",
-            error instanceof Error ? error.message : undefined
-          )
+            'INTERNAL_SERVER_ERROR',
+            'Unable to fetch filtered items',
+            error instanceof Error ? error.message : undefined,
+          ),
         );
     }
   }
@@ -174,12 +152,12 @@ export class BaseController<T extends IBaseEntity> {
     request: FastifyRequest<{
       Querystring: SearchOptions & { searchFields?: string };
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       const { searchFields, searchTerm, ...paginationOptions } = request.query;
 
-      const searchFieldsArray = searchFields ? searchFields.split(",") : [];
+      const searchFieldsArray = searchFields ? searchFields.split(',') : [];
 
       const options: SearchOptions = {
         ...paginationOptions,
@@ -196,10 +174,10 @@ export class BaseController<T extends IBaseEntity> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "SEARCH_FAILED",
-            "Unable to perform search operation",
-            error instanceof Error ? error.message : undefined
-          )
+            'SEARCH_FAILED',
+            'Unable to perform search operation',
+            error instanceof Error ? error.message : undefined,
+          ),
         );
     }
   }
@@ -208,7 +186,7 @@ export class BaseController<T extends IBaseEntity> {
     request: FastifyRequest<{
       Querystring: Record<string, any>;
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       const whereConditions = request.query;
@@ -220,10 +198,10 @@ export class BaseController<T extends IBaseEntity> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "COUNT_FAILED",
-            "Unable to count items",
-            error instanceof Error ? error.message : undefined
-          )
+            'COUNT_FAILED',
+            'Unable to count items',
+            error instanceof Error ? error.message : undefined,
+          ),
         );
     }
   }
@@ -233,7 +211,7 @@ export class BaseController<T extends IBaseEntity> {
       Params: { id: string };
       Body: DeepPartial<T>;
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       this.setServiceContext(request);
@@ -248,10 +226,10 @@ export class BaseController<T extends IBaseEntity> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            "CLONE_FAILED",
-            "Unable to clone the item",
-            error instanceof Error ? error.stack : undefined
-          )
+            'CLONE_FAILED',
+            'Unable to clone the item',
+            error instanceof Error ? error.stack : undefined,
+          ),
         );
     }
   }

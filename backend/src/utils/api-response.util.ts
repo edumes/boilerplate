@@ -1,4 +1,4 @@
-import { logger } from "./logger";
+import { logger } from './logger';
 
 export interface PaginationMeta {
   page: number;
@@ -24,7 +24,7 @@ export interface ApiResponse<T> {
 export interface PaginationOptions {
   page?: number;
   limit?: number;
-  order?: Record<string, "ASC" | "DESC">;
+  order?: Record<string, 'ASC' | 'DESC'>;
 }
 
 export class ApiResponseBuilder {
@@ -36,15 +36,11 @@ export class ApiResponseBuilder {
       meta,
     };
 
-    logger.info("API Success Response", { response });
+    logger.info('API Success Response', { response });
     return response;
   }
 
-  static error(
-    code: string,
-    message: string,
-    details?: any
-  ): ApiResponse<null> {
+  static error(code: string, message: string, details?: any): ApiResponse<null> {
     const response = {
       success: false,
       timestamp: new Date().toISOString(),
@@ -55,14 +51,11 @@ export class ApiResponseBuilder {
       },
     };
 
-    logger.error("API Error Response", { response });
+    logger.error('API Error Response', { response });
     return response;
   }
 
-  static buildPaginationMeta(
-    totalItems: number,
-    options: PaginationOptions
-  ): PaginationMeta {
+  static buildPaginationMeta(totalItems: number, options: PaginationOptions): PaginationMeta {
     const page = options.page || 1;
     const limit = options.limit || 10;
     const totalPages = Math.ceil(totalItems / limit);

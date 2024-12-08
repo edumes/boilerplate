@@ -1,31 +1,26 @@
-import bcrypt from "bcrypt";
-import { authConfig } from "../../config/auth";
-import { ForbiddenError } from "../../utils/errors";
-import { BaseService } from "../base/base.service";
-import { User } from "./user.entity";
-import { userRepository } from "./user.repository";
+import bcrypt from 'bcrypt';
+import { authConfig } from '../../config/auth';
+import { ForbiddenError } from '../../utils/errors';
+import { BaseService } from '../base/base.service';
+import { User } from './user.entity';
+import { userRepository } from './user.repository';
 
 export class UserService extends BaseService<User> {
   constructor() {
-    super(userRepository, "User");
+    super(userRepository, 'User');
 
     this.setHooks({
-      beforeCreate: async (data) => {
+      beforeCreate: async data => {
         const currentUser = this.getCurrentUser();
 
-        if (
-          currentUser &&
-          data.user_fk_company_id != currentUser.user_fk_company_id
-        ) {
-          throw new ForbiddenError(
-            "You can only create users for your own company"
-          );
+        if (currentUser && data.user_fk_company_id != currentUser.user_fk_company_id) {
+          throw new ForbiddenError('You can only create users for your own company');
         }
 
         if (data.user_password) {
           data.user_password = await bcrypt.hash(
             String(data.user_password),
-            authConfig.passwordSaltRounds
+            authConfig.passwordSaltRounds,
           );
         }
       },
@@ -33,20 +28,20 @@ export class UserService extends BaseService<User> {
         if (data.user_password) {
           data.user_password = await bcrypt.hash(
             String(data.user_password),
-            authConfig.passwordSaltRounds
+            authConfig.passwordSaltRounds,
           );
         }
       },
-      afterCreate: async (entity) => {
+      afterCreate: async entity => {
         await this.sendWelcomeEmail(entity);
       },
-      afterUpdate: async (entity) => {
+      afterUpdate: async entity => {
         await this.clearUserCache(entity.id);
       },
-      beforeDelete: async (id) => {
+      beforeDelete: async id => {
         await this.checkUserDeletionAllowed(id);
       },
-      afterDelete: async (entity) => {
+      afterDelete: async entity => {
         await this.cleanupUserData(entity.id);
       },
     });

@@ -6,14 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-} from "typeorm";
-import { IBaseEntity } from "../base/base.entity";
-import { Company } from "../companies/company.entity";
-import { User } from "../users/user.entity";
+} from 'typeorm';
+import { IBaseEntity } from '../base/base.entity';
+import { Company } from '../companies/company.entity';
+import { User } from '../users/user.entity';
 
-@Entity({ name: "projects" })
+@Entity({ name: 'projects' })
 export class Project implements IBaseEntity {
-  @PrimaryGeneratedColumn({ name: "project_id" })
+  @PrimaryGeneratedColumn({ name: 'project_id' })
   id: number;
 
   @Column({ nullable: true })
@@ -29,14 +29,14 @@ export class Project implements IBaseEntity {
   project_created_by_fk_user_id: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: "project_created_by_fk_user_id" })
+  @JoinColumn({ name: 'project_created_by_fk_user_id' })
   created_by_user: User;
 
   @Column({ nullable: true })
   project_fk_company_id: number;
 
   @ManyToOne(() => Company)
-  @JoinColumn({ name: "project_fk_company_id" })
+  @JoinColumn({ name: 'project_fk_company_id' })
   company: Company;
 
   @Column({ nullable: true })
@@ -48,9 +48,9 @@ export class Project implements IBaseEntity {
   @Column({ type: 'timestamp', nullable: true })
   project_final_date: Date;
 
-  @CreateDateColumn({ name: "project_created_at" })
+  @CreateDateColumn({ name: 'project_created_at' })
   created_at: Date;
 
-  @UpdateDateColumn({ name: "project_updated_at" })
+  @UpdateDateColumn({ name: 'project_updated_at' })
   updated_at: Date;
-} 
+}

@@ -1,10 +1,10 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { logger } from "./logger";
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { logger } from './logger';
 
 export async function httpLogger(request: FastifyRequest, reply: FastifyReply) {
   const startTime = Date.now();
 
-  reply.raw.on("finish", () => {
+  reply.raw.on('finish', () => {
     const duration = Date.now() - startTime;
 
     logger.http({
@@ -12,7 +12,7 @@ export async function httpLogger(request: FastifyRequest, reply: FastifyReply) {
       url: request.url,
       status: reply.statusCode,
       duration: `${duration}ms`,
-      userAgent: request.headers["user-agent"],
+      userAgent: request.headers['user-agent'],
       ip: request.ip,
     });
   });

@@ -1,21 +1,21 @@
-import "reflect-metadata";
-import { DataSource } from "typeorm";
-import { Audit } from "../modules/audit/audit.entity";
-import { Company } from "../modules/companies/company.entity";
-import { Project } from "../modules/projects/project.entity";
-import { User } from "../modules/users/user.entity";
-import { env } from "./env";
+import 'reflect-metadata';
+import { DataSource } from 'typeorm';
+import { Audit } from '../modules/audit/audit.entity';
+import { Company } from '../modules/companies/company.entity';
+import { Project } from '../modules/projects/project.entity';
+import { User } from '../modules/users/user.entity';
+import { env } from './env';
 
 export const AppDataSource = new DataSource({
-  type: "postgres",
+  type: 'postgres',
   host: env.DB_HOST,
   port: env.DB_PORT,
   username: env.DB_USERNAME,
   password: env.DB_PASSWORD,
   database: env.DB_DATABASE,
-  synchronize: env.NODE_ENV === "development", // Apenas em desenvolvimento
+  synchronize: env.NODE_ENV === 'development', // Apenas em desenvolvimento
   // logging: env.NODE_ENV === 'development',
   logging: false,
   entities: [User, Audit, Company, Project],
-  migrations: ["src/migrations/*.ts"],
+  migrations: ['src/migrations/*.ts'],
 });

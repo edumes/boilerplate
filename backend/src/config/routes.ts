@@ -1,10 +1,10 @@
-import { FastifyInstance } from "fastify";
-import { readdir } from "fs/promises";
-import path from "path";
-import { User } from "../modules/users/user.entity";
-import { logger } from "../utils/logger";
+import { FastifyInstance } from 'fastify';
+import { readdir } from 'fs/promises';
+import path from 'path';
+import { User } from '../modules/users/user.entity';
+import { logger } from '../utils/logger';
 
-declare module "fastify" {
+declare module 'fastify' {
   interface FastifyRequest {
     user?: User;
     token?: string;
@@ -38,7 +38,7 @@ async function* getRouteFiles(dir: string): AsyncGenerator<string> {
       yield* getRouteFiles(fullPath);
     } else if (
       entry.isFile() &&
-      (entry.name.endsWith(".routes.ts") || entry.name.endsWith(".routes.js"))
+      (entry.name.endsWith('.routes.ts') || entry.name.endsWith('.routes.js'))
     ) {
       yield fullPath;
     }
@@ -50,7 +50,7 @@ async function* getRouteFiles(dir: string): AsyncGenerator<string> {
  * Os arquivos de rota devem exportar uma função padrão.
  */
 export async function registerRoutes(server: FastifyInstance) {
-  const modulesPath = path.join(__dirname, "../modules");
+  const modulesPath = path.join(__dirname, '../modules');
 
   for await (const routeFile of getRouteFiles(modulesPath)) {
     const routeModule = await import(routeFile);
@@ -58,8 +58,8 @@ export async function registerRoutes(server: FastifyInstance) {
     // Deriva o prefixo com base no diretório pai do arquivo de rota
     const routePrefix = path
       .relative(modulesPath, routeFile)
-      .replace(/\\/g, "/")
-      .split("/")[0]
+      .replace(/\\/g, '/')
+      .split('/')[0]
       .toLowerCase(); // Normaliza o prefixo para lowercase
 
     // Sanitiza o prefixo para segurança
@@ -75,17 +75,14 @@ export async function registerRoutes(server: FastifyInstance) {
 /**
  * Registra rotas CRUD genéricas para uma entidade específica.
  */
-export function registerGenericRoutes(
-  server: FastifyInstance,
-  controller: GenericController
-) {
-  server.get("/", controller.findAll.bind(controller));
-  server.get("/filter", controller.findByConditions.bind(controller));
-  server.get("/:id", controller.findById.bind(controller));
-  server.post("/", controller.create.bind(controller));
-  server.put("/:id", controller.update.bind(controller));
-  server.delete("/:id", controller.delete.bind(controller));
-  server.get("/search", controller.search.bind(controller));
-  server.get("/count", controller.count.bind(controller));
-  server.post("/:id/clone", controller.clone.bind(controller));
+export function registerGenericRoutes(server: FastifyInstance, controller: GenericController) {
+  server.get('/', controller.findAll.bind(controller));
+  server.get('/filter', controller.findByConditions.bind(controller));
+  server.get('/:id', controller.findById.bind(controller));
+  server.post('/', controller.create.bind(controller));
+  server.put('/:id', controller.update.bind(controller));
+  server.delete('/:id', controller.delete.bind(controller));
+  server.get('/search', controller.search.bind(controller));
+  server.get('/count', controller.count.bind(controller));
+  server.post('/:id/clone', controller.clone.bind(controller));
 }

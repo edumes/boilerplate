@@ -6,13 +6,13 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-} from "typeorm";
-import { IBaseEntity } from "../base/base.entity";
-import { Company } from "../companies/company.entity";
+} from 'typeorm';
+import { IBaseEntity } from '../base/base.entity';
+import { Company } from '../companies/company.entity';
 
-@Entity({ name: "users" })
+@Entity({ name: 'users' })
 export class User implements IBaseEntity {
-  @PrimaryGeneratedColumn({ name: "user_id" })
+  @PrimaryGeneratedColumn({ name: 'user_id' })
   id: number;
 
   @Column({ length: 100 })
@@ -33,12 +33,12 @@ export class User implements IBaseEntity {
   user_fk_company_id: number;
 
   @ManyToOne(() => Company)
-  @JoinColumn({ name: "user_fk_company_id" })
+  @JoinColumn({ name: 'user_fk_company_id' })
   company: Company;
 
-  @CreateDateColumn({ name: "user_created_at" })
+  @CreateDateColumn({ name: 'user_created_at' })
   created_at: Date;
 
-  @UpdateDateColumn({ name: "user_updated_at" })
+  @UpdateDateColumn({ name: 'user_updated_at' })
   updated_at: Date;
 }

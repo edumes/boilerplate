@@ -1,6 +1,6 @@
-import winston from "winston";
-import DailyRotateFile from "winston-daily-rotate-file";
-import { env } from "../config/env";
+import winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
+import { env } from '../config/env';
 
 const levels = {
   error: 0,
@@ -11,19 +11,19 @@ const levels = {
 };
 
 const colors = {
-  error: "red",
-  warn: "yellow",
-  info: "green",
-  http: "magenta",
-  debug: "blue",
+  error: 'red',
+  warn: 'yellow',
+  info: 'green',
+  http: 'magenta',
+  debug: 'blue',
 };
 
 winston.addColors(colors);
 
 const format = winston.format.combine(
-  winston.format.timestamp({ format: "DD/MM/YY HH:mm:ss" }),
+  winston.format.timestamp({ format: 'DD/MM/YY HH:mm:ss' }),
   winston.format.errors({ stack: true }),
-  winston.format.json()
+  winston.format.json(),
 );
 
 const transports = [
@@ -31,27 +31,27 @@ const transports = [
     format: winston.format.combine(
       winston.format.colorize({ all: true }),
       winston.format.printf(
-        (info) => `[\x1b[34m${info.timestamp}\x1b[0m] \x1b[107m${info.level}\x1b[0m ${info.message}`
-      )
+        info => `[\x1b[34m${info.timestamp}\x1b[0m] \x1b[107m${info.level}\x1b[0m ${info.message}`,
+      ),
     ),
   }),
   new DailyRotateFile({
-    filename: "logs/error-%DATE%.log",
-    datePattern: "YYYY-MM-DD",
-    level: "error",
-    maxSize: "20m",
-    maxFiles: "14d",
+    filename: 'logs/error-%DATE%.log',
+    datePattern: 'YYYY-MM-DD',
+    level: 'error',
+    maxSize: '20m',
+    maxFiles: '14d',
   }),
   new DailyRotateFile({
-    filename: "logs/combined-%DATE%.log",
-    datePattern: "YYYY-MM-DD",
-    maxSize: "20m",
-    maxFiles: "14d",
+    filename: 'logs/combined-%DATE%.log',
+    datePattern: 'YYYY-MM-DD',
+    maxSize: '20m',
+    maxFiles: '14d',
   }),
 ];
 
 export const logger = winston.createLogger({
-  level: env.NODE_ENV === "development" ? "debug" : "info",
+  level: env.NODE_ENV === 'development' ? 'debug' : 'info',
   levels,
   format,
   transports,
