@@ -35,6 +35,7 @@ interface SelectOption {
 export interface SelectPickerOptions {
   labelFields?: string[];
   delimiter?: string;
+  searchTerm?: string;
 }
 
 export class BaseService<T extends IBaseEntity> {
@@ -280,7 +281,6 @@ export class BaseService<T extends IBaseEntity> {
 
   async getSelectOptions(options: SelectPickerOptions = {}): Promise<SelectOption[]> {
     try {
-      const entities = await this.repository.find();
       const metadata = this.repository.metadata;
 
       let labelFields = options.labelFields;
@@ -305,6 +305,18 @@ export class BaseService<T extends IBaseEntity> {
       if (!labelFields || labelFields.length === 0) {
         throw new Error('No suitable fields found for label');
       }
+
+      let whereConditions = {};
+      if (options.searchTerm) {
+        whereConditions = labelFields.map(field => ({
+          [field]: ILike(`%${options.searchTerm}%`),
+        }));
+      }
+
+      const entities = await this.repository.find({
+        where: options.searchTerm ? whereConditions : undefined,
+        take: 100,
+      });
 
       const delimiter = options.delimiter || ' - ';
 

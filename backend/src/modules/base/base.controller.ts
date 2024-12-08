@@ -239,16 +239,18 @@ export class BaseController<T extends IBaseEntity> {
       Querystring: {
         labelFields?: string;
         delimiter?: string;
+        search?: string;
       };
     }>,
     reply: FastifyReply,
   ) {
     try {
-      const { labelFields, delimiter } = request.query;
+      const { labelFields, delimiter, search } = request.query;
 
       const options: SelectPickerOptions = {
         labelFields: labelFields?.split(','),
         delimiter,
+        searchTerm: search,
       };
 
       const selectOptions = await this.service.getSelectOptions(options);
