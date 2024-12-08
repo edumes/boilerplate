@@ -30,6 +30,7 @@ async function connectWithRetry(retries = MAX_RETRIES): Promise<void> {
     logger.info('Database connected successfully');
   } catch (error) {
     logger.error('Database connection failed', { error, retriesLeft: retries });
+    console.log(error);
 
     if (retries > 0) {
       logger.info(`Retrying database connection in ${RETRY_DELAY / 1000} seconds...`);

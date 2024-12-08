@@ -27,6 +27,7 @@ const start = async () => {
     logger.info(`Server running on port ${env.PORT}`);
   } catch (err) {
     logger.error('Failed to start server', { error: err });
+    console.error(err);
 
     if (!AppDataSource.isInitialized) {
       logger.info('Attempting to reconnect to database in 5 seconds...');
@@ -66,6 +67,7 @@ const smartShutdown = async (signal: string) => {
     process.exit(0);
   } catch (error) {
     logger.error('Error during shutdown', { error });
+    console.error(error);
     process.exit(1);
   }
 };
