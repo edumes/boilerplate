@@ -2,6 +2,7 @@ backend/build
 backend/node_modules
 backend/.env
 backend/logs
+backend/coverage
 backend/*.log
 
 frontend/build
