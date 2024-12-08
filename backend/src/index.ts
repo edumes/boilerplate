@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import { AppDataSource } from './config/database';
 import { env } from './config/env';
 import { registerRoutes } from './config/routes';
-import { errorHandler } from './utils/error-handle.middleware';
+import { fastifyErrorHandler, globalErrorHandler } from './utils/error-handler';
 import { httpLogger } from './utils/http-logger.middleware';
 import { logger } from './utils/logger';
 
@@ -10,7 +10,7 @@ const server = Fastify({
   logger: false,
 });
 
-server.setErrorHandler(errorHandler);
+server.setErrorHandler(fastifyErrorHandler);
 server.addHook('onRequest', httpLogger);
 
 server.get('/health', async () => ({ status: 'ok' }));
@@ -23,25 +23,54 @@ const start = async () => {
     await registerRoutes(server);
     logger.info('Routes registered successfully');
 
-    await server.listen({ port: env.PORT });
+    await server.listen({ port: env.PORT, host: '0.0.0.0' });
     logger.info(`Server running on port ${env.PORT}`);
   } catch (err) {
     logger.error('Failed to start server', { error: err });
-    console.error(err);
-    // process.exit(1);
+
+    if (!AppDataSource.isInitialized) {
+      logger.info('Attempting to reconnect to database in 5 seconds...');
+      setTimeout(start, 5000);
+      return;
+    }
+
+    if (!server.server.listening) {
+      logger.info('Attempting to restart server in 5 seconds...');
+      setTimeout(start, 5000);
+      return;
+    }
   }
 };
 
 process.on('uncaughtException', error => {
-  logger.error('Uncaught Exception', { error: error });
-  console.error(error);
-  // process.exit(1);
+  globalErrorHandler(error, 'uncaughtException');
 });
 
-process.on('unhandledRejection', reason => {
-  logger.error('Unhandled Rejection', { error: reason });
-  console.error(reason);
-  // process.exit(1);
+process.on('unhandledRejection', (reason: any) => {
+  globalErrorHandler(reason, 'unhandledRejection');
 });
+
+const smartShutdown = async (signal: string) => {
+  logger.info(`Received ${signal}. Starting shutdown...`);
+
+  try {
+    await server.close();
+    logger.info('Server closed');
+
+    if (AppDataSource.isInitialized) {
+      await AppDataSource.destroy();
+      logger.info('Database connection closed');
+    }
+
+    logger.info('Shutdown completed');
+    process.exit(0);
+  } catch (error) {
+    logger.error('Error during shutdown', { error });
+    process.exit(1);
+  }
+};
+
+process.on('SIGTERM', () => smartShutdown('SIGTERM'));
+process.on('SIGINT', () => smartShutdown('SIGINT'));
 
 start();
