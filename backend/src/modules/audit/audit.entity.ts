@@ -1,3 +1,5 @@
+import { IBaseEntity } from '@modules/base/base.entity';
+import { User } from '@modules/users/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,8 +8,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IBaseEntity } from '../base/base.entity';
-import { User } from '../users/user.entity';
 
 export enum AuditAction {
   CREATE = 'CREATE',

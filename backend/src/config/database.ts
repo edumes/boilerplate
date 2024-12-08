@@ -1,11 +1,11 @@
+import { env } from '@config/env';
+import { Audit } from '@modules/audit/audit.entity';
+import { Company } from '@modules/companies/company.entity';
+import { Project } from '@modules/projects/project.entity';
+import { User } from '@modules/users/user.entity';
+import { logger } from '@utils/logger';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Audit } from '../modules/audit/audit.entity';
-import { Company } from '../modules/companies/company.entity';
-import { Project } from '../modules/projects/project.entity';
-import { User } from '../modules/users/user.entity';
-import { logger } from '../utils/logger';
-import { env } from './env';
 
 const AppDataSource = new DataSource({
   type: 'postgres',

@@ -1,6 +1,6 @@
-import { AppDataSource } from '../../config/database';
-import { BaseRepository } from '../base/base.repository';
-import { User } from './user.entity';
+import { AppDataSource } from '@config/database';
+import { BaseRepository } from '@modules/base/base.repository';
+import { User } from '@modules/users/user.entity';
 
 export class UserRepository extends BaseRepository<User> {
   constructor() {

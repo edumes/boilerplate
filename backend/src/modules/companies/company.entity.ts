@@ -1,3 +1,4 @@
+import { IBaseEntity } from '@modules/base/base.entity';
 import {
   Column,
   CreateDateColumn,
@@ -5,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IBaseEntity } from '../base/base.entity';
 
 @Entity({ name: 'companies' })
 export class Company implements IBaseEntity {

@@ -1,7 +1,7 @@
+import { registerGenericRoutes } from '@config/routes';
+import { userController } from '@modules/users/user.controller';
+import { authMiddleware } from '@utils/auth.middleware';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import { registerGenericRoutes } from '../../config/routes';
-import { authMiddleware } from '../../utils/auth.middleware';
-import { userController } from './user.controller';
 
 export default async function userRoutes(server: FastifyInstance, options: FastifyPluginOptions) {
   server.addHook('onRequest', authMiddleware);

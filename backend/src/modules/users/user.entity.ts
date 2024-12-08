@@ -1,14 +1,14 @@
+import { IBaseEntity } from '@modules/base/base.entity';
+import { Company } from '@modules/companies/company.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { IBaseEntity } from '../base/base.entity';
-import { Company } from '../companies/company.entity';
 
 @Entity({ name: 'users' })
 export class User implements IBaseEntity {

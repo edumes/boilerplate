@@ -1,10 +1,10 @@
+import { AuditAction } from '@modules/audit/audit.entity';
+import { auditService } from '@modules/audit/audit.service';
+import { IBaseEntity } from '@modules/base/base.entity';
+import { User } from '@modules/users/user.entity';
+import { PaginationOptions } from '@utils/api-response.util';
 import { DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { PaginationOptions } from '../../utils/api-response.util';
-import { AuditAction } from '../audit/audit.entity';
-import { auditService } from '../audit/audit.service';
-import { User } from '../users/user.entity';
-import { IBaseEntity } from './base.entity';
 
 type WhereConditions<T> = FindOptionsWhere<T>;
 

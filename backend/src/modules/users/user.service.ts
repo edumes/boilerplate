@@ -1,9 +1,9 @@
+import { authConfig } from '@config/auth';
+import { BaseService } from '@modules/base/base.service';
+import { User } from '@modules/users/user.entity';
+import { userRepository } from '@modules/users/user.repository';
+import { ForbiddenError } from '@utils/errors';
 import bcrypt from 'bcrypt';
-import { authConfig } from '../../config/auth';
-import { ForbiddenError } from '../../utils/errors';
-import { BaseService } from '../base/base.service';
-import { User } from './user.entity';
-import { userRepository } from './user.repository';
 
 export class UserService extends BaseService<User> {
   constructor() {

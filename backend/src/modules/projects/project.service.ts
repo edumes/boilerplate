@@ -1,6 +1,6 @@
-import { BaseService } from '../base/base.service';
-import { Project } from './project.entity';
-import { projectRepository } from './project.repository';
+import { BaseService } from '@modules/base/base.service';
+import { Project } from '@modules/projects/project.entity';
+import { projectRepository } from '@modules/projects/project.repository';
 
 export class ProjectService extends BaseService<Project> {
   constructor() {

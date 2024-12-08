@@ -1,4 +1,4 @@
-import { logger } from './logger';
+import { logger } from '@utils/logger';
 
 export interface PaginationMeta {
   page: number;

@@ -1,7 +1,7 @@
+import { registerGenericRoutes } from '@config/routes';
+import { projectController } from '@modules/projects/project.controller';
+import { authMiddleware } from '@utils/auth.middleware';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import { registerGenericRoutes } from '../../config/routes';
-import { authMiddleware } from '../../utils/auth.middleware';
-import { projectController } from './project.controller';
 
 export default async function projectRoutes(
   server: FastifyInstance,

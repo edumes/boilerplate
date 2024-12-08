@@ -1,17 +1,17 @@
+import { authConfig } from '@config/auth';
+import { companyService } from '@modules/companies/company.service';
+import { User } from '@modules/users/user.entity';
+import { userService } from '@modules/users/user.service';
+import { ValidationError } from '@utils/errors';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { authConfig } from '../../config/auth';
-import { ValidationError } from '../../utils/errors';
-import { User } from '../users/user.entity';
-import { userService } from '../users/user.service';
-import { companyService } from '../companies/company.service';
 import { FastifyRequest } from 'fastify';
+import jwt from 'jsonwebtoken';
 
 export class AuthService {
   async login(email: string, password: string) {
     // console.log({ email, password });
     const user = await userService.findByEmail(email);
-    console.log({ user });
+    // console.log({ user });
 
     if (!user) {
       throw new ValidationError('Invalid email or password');

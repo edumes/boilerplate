@@ -1,7 +1,7 @@
+import { authService } from '@modules/auth/auth.service';
+import { ApiResponseBuilder } from '@utils/api-response.util';
+import { UnauthorizedError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { ApiResponseBuilder } from '../../utils/api-response.util';
-import { authService } from './auth.service';
-import { UnauthorizedError } from '../../utils/errors';
 
 export class AuthController {
   async login(

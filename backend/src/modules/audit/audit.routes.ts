@@ -1,6 +1,6 @@
+import { registerGenericRoutes } from '@config/routes';
+import { auditController } from '@modules/audit/audit.controller';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import { registerGenericRoutes } from '../../config/routes';
-import { auditController } from './audit.controller';
 
 export default async function auditRoutes(server: FastifyInstance, options: FastifyPluginOptions) {
   registerGenericRoutes(server, auditController);

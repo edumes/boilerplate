@@ -1,10 +1,10 @@
+import { BaseController } from '@modules/base/base.controller';
+import { companyService } from '@modules/companies/company.service';
+import { User } from '@modules/users/user.entity';
+import { userService } from '@modules/users/user.service';
+import { ApiResponseBuilder } from '@utils/api-response.util';
+import { ValidationError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { ApiResponseBuilder } from '../../utils/api-response.util';
-import { ValidationError } from '../../utils/errors';
-import { BaseController } from '../base/base.controller';
-import { User } from './user.entity';
-import { userService } from './user.service';
-import { companyService } from '../companies/company.service';
 
 export class UserController extends BaseController<User> {
   constructor() {

@@ -1,8 +1,8 @@
+import { User } from '@modules/users/user.entity';
+import { logger } from '@utils/logger';
 import { FastifyInstance } from 'fastify';
 import { readdir } from 'fs/promises';
 import path from 'path';
-import { User } from '../modules/users/user.entity';
-import { logger } from '../utils/logger';
 
 declare module 'fastify' {
   interface FastifyRequest {

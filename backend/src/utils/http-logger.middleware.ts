@@ -1,5 +1,5 @@
+import { logger } from '@utils/logger';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { logger } from './logger';
 
 export async function httpLogger(request: FastifyRequest, reply: FastifyReply) {
   const startTime = Date.now();

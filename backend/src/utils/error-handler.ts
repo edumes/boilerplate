@@ -1,5 +1,5 @@
+import { logger } from '@utils/logger';
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
-import { logger } from './logger';
 
 export function globalErrorHandler(error: Error, context: string) {
   logger.error('Uncaught exception', {

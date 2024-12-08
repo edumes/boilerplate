@@ -1,10 +1,11 @@
+import './config/alias'; // deixar esse import sempre no topo
+import { AppDataSource } from '@config/database';
+import { env } from '@config/env';
+import { registerRoutes } from '@config/routes';
+import { fastifyErrorHandler, globalErrorHandler } from '@utils/error-handler';
+import { httpLogger } from '@utils/http-logger.middleware';
+import { logger } from '@utils/logger';
 import Fastify from 'fastify';
-import { AppDataSource } from './config/database';
-import { env } from './config/env';
-import { registerRoutes } from './config/routes';
-import { fastifyErrorHandler, globalErrorHandler } from './utils/error-handler';
-import { httpLogger } from './utils/http-logger.middleware';
-import { logger } from './utils/logger';
 
 const server = Fastify({
   logger: false,

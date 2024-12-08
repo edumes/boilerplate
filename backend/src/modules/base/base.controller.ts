@@ -1,9 +1,9 @@
+import { IBaseEntity } from '@modules/base/base.entity';
+import { BaseService, SearchOptions, SelectPickerOptions } from '@modules/base/base.service';
+import { ApiResponseBuilder, PaginationOptions } from '@utils/api-response.util';
+import { NotFoundError, ValidationError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { DeepPartial } from 'typeorm';
-import { ApiResponseBuilder, PaginationOptions } from '../../utils/api-response.util';
-import { NotFoundError, ValidationError } from '../../utils/errors';
-import { IBaseEntity } from './base.entity';
-import { BaseService, SearchOptions, SelectPickerOptions } from './base.service';
 
 export class BaseController<T extends IBaseEntity> {
   constructor(protected service: BaseService<T>) {}

@@ -1,9 +1,9 @@
+import { BaseController } from '@modules/base/base.controller';
+import { Company } from '@modules/companies/company.entity';
+import { companyService } from '@modules/companies/company.service';
+import { ApiResponseBuilder } from '@utils/api-response.util';
+import { ValidationError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { ApiResponseBuilder } from '../../utils/api-response.util';
-import { ValidationError } from '../../utils/errors';
-import { BaseController } from '../base/base.controller';
-import { Company } from './company.entity';
-import { companyService } from './company.service';
 
 export class CompanyController extends BaseController<Company> {
   constructor() {
