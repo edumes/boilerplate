@@ -10,7 +10,6 @@ export class ProjectRepository extends BaseRepository<Project> {
   async findByCode(code: string): Promise<Project | null> {
     return this.findOne({
       where: { project_code: code },
-      relations: ['company', 'created_by_user'],
     });
   }
 }

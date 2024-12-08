@@ -1,5 +1,4 @@
 import { BaseController } from '@modules/base/base.controller';
-import { companyService } from '@modules/companies/company.service';
 import { Project } from '@modules/projects/project.entity';
 import { projectService } from '@modules/projects/project.service';
 import { ApiResponseBuilder } from '@utils/api-response.util';
@@ -14,14 +13,14 @@ export class ProjectController extends BaseController<Project> {
   async create(request: FastifyRequest<{ Body: Partial<Project> }>, reply: FastifyReply) {
     const projectData = request.body;
 
-    if (!projectData.project_fk_company_id) {
-      throw new ValidationError('Company ID is required');
-    }
+    // if (!projectData.project_fk_company_id) {
+    //   throw new ValidationError('Company ID is required');
+    // }
 
-    const company = await companyService.findById(projectData.project_fk_company_id);
-    if (!company) {
-      throw new ValidationError('Company not found');
-    }
+    // const company = await companyService.findById(projectData.project_fk_company_id);
+    // if (!company) {
+    //   throw new ValidationError('Company not found');
+    // }
 
     if (projectData.project_code) {
       const existingProject = await projectService.findByCode(projectData.project_code);

@@ -11,13 +11,12 @@ export class UserController extends BaseController<User> {
     super(userService);
   }
 
-  // Sobrescreva ou adicione métodos específicos
   async create(request: FastifyRequest<{ Body: Partial<User> }>, reply: FastifyReply) {
     const userData = request.body;
 
-    if (!userData.user_fk_company_id) {
-      throw new ValidationError('Company ID is required');
-    }
+    // if (!userData.user_fk_company_id) {
+    //   throw new ValidationError('Company ID is required');
+    // }
 
     const existingUser = await userService.findByEmail(userData.user_email);
     if (existingUser) {

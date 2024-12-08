@@ -5,6 +5,10 @@ import { projectRepository } from '@modules/projects/project.repository';
 export class ProjectService extends BaseService<Project> {
   constructor() {
     super(projectRepository, 'Project');
+
+    this.setHooks({
+      beforeCreate: async data => {},
+    });
   }
 
   async findByCode(code: string): Promise<Project | null> {

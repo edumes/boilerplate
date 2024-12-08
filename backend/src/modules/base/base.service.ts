@@ -110,7 +110,11 @@ export class BaseService<T extends IBaseEntity> {
         await this.hooks.beforeCreate(data);
       }
 
-      const entity = this.repository.create(data);
+      const entity = this.repository.create({
+        ...data,
+        created_by_fk_user_id: user?.id,
+      } as DeepPartial<T>);
+      
       const savedEntity = await this.repository.save(entity);
 
       await auditService.logChange({
@@ -141,7 +145,11 @@ export class BaseService<T extends IBaseEntity> {
         await this.hooks.beforeUpdate(id, data);
       }
 
-      await this.repository.update(id, data);
+      await this.repository.update(id, {
+        ...data,
+        updated_by_fk_user_id: user?.id,
+      } as QueryDeepPartialEntity<T>);
+      
       const updatedEntity = await this.findById(id);
 
       await auditService.logChange({
