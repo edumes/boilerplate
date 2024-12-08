@@ -2,7 +2,9 @@ import './config/alias'; // deixar esse import sempre no topo
 import { AppDataSource } from '@config/database';
 import { env } from '@config/env';
 import { registerRoutes } from '@config/routes';
+import { setupSwagger } from '@config/swagger';
 import { fastifyErrorHandler, globalErrorHandler } from '@utils/error-handler';
+import getSystemStatus from '@utils/health.util';
 import { httpLogger } from '@utils/http-logger.middleware';
 import { logger } from '@utils/logger';
 import Fastify from 'fastify';
@@ -14,10 +16,12 @@ const server = Fastify({
 server.setErrorHandler(fastifyErrorHandler);
 server.addHook('onRequest', httpLogger);
 
-server.get('/health', async () => ({ status: 'ok' }));
+server.get('/health', async () => getSystemStatus());
 
 const start = async () => {
   try {
+    await setupSwagger(server);
+
     await AppDataSource.initialize();
     logger.info('Database connected successfully');
 

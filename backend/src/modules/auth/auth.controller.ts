@@ -1,9 +1,11 @@
 import { authService } from '@modules/auth/auth.service';
 import { ApiResponseBuilder } from '@utils/api-response.util';
 import { UnauthorizedError } from '@utils/errors';
+import genericRoutes, { RouteSchema } from '@utils/route-schema.decorator';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class AuthController {
+  @RouteSchema(genericRoutes.login)
   async login(
     request: FastifyRequest<{
       Body: { user_email: string; user_password: string };
