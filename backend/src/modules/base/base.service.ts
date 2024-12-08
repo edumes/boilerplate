@@ -64,16 +64,40 @@ export class BaseService<T extends IBaseEntity> {
   }
 
   private getRelationFields(): string[] {
+    const relations: string[] = [];
     const metadata = this.repository.metadata;
-    return metadata.relations
-      .filter(relation =>
-        metadata.columns.some(
+    const processedPaths = new Set<string>();
+
+    const processRelations = (prefix: string = '') => {
+      const relationsToProcess = prefix 
+        ? metadata.findRelationWithPropertyPath(prefix)?.inverseEntityMetadata.relations
+        : metadata.relations;
+
+      relationsToProcess?.forEach(relation => {
+        const fullPath = prefix ? `${prefix}.${relation.propertyName}` : relation.propertyName;
+        
+        if (processedPaths.has(fullPath)) return;
+        processedPaths.add(fullPath);
+
+        const hasForeignKey = metadata.columns.some(
           column =>
             column.propertyName.includes('_fk_') &&
-            column.propertyName.includes(relation.propertyName),
-        ),
-      )
-      .map(relation => relation.propertyName);
+            (prefix === '' 
+              ? column.propertyName.includes(relation.propertyName)
+              : column.propertyName.includes(relation.propertyName) || 
+                column.propertyName.includes(prefix.split('.').pop() || '')
+            ),
+        );
+
+        if (hasForeignKey) {
+          relations.push(fullPath);
+          processRelations(fullPath);
+        }
+      });
+    };
+
+    processRelations();
+    return relations;
   }
 
   async findAll(options: PaginationOptions = {}): Promise<[T[], number]> {
