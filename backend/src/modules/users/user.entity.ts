@@ -1,10 +1,13 @@
 import { IBaseEntity } from '@modules/base/base.entity';
 import { Company } from '@modules/companies/company.entity';
+import { Role } from '@modules/roles/role.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -41,4 +44,12 @@ export class User implements IBaseEntity {
 
   @UpdateDateColumn({ name: 'user_updated_at' })
   updated_at: Date;
+
+  @ManyToMany(() => Role, role => role.users)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'role_id' },
+  })
+  roles: Role[];
 }

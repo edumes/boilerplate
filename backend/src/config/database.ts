@@ -1,7 +1,9 @@
 import { env } from '@config/env';
 import { Audit } from '@modules/audit/audit.entity';
 import { Company } from '@modules/companies/company.entity';
+import { Permission } from '@modules/permissions/permission.entity';
 import { Project } from '@modules/projects/project.entity';
+import { Role } from '@modules/roles/role.entity';
 import { User } from '@modules/users/user.entity';
 import { logger } from '@utils/logger';
 import 'reflect-metadata';
@@ -17,7 +19,7 @@ const AppDataSource = new DataSource({
   synchronize: env.NODE_ENV === 'development', // Apenas em desenvolvimento
   // logging: env.NODE_ENV === 'development',
   logging: false,
-  entities: [User, Audit, Company, Project],
+  entities: [User, Audit, Company, Project, Role, Permission],
   migrations: ['src/migrations/*.ts'],
 });
 

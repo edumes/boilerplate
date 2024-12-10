@@ -1,4 +1,5 @@
 import { authConfig } from '@config/auth';
+import { permissionService } from '@modules/permissions/permission.service';
 import { userService } from '@modules/users/user.service';
 import { UnauthorizedError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
@@ -30,4 +31,16 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
   } catch (error) {
     throw new UnauthorizedError('Invalid token');
   }
+}
+
+export function requirePermission(resource: string, action: string) {
+  return async (request: FastifyRequest, reply: FastifyReply) => {
+    const user = request.user;
+
+    if (!user) {
+      throw new UnauthorizedError('User not authenticated');
+    }
+
+    await permissionService.requirePermission(user, resource, action);
+  };
 }
