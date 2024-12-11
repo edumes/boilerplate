@@ -1,9 +1,9 @@
+import { ApiResponseBuilder } from '@core/utils/api-response.util';
+import { ValidationError } from '@core/utils/errors.util';
 import { BaseController } from '@modules/base/base.controller';
 import { companyService } from '@modules/companies/company.service';
-import { User } from '@modules/users/user.entity';
+import { User } from '@modules/users/user.model';
 import { userService } from '@modules/users/user.service';
-import { ApiResponseBuilder } from '@utils/api-response.util';
-import { ValidationError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class UserController extends BaseController<User> {

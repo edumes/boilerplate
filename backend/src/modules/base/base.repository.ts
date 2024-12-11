@@ -1,9 +1,9 @@
-import { IBaseEntity } from '@modules/base/base.entity';
+import { IBaseModel } from '@modules/base/base.model';
 import { DataSource, Repository } from 'typeorm';
 
-export class BaseRepository<T extends IBaseEntity> extends Repository<T> {
-  constructor(entity: { new (): T }, dataSource: DataSource) {
-    super(entity, dataSource.createEntityManager());
+export class BaseRepository<T extends IBaseModel> extends Repository<T> {
+  constructor(model: { new (): T }, dataSource: DataSource) {
+    super(model, dataSource.createEntityManager());
   }
 
   // Métodos comuns podem ser adicionados aqui

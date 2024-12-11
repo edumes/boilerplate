@@ -1,12 +1,12 @@
-import './config/alias'; // deixar esse import sempre no topo
-import { AppDataSource } from '@config/database';
-import { env } from '@config/env';
-import { registerRoutes } from '@config/routes';
-import { setupSwagger } from '@config/swagger';
-import { fastifyErrorHandler, globalErrorHandler } from '@utils/error-handler';
-import getSystemStatus from '@utils/health.util';
-import { httpLogger } from '@utils/http-logger.middleware';
-import { logger } from '@utils/logger';
+import './config/alias.config'; // deixar esse import sempre no topo
+import { AppDataSource } from '@config/database.config';
+import { env } from '@config/env.config';
+import { registerRoutes } from '@config/routes.config';
+import { setupSwagger } from '@config/swagger.config';
+import { fastifyErrorHandler, globalErrorHandler } from '@core/handlers/error.handler';
+import { httpLogger } from '@core/middlewares/http-logger.middleware';
+import getSystemStatus from '@core/utils/health.util';
+import { logger } from '@core/utils/logger';
 import Fastify from 'fastify';
 
 const server = Fastify({

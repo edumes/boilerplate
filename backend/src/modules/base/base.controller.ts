@@ -1,12 +1,12 @@
-import { IBaseEntity } from '@modules/base/base.entity';
+import { ApiResponseBuilder, PaginationOptions } from '@core/utils/api-response.util';
+import { NotFoundError, ValidationError } from '@core/utils/errors.util';
+import { IBaseModel } from '@modules/base/base.model';
 import { BaseService, SearchOptions, SelectPickerOptions } from '@modules/base/base.service';
-import { ApiResponseBuilder, PaginationOptions } from '@utils/api-response.util';
-import { NotFoundError, ValidationError } from '@utils/errors';
 // import genericRoutes, { RouteSchema } from '@utils/route-schema.decorator';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { DeepPartial } from 'typeorm';
 
-export class BaseController<T extends IBaseEntity> {
+export class BaseController<T extends IBaseModel> {
   constructor(protected service: BaseService<T>) {}
 
   protected setServiceContext(request: FastifyRequest) {
@@ -47,7 +47,7 @@ export class BaseController<T extends IBaseEntity> {
     const item = await this.service.findById(id);
 
     if (!item) {
-      throw new NotFoundError(this.service.getEntityName(), id);
+      throw new NotFoundError(this.service.getModelName(), id);
     }
 
     return reply.send(ApiResponseBuilder.success(item));

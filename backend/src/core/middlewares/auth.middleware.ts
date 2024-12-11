@@ -1,6 +1,6 @@
-import { authConfig } from '@config/auth';
+import { authConfig } from '@config/auth.config';
+import { UnauthorizedError } from '@core/utils/errors.util';
 import { userService } from '@modules/users/user.service';
-import { UnauthorizedError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import jwt from 'jsonwebtoken';
 

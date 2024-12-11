@@ -1,5 +1,5 @@
-import { User } from '@modules/users/user.entity';
-import { logger } from '@utils/logger';
+import { logger } from '@core/utils/logger';
+import { User } from '@modules/users/user.model';
 import { FastifyInstance } from 'fastify';
 import { readdir } from 'fs/promises';
 import path from 'path';

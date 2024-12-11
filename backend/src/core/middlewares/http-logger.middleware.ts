@@ -1,4 +1,4 @@
-import { logger } from '@utils/logger';
+import { logger } from '@core/utils/logger';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export async function httpLogger(request: FastifyRequest, reply: FastifyReply) {

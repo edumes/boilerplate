@@ -1,5 +1,5 @@
-import { AppDataSource } from '@config/database';
-import { logger } from '@utils/logger';
+import { AppDataSource } from '@config/database.config';
+import { logger } from '@core/utils/logger';
 
 logger.silent = true;
 

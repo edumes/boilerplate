@@ -1,5 +1,5 @@
-import { IBaseEntity } from '@modules/base/base.entity';
-import { User } from '@modules/users/user.entity';
+import { IBaseModel } from '@modules/base/base.model';
+import { User } from '@modules/users/user.model';
 import {
   Column,
   CreateDateColumn,
@@ -16,7 +16,7 @@ export enum AuditAction {
 }
 
 @Entity({ name: 'audits' })
-export class Audit implements IBaseEntity {
+export class Audit implements IBaseModel {
   @PrimaryGeneratedColumn({ name: 'audit_id' })
   id: number;
 

@@ -1,7 +1,7 @@
-import { Audit } from '@modules/audit/audit.entity';
+import { ApiResponseBuilder } from '@core/utils/api-response.util';
+import { Audit } from '@modules/audit/audit.model';
 import { auditService } from '@modules/audit/audit.service';
 import { BaseController } from '@modules/base/base.controller';
-import { ApiResponseBuilder } from '@utils/api-response.util';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class AuditController extends BaseController<Audit> {

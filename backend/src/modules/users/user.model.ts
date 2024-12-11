@@ -1,5 +1,5 @@
-import { IBaseEntity } from '@modules/base/base.entity';
-import { Company } from '@modules/companies/company.entity';
+import { IBaseModel } from '@modules/base/base.model';
+import { Company } from '@modules/companies/company.model';
 import {
   Column,
   CreateDateColumn,
@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'users' })
-export class User implements IBaseEntity {
+export class User implements IBaseModel {
   @PrimaryGeneratedColumn({ name: 'user_id' })
   id: number;
 

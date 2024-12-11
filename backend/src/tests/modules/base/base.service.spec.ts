@@ -1,7 +1,7 @@
-import { AppDataSource } from '@config/database';
-import { Company } from '@modules/companies/company.entity';
-import { FakeDataHelper } from '@tests/helpers/fake-data.helper';
+import { AppDataSource } from '@config/database.config';
+import { Company } from '@modules/companies/company.model';
 import { TestBaseService } from '@tests/helpers/base-service.helper';
+import { FakeDataHelper } from '@tests/helpers/fake-data.helper';
 import { Repository } from 'typeorm';
 
 describe('BaseService', () => {
@@ -48,7 +48,7 @@ describe('BaseService', () => {
     it('should update an existing entity', async () => {
       const fakeCompany = FakeDataHelper.company();
       const created = await service.create(fakeCompany);
-      
+
       const updateData = { company_name: 'Updated Name' };
       const updated = await service.update(created.id, updateData);
 
@@ -61,7 +61,7 @@ describe('BaseService', () => {
     it('should delete an existing entity', async () => {
       const fakeCompany = FakeDataHelper.company();
       const created = await service.create(fakeCompany);
-      
+
       await service.delete(created.id);
       const found = await service.findById(created.id);
 
@@ -71,7 +71,9 @@ describe('BaseService', () => {
 
   describe('search', () => {
     it('should search entities by term', async () => {
-      const company1 = await service.create(FakeDataHelper.company({ company_name: 'Test Company ABC' }));
+      const company1 = await service.create(
+        FakeDataHelper.company({ company_name: 'Test Company ABC' }),
+      );
       await service.create(FakeDataHelper.company({ company_name: 'Another Company XYZ' }));
 
       const [results, total] = await service.search({
@@ -84,4 +86,4 @@ describe('BaseService', () => {
       expect(results[0].id).toBe(company1.id);
     });
   });
-}); 
+});

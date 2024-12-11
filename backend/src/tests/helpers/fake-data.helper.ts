@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { Company } from '@modules/companies/company.entity';
-import { User } from '@modules/users/user.entity';
+import { Company } from '@modules/companies/company.model';
+import { User } from '@modules/users/user.model';
 import { DeepPartial } from 'typeorm';
 
 export class FakeDataHelper {
@@ -23,4 +23,4 @@ export class FakeDataHelper {
       ...override,
     };
   }
-} 
+}

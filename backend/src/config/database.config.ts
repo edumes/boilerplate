@@ -1,9 +1,9 @@
-import { env } from '@config/env';
-import { Audit } from '@modules/audit/audit.entity';
-import { Company } from '@modules/companies/company.entity';
-import { Project } from '@modules/projects/project.entity';
-import { User } from '@modules/users/user.entity';
-import { logger } from '@utils/logger';
+import { env } from '@config/env.config';
+import { logger } from '@core/utils/logger';
+import { Audit } from '@modules/audit/audit.model';
+import { Company } from '@modules/companies/company.model';
+import { Project } from '@modules/projects/project.model';
+import { User } from '@modules/users/user.model';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 
@@ -43,3 +43,4 @@ async function connectWithRetry(retries = MAX_RETRIES): Promise<void> {
 }
 
 export { AppDataSource, connectWithRetry };
+

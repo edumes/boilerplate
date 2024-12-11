@@ -1,6 +1,6 @@
+import { logger } from '@core/utils/logger';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
-import { logger } from '@utils/logger';
 import { FastifyInstance } from 'fastify';
 
 export async function setupSwagger(server: FastifyInstance) {

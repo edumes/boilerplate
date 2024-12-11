@@ -1,4 +1,4 @@
-import { authController } from '@modules/auth/auth.controller';
+import { authController } from '@core/auth/auth.controller';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 export default async function authRoutes(server: FastifyInstance, options: FastifyPluginOptions) {

@@ -1,5 +1,5 @@
-import { AppDataSource } from '@config/database';
-import { Audit, AuditAction } from '@modules/audit/audit.entity';
+import { AppDataSource } from '@config/database.config';
+import { Audit, AuditAction } from '@modules/audit/audit.model';
 import { BaseService } from '@modules/base/base.service';
 
 export class AuditService extends BaseService<Audit> {

@@ -1,4 +1,4 @@
-import { registerGenericRoutes } from '@config/routes';
+import { registerGenericRoutes } from '@config/routes.config';
 import { auditController } from '@modules/audit/audit.controller';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 

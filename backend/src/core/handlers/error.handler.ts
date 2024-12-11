@@ -1,4 +1,4 @@
-import { logger } from '@utils/logger';
+import { logger } from '@core/utils/logger';
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
 export function globalErrorHandler(error: Error, context: string) {

@@ -1,8 +1,8 @@
-import { AuditAction } from '@modules/audit/audit.entity';
+import { PaginationOptions } from '@core/utils/api-response.util';
+import { AuditAction } from '@modules/audit/audit.model';
 import { auditService } from '@modules/audit/audit.service';
-import { IBaseEntity } from '@modules/base/base.entity';
-import { User } from '@modules/users/user.entity';
-import { PaginationOptions } from '@utils/api-response.util';
+import { IBaseModel } from '@modules/base/base.model';
+import { User } from '@modules/users/user.model';
 import { DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -38,17 +38,17 @@ export interface SelectPickerOptions {
   searchTerm?: string;
 }
 
-export class BaseService<T extends IBaseEntity> {
+export class BaseService<T extends IBaseModel> {
   protected hooks: IServiceHooks<T> = {};
   protected context: ServiceContext = {};
 
   constructor(
     protected repository: Repository<T>,
-    protected entityName: string,
+    protected modelName: string,
   ) {}
 
-  public getEntityName(): string {
-    return this.entityName;
+  public getModelName(): string {
+    return this.modelName;
   }
 
   setHooks(hooks: IServiceHooks<T>) {
@@ -69,24 +69,23 @@ export class BaseService<T extends IBaseEntity> {
     const processedPaths = new Set<string>();
 
     const processRelations = (prefix: string = '') => {
-      const relationsToProcess = prefix 
+      const relationsToProcess = prefix
         ? metadata.findRelationWithPropertyPath(prefix)?.inverseEntityMetadata.relations
         : metadata.relations;
 
       relationsToProcess?.forEach(relation => {
         const fullPath = prefix ? `${prefix}.${relation.propertyName}` : relation.propertyName;
-        
+
         if (processedPaths.has(fullPath)) return;
         processedPaths.add(fullPath);
 
         const hasForeignKey = metadata.columns.some(
           column =>
             column.propertyName.includes('_fk_') &&
-            (prefix === '' 
+            (prefix === ''
               ? column.propertyName.includes(relation.propertyName)
-              : column.propertyName.includes(relation.propertyName) || 
-                column.propertyName.includes(prefix.split('.').pop() || '')
-            ),
+              : column.propertyName.includes(relation.propertyName) ||
+                column.propertyName.includes(prefix.split('.').pop() || '')),
         );
 
         if (hasForeignKey) {
@@ -138,11 +137,11 @@ export class BaseService<T extends IBaseEntity> {
         ...data,
         created_by_fk_user_id: user?.id,
       } as DeepPartial<T>);
-      
+
       const savedEntity = await this.repository.save(entity);
 
       await auditService.logChange({
-        audit_entity_name: this.entityName,
+        audit_entity_name: this.modelName,
         audit_action: AuditAction.CREATE,
         audit_new_values: data,
         audit_fk_user_id: user?.id,
@@ -173,11 +172,11 @@ export class BaseService<T extends IBaseEntity> {
         ...data,
         updated_by_fk_user_id: user?.id,
       } as QueryDeepPartialEntity<T>);
-      
+
       const updatedEntity = await this.findById(id);
 
       await auditService.logChange({
-        audit_entity_name: this.entityName,
+        audit_entity_name: this.modelName,
         audit_action: AuditAction.UPDATE,
         audit_old_values: oldEntity,
         audit_new_values: data,
@@ -208,7 +207,7 @@ export class BaseService<T extends IBaseEntity> {
       await this.repository.delete(id);
 
       await auditService.logChange({
-        audit_entity_name: this.entityName,
+        audit_entity_name: this.modelName,
         audit_action: AuditAction.DELETE,
         audit_old_values: entity,
         audit_fk_user_id: user?.id,
@@ -298,11 +297,11 @@ export class BaseService<T extends IBaseEntity> {
       const savedEntity = await this.repository.save(entity);
 
       await auditService.logChange({
-        audit_entity_name: this.entityName,
+        audit_entity_name: this.modelName,
         audit_action: AuditAction.CREATE,
         audit_new_values: cloneData,
         audit_fk_user_id: user?.id,
-        audit_observation: `Cloned from ${this.entityName} ID: ${id}`,
+        audit_observation: `Cloned from ${this.modelName} ID: ${id}`,
       });
 
       return savedEntity;

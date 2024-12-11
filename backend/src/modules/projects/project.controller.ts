@@ -1,8 +1,8 @@
+import { ApiResponseBuilder } from '@core/utils/api-response.util';
+import { ValidationError } from '@core/utils/errors.util';
 import { BaseController } from '@modules/base/base.controller';
-import { Project } from '@modules/projects/project.entity';
+import { Project } from '@modules/projects/project.model';
 import { projectService } from '@modules/projects/project.service';
-import { ApiResponseBuilder } from '@utils/api-response.util';
-import { ValidationError } from '@utils/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class ProjectController extends BaseController<Project> {

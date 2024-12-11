@@ -1,4 +1,4 @@
-import { AppDataSource } from '@config/database';
+import { AppDataSource } from '@config/database.config';
 import os from 'os';
 import formatUptime from './date.util';
 

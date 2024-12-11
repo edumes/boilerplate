@@ -1,5 +1,5 @@
 import { BaseService } from '@modules/base/base.service';
-import { Company } from '@modules/companies/company.entity';
+import { Company } from '@modules/companies/company.model';
 import { companyRepository } from '@modules/companies/company.repository';
 
 export class CompanyService extends BaseService<Company> {
