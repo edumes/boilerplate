@@ -1,7 +1,7 @@
 import { FieldConfigOptions, getFieldConfigs } from '@core/decorators/field-config.decorator';
 import { PaginationOptions } from '@core/utils/api-response.util';
-import { AuditAction } from '@modules/audit/audit.model';
-import { auditService } from '@modules/audit/audit.service';
+import { AuditAction } from '@modules/audits/audit.model';
+import { auditService } from '@modules/audits/audit.service';
 import { IBaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import { DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';

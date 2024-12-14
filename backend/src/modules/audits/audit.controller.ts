@@ -1,12 +1,11 @@
 import { ApiResponseBuilder } from '@core/utils/api-response.util';
-import { Audit } from '@modules/audit/audit.model';
-import { auditService } from '@modules/audit/audit.service';
-import { BaseController } from '@modules/base/base.controller';
+import { AuditService, auditService } from '@modules/audits/audit.service';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-export class AuditController extends BaseController<Audit> {
+export class AuditController {
+  private service: AuditService;
   constructor() {
-    super(auditService);
+    this.service = auditService;
   }
 
   async getEntityHistory(
@@ -18,7 +17,7 @@ export class AuditController extends BaseController<Audit> {
   ) {
     try {
       const { entityName, entityId } = request.params;
-      const history = await auditService.getEntityHistory(entityName);
+      const history = await this.service.getEntityHistory(entityName);
 
       return reply.send(ApiResponseBuilder.success(history));
     } catch (error) {

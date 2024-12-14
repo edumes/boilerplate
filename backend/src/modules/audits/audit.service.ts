@@ -1,10 +1,11 @@
-import { AppDataSource } from '@config/database.config';
-import { Audit, AuditAction } from '@modules/audit/audit.model';
-import { BaseService } from '@modules/base/base.service';
+import { Audit, AuditAction } from '@modules/audits/audit.model';
+import { auditRepository } from '@modules/audits/audit.repository';
+import { Repository } from 'typeorm';
 
-export class AuditService extends BaseService<Audit> {
+export class AuditService {
+  private repository: Repository<Audit>;
   constructor() {
-    super(AppDataSource.getRepository(Audit), 'Audit');
+    this.repository = auditRepository;
   }
 
   async logChange(params: {
@@ -30,5 +31,4 @@ export class AuditService extends BaseService<Audit> {
     });
   }
 }
-
 export const auditService = new AuditService();

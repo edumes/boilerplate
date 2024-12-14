@@ -13,6 +13,12 @@ declare module 'fastify' {
 
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 
+export type RouteDefinition = {
+  method: HttpMethod;
+  url: string;
+  handler: (request: any, reply: any) => any;
+};
+
 interface GenericController {
   findAll: (request: any, reply: any) => Promise<void> | void;
   findById: (request: any, reply: any) => Promise<void> | void;
@@ -65,8 +71,12 @@ export async function registerRoutes(server: FastifyInstance) {
   }
 }
 
-export function registerGenericRoutes(server: FastifyInstance, controller: GenericController) {
-  const routes: { method: HttpMethod; url: string; handler: Function }[] = [
+export function registerGenericRoutes(
+  server: FastifyInstance,
+  controller: GenericController,
+  additionalRoutes?: RouteDefinition[],
+) {
+  const baseRoutes: RouteDefinition[] = [
     { method: 'get', url: '/', handler: controller.findAll },
     { method: 'get', url: '/filter', handler: controller.findByConditions },
     { method: 'get', url: '/:id', handler: controller.findById },
@@ -79,6 +89,8 @@ export function registerGenericRoutes(server: FastifyInstance, controller: Gener
     { method: 'get', url: '/select-options', handler: controller.getSelectOptions },
     { method: 'get', url: '/fields', handler: controller.getFields },
   ];
+
+  const routes = additionalRoutes ? [...baseRoutes, ...additionalRoutes] : baseRoutes;
 
   routes.forEach(({ method, url, handler }) => {
     server[method](url, handler.bind(controller));

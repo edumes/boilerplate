@@ -1,12 +1,12 @@
-import { registerGenericRoutes } from '@config/routes.config';
-import { auditController } from '@modules/audit/audit.controller';
+import { authMiddleware } from '@core/middlewares/auth.middleware';
+import { auditController } from '@modules/audits/audit.controller';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 export default async function auditRoutes(server: FastifyInstance, options: FastifyPluginOptions) {
-  registerGenericRoutes(server, auditController);
+  server.addHook('onRequest', authMiddleware);
 
   server.get(
-    '/entity/:entityName/:entityId',
+    '/users/:userId/roles/:roleId',
     auditController.getEntityHistory.bind(auditController),
   );
 }
