@@ -1,3 +1,4 @@
+import { FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
 import { IBaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import {
@@ -16,6 +17,15 @@ export class Project implements IBaseModel {
   id: number;
 
   @Column({ nullable: false })
+  @FieldConfig({
+    canRead: true,
+    canEdit: true,
+    order: 1,
+    width: 4,
+    number: {
+      type: NUMBER_TYPE.DECIMAL,
+    },
+  })
   project_code: string;
 
   @Column({ nullable: false })

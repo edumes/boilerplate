@@ -9,19 +9,16 @@ import getSystemStatus from '@core/utils/health.util';
 import { logger } from '@core/utils/logger';
 import Fastify from 'fastify';
 
-const server = Fastify({
-  logger: false,
-});
+const server = Fastify({ logger: false });
 
 server.setErrorHandler(fastifyErrorHandler);
 server.addHook('onRequest', httpLogger);
 
 server.get('/health', async () => getSystemStatus());
 
-const start = async () => {
+const initializeServer = async () => {
   try {
     await setupSwagger(server);
-
     await AppDataSource.initialize();
     logger.info('Database connected successfully');
 
@@ -30,34 +27,30 @@ const start = async () => {
 
     await server.listen({ port: env.PORT, host: '0.0.0.0' });
     logger.info(`Server running on port ${env.PORT}`);
-  } catch (err) {
-    logger.error('Failed to start server', { error: err });
-    console.error(err);
-
-    if (!AppDataSource.isInitialized) {
-      logger.info('Attempting to reconnect to database in 5 seconds...');
-      setTimeout(start, 5000);
-      return;
-    }
-
-    if (!server.server.listening) {
-      logger.info('Attempting to restart server in 5 seconds...');
-      setTimeout(start, 5000);
-      return;
-    }
+  } catch (error) {
+    handleStartupError(error);
   }
 };
 
-process.on('uncaughtException', error => {
-  globalErrorHandler(error, 'uncaughtException');
-});
+const handleStartupError = (error: Error) => {
+  logger.error('Server startup failed', { error });
+  console.error(error);
 
-process.on('unhandledRejection', (reason: any) => {
-  globalErrorHandler(reason, 'unhandledRejection');
-});
+  if (!AppDataSource.isInitialized || !server.server.listening) {
+    logger.info('Retrying in 5 seconds...');
+    setTimeout(initializeServer, 5000);
+  }
+};
 
-const smartShutdown = async (signal: string) => {
-  logger.info(`Received ${signal}. Starting shutdown...`);
+const handleProcessError = (error: Error | any, type: string) => {
+  globalErrorHandler(error, type);
+};
+
+process.on('uncaughtException', error => handleProcessError(error, 'uncaughtException'));
+process.on('unhandledRejection', reason => handleProcessError(reason, 'unhandledRejection'));
+
+const gracefulShutdown = async (signal: string) => {
+  logger.info(`Received ${signal}. Shutting down...`);
 
   try {
     await server.close();
@@ -71,13 +64,13 @@ const smartShutdown = async (signal: string) => {
     logger.info('Shutdown completed');
     process.exit(0);
   } catch (error) {
-    logger.error('Error during shutdown', { error });
+    logger.error('Shutdown error', { error });
     console.error(error);
     process.exit(1);
   }
 };
 
-process.on('SIGTERM', () => smartShutdown('SIGTERM'));
-process.on('SIGINT', () => smartShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-start();
+initializeServer();

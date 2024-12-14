@@ -1,4 +1,4 @@
-import { authService } from '@core/auth/auth.service';
+import { authService } from '@modules/auth/auth.service';
 import { ApiResponseBuilder } from '@core/utils/api-response.util';
 import { UnauthorizedError } from '@core/utils/errors.util';
 // import genericRoutes, { RouteSchema } from '@core/utils/route-schema.decorator';

@@ -14,7 +14,7 @@ const AppDataSource = new DataSource({
   username: env.DB_USERNAME,
   password: env.DB_PASSWORD,
   database: env.DB_DATABASE,
-  synchronize: env.NODE_ENV === 'development', // Apenas em desenvolvimento
+  synchronize: env.NODE_ENV === 'development', // apenas em desenvolvimento
   // logging: env.NODE_ENV === 'development',
   logging: false,
   entities: [User, Audit, Company, Project],
@@ -43,4 +43,3 @@ async function connectWithRetry(retries = MAX_RETRIES): Promise<void> {
 }
 
 export { AppDataSource, connectWithRetry };
-

@@ -1,3 +1,4 @@
+import { FieldConfigOptions, getFieldConfigs } from '@core/decorators/field-config.decorator';
 import { PaginationOptions } from '@core/utils/api-response.util';
 import { AuditAction } from '@modules/audit/audit.model';
 import { auditService } from '@modules/audit/audit.service';
@@ -49,6 +50,11 @@ export class BaseService<T extends IBaseModel> {
 
   public getModelName(): string {
     return this.modelName;
+  }
+
+  public getFields(): Record<string, FieldConfigOptions> {
+    const entityClass = this.repository.target;
+    return getFieldConfigs(entityClass);
   }
 
   setHooks(hooks: IServiceHooks<T>) {

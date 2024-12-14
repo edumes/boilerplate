@@ -1,8 +1,8 @@
 import { authConfig } from '@config/auth.config';
+import { ValidationError } from '@core/utils/errors.util';
 import { companyService } from '@modules/companies/company.service';
 import { User } from '@modules/users/user.model';
 import { userService } from '@modules/users/user.service';
-import { ValidationError } from '@core/utils/errors.util';
 import bcrypt from 'bcrypt';
 import { FastifyRequest } from 'fastify';
 import jwt from 'jsonwebtoken';

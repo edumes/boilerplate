@@ -11,7 +11,8 @@ declare module 'fastify' {
   }
 }
 
-// Define a interface para o controller com assinaturas explícitas
+export type HttpMethod = 'get' | 'post' | 'put' | 'delete';
+
 interface GenericController {
   findAll: (request: any, reply: any) => Promise<void> | void;
   findById: (request: any, reply: any) => Promise<void> | void;
@@ -23,12 +24,9 @@ interface GenericController {
   count: (request: any, reply: any) => Promise<void> | void;
   clone: (request: any, reply: any) => Promise<void> | void;
   getSelectOptions: (request: any, reply: any) => Promise<void> | void;
+  getFields: (request: any, reply: any) => Promise<void> | void;
 }
 
-/**
- * Recupera todos os arquivos de rota em um diretório e subdiretórios.
- * Apenas arquivos que terminam com ".routes.ts" são retornados.
- */
 async function* getRouteFiles(dir: string): AsyncGenerator<string> {
   const entries = await readdir(dir, { withFileTypes: true });
 
@@ -46,24 +44,18 @@ async function* getRouteFiles(dir: string): AsyncGenerator<string> {
   }
 }
 
-/**
- * Registra rotas automaticamente no servidor Fastify.
- * Os arquivos de rota devem exportar uma função padrão.
- */
 export async function registerRoutes(server: FastifyInstance) {
   const modulesPath = path.join(__dirname, '../modules');
 
   for await (const routeFile of getRouteFiles(modulesPath)) {
     const routeModule = await import(routeFile);
 
-    // Deriva o prefixo com base no diretório pai do arquivo de rota
     const routePrefix = path
       .relative(modulesPath, routeFile)
       .replace(/\\/g, '/')
       .split('/')[0]
-      .toLowerCase(); // Normaliza o prefixo para lowercase
+      .toLowerCase();
 
-    // Sanitiza o prefixo para segurança
     const sanitizedPrefix = encodeURIComponent(routePrefix);
 
     logger.info(`registered route ${sanitizedPrefix}`);
@@ -73,18 +65,22 @@ export async function registerRoutes(server: FastifyInstance) {
   }
 }
 
-/**
- * Registra rotas CRUD genéricas para uma entidade específica.
- */
 export function registerGenericRoutes(server: FastifyInstance, controller: GenericController) {
-  server.get('/', controller.findAll.bind(controller));
-  server.get('/filter', controller.findByConditions.bind(controller));
-  server.get('/:id', controller.findById.bind(controller));
-  server.post('/', controller.create.bind(controller));
-  server.put('/:id', controller.update.bind(controller));
-  server.delete('/:id', controller.delete.bind(controller));
-  server.get('/search', controller.search.bind(controller));
-  server.get('/count', controller.count.bind(controller));
-  server.post('/:id/clone', controller.clone.bind(controller));
-  server.get('/select-options', controller.getSelectOptions.bind(controller));
+  const routes: { method: HttpMethod; url: string; handler: Function }[] = [
+    { method: 'get', url: '/', handler: controller.findAll },
+    { method: 'get', url: '/filter', handler: controller.findByConditions },
+    { method: 'get', url: '/:id', handler: controller.findById },
+    { method: 'post', url: '/', handler: controller.create },
+    { method: 'put', url: '/:id', handler: controller.update },
+    { method: 'delete', url: '/:id', handler: controller.delete },
+    { method: 'get', url: '/search', handler: controller.search },
+    { method: 'get', url: '/count', handler: controller.count },
+    { method: 'post', url: '/:id/clone', handler: controller.clone },
+    { method: 'get', url: '/select-options', handler: controller.getSelectOptions },
+    { method: 'get', url: '/fields', handler: controller.getFields },
+  ];
+
+  routes.forEach(({ method, url, handler }) => {
+    server[method](url, handler.bind(controller));
+  });
 }

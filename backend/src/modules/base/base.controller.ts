@@ -269,4 +269,21 @@ export class BaseController<T extends IBaseModel> {
         );
     }
   }
+
+  async getFields(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const fields = this.service.getFields();
+      return reply.send(ApiResponseBuilder.success(fields));
+    } catch (error) {
+      return reply
+        .status(500)
+        .send(
+          ApiResponseBuilder.error(
+            'FIELDS_FETCH_FAILED',
+            'Unable to fetch entity fields',
+            error instanceof Error ? error.stack : undefined,
+          ),
+        );
+    }
+  }
 }
