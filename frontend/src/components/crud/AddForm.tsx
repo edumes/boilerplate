@@ -1,10 +1,11 @@
 import { FormFieldConfig } from '@/@types/forms';
+import { useCrud } from '@/utils/hooks/useCrud';
+import { ArrowBack } from '@mui/icons-material';
 import { Box, Button, Card, Grid2 as Grid, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { item } from '../ui/motion/MotionSettings';
-import { ArrowBack } from '@mui/icons-material';
 
 interface AddFormProps {
     form: FormFieldConfig;
@@ -14,6 +15,12 @@ export default function AddForm({ form }: AddFormProps) {
     const { config, fields } = form;
     const navigate = useNavigate();
     const [formData, setFormData] = useState({});
+
+    const { useCreate } = useCrud({
+        entity: config.pluralName.toLowerCase()
+    });
+
+    const createMutation = useCreate();
 
     const handleInputChange = (fieldName: string, value: string) => {
         setFormData((prev) => ({
@@ -25,8 +32,11 @@ export default function AddForm({ form }: AddFormProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form data:', formData);
-        // TODO: Implementar a chamada API para salvar
+        createMutation.mutate(formData, {
+            onSuccess: () => {
+                navigate(-1);
+            },
+        });
     };
 
     return (

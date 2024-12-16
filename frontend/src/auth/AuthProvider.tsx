@@ -1,20 +1,20 @@
-import { useRef, useImperativeHandle, forwardRef } from 'react';
-import AuthContext from './AuthContext';
-import appConfig from '@/configs/app.config';
-import { useSessionUser, useToken } from '@/store/authStore';
-import { apiSignIn, apiSignOut, apiSignUp } from '@/services/AuthService';
-import { REDIRECT_URL_KEY } from '@/constants/app.constant';
-import { useNavigate } from 'react-router-dom';
 import type {
-    SignInCredential,
-    SignUpCredential,
     AuthResult,
     OauthSignInCallbackPayload,
-    User,
+    SignInCredential,
+    SignUpCredential,
     Token,
+    User,
 } from '@/@types/auth';
+import appConfig from '@/configs/app.config';
+import { REDIRECT_URL_KEY } from '@/constants/app.constant';
+import { apiSignIn, apiSignOut, apiSignUp } from '@/services/AuthService';
+import { useSessionUser, useToken } from '@/store/authStore';
 import type { ReactNode } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import type { NavigateFunction } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from './AuthContext';
 
 type AuthProviderProps = { children: ReactNode };
 
@@ -128,6 +128,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             navigatorRef.current?.navigate(appConfig.unAuthenticatedEntryPath);
         }
     };
+
     const oAuthSignIn = (
         callback: (payload: OauthSignInCallbackPayload) => void
     ) => {

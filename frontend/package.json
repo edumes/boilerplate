@@ -23,6 +23,7 @@
     "@mui/x-data-grid": "^7.22.3",
     "@mui/x-data-grid-generator": "^7.22.3",
     "@tanstack/match-sorter-utils": "^8.19.4",
+    "@tanstack/react-query": "^5.62.7",
     "@tanstack/react-table": "^8.20.5",
     "@tanstack/react-virtual": "^3.10.7",
     "axios": "^1.7.7",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
+    "@tanstack/eslint-plugin-query": "^5.62.1",
     "@types/d3-fetch": "^3.0.7",
     "@types/d3-scale": "^4.0.8",
     "@types/js-cookie": "^3.0.6",
