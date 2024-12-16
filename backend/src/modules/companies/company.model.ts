@@ -15,7 +15,7 @@ export class Company implements IBaseModel {
   @Column({ length: 100 })
   company_name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   company_cnpj: string;
 
   @Column({ length: 200, nullable: true })
@@ -26,6 +26,9 @@ export class Company implements IBaseModel {
 
   @Column({ length: 100, nullable: true })
   company_email: string;
+
+  @Column({ default: true })
+  company_is_active: boolean;
 
   @CreateDateColumn({ name: 'company_created_at' })
   created_at: Date;

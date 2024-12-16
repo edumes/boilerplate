@@ -10,16 +10,7 @@ export class UserRepository extends BaseRepository<User> {
   async findByEmail(email: string): Promise<User | null> {
     return this.findOne({
       where: { user_email: email },
-      select: {
-        id: true,
-        user_email: true,
-        user_password: true,
-        user_name: true,
-        user_fk_company_id: true,
-        created_at: true,
-        updated_at: true,
-      },
-      relations: ['company'],
+      relations: ['company', 'role'],
     });
   }
 }

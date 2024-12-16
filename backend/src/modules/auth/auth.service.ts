@@ -1,5 +1,5 @@
 import { authConfig } from '@config/auth.config';
-import { ValidationError } from '@core/utils/errors.util';
+import { ForbiddenError, ValidationError } from '@core/utils/errors.util';
 import { companyService } from '@modules/companies/company.service';
 import { User } from '@modules/users/user.model';
 import { userService } from '@modules/users/user.service';
@@ -11,7 +11,6 @@ export class AuthService {
   async login(email: string, password: string) {
     // console.log({ email, password });
     const user = await userService.findByEmail(email);
-    // console.log({ user });
 
     if (!user) {
       throw new ValidationError('Invalid email or password');
@@ -21,6 +20,11 @@ export class AuthService {
 
     if (!isPasswordValid) {
       throw new ValidationError('Invalid email or password');
+    }
+
+    // console.log({ user });
+    if (!user.user_is_active) {
+      throw new ForbiddenError('User is not active');
     }
 
     const company = await companyService.findById(user.user_fk_company_id);

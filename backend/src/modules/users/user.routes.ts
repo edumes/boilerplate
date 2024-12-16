@@ -1,6 +1,6 @@
 import { registerGenericRoutes } from '@config/routes.config';
-import { userController } from '@modules/users/user.controller';
 import { authMiddleware } from '@core/middlewares/auth.middleware';
+import { userController } from '@modules/users/user.controller';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 export default async function userRoutes(server: FastifyInstance, options: FastifyPluginOptions) {

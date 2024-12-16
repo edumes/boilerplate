@@ -25,7 +25,7 @@ export class RoleController extends BaseController<Role> {
         .send(
           ApiResponseBuilder.error(
             'ASSIGN_ROLE_FAILED',
-            'Unable to assign role to user',
+            'Unable to assign role',
             error instanceof Error ? error.stack : undefined,
           ),
         );

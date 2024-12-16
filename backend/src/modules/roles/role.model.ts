@@ -1,11 +1,10 @@
-import { FIELD_TYPE, FieldConfig } from '@core/decorators/field-config.decorator';
+import { FieldConfig, FIELD_TYPE } from '@core/decorators/field-config.decorator';
 import { IBaseModel } from '@modules/base/base.model';
-import { User } from '@modules/users/user.model';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('roles')
+@Entity({ name: 'roles' })
 export class Role implements IBaseModel {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'role_id' })
   @FieldConfig({
     type: FIELD_TYPE.NUMBER,
     canEdit: false,
@@ -17,24 +16,22 @@ export class Role implements IBaseModel {
   @FieldConfig({
     type: FIELD_TYPE.TEXT,
     required: true,
-    label: 'Name',
+    label: 'Role Name',
   })
   role_name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'jsonb', default: {} })
   @FieldConfig({
     type: FIELD_TYPE.TEXT,
-    label: 'Description',
-  })
-  role_description?: string;
-
-  @Column('simple-array', { nullable: true })
-  @FieldConfig({
-    type: FIELD_TYPE.MULTISELECT,
     label: 'Permissions',
   })
-  role_permissions: string[];
-
-  @ManyToMany(() => User, user => user.roles)
-  users: User[];
+  role_permissions: {
+    [resource: string]: {
+      create?: boolean;
+      read?: boolean;
+      update?: boolean;
+      delete?: boolean;
+      special?: string[];
+    };
+  };
 }

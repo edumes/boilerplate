@@ -1,4 +1,3 @@
-import { FIELD_TYPE, FieldConfig } from '@core/decorators/field-config.decorator';
 import { IBaseModel } from '@modules/base/base.model';
 import { Company } from '@modules/companies/company.model';
 import { Role } from '@modules/roles/role.model';
@@ -7,8 +6,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -46,23 +43,13 @@ export class User implements IBaseModel {
   @UpdateDateColumn({ name: 'user_updated_at' })
   updated_at: Date;
 
-  @ManyToMany(() => Role, role => role.users, {
-    eager: true,
-  })
-  @JoinTable({
-    name: 'user_roles',
-    joinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'role_id',
-      referencedColumnName: 'id',
-    },
-  })
-  @FieldConfig({
-    type: FIELD_TYPE.MULTISELECT,
-    label: 'Roles',
-  })
-  roles: Role[];
+  @Column({ nullable: true })
+  user_fk_role_id: number;
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'user_fk_role_id' })
+  role: Role;
+
+  @Column({ default: true })
+  user_is_active: boolean;
 }
