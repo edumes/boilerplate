@@ -1,4 +1,4 @@
-import { IBaseModel } from '@modules/base/base.model';
+import { BaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import {
   Column,
@@ -16,7 +16,7 @@ export enum AuditAction {
 }
 
 @Entity({ name: 'audits' })
-export class Audit implements IBaseModel {
+export class Audit extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'audit_id' })
   id: number;
 
@@ -45,6 +45,6 @@ export class Audit implements IBaseModel {
   @JoinColumn({ name: 'audit_fk_user_id' })
   user: User;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'audit_created_at' })
   created_at: Date;
 }

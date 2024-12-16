@@ -5,7 +5,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class CreateDefaultAdmin implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const adminRole = await queryRunner.query(
-      `SELECT role_id FROM roles WHERE role_name = 'admin' LIMIT 1`,
+      `SELECT id FROM roles WHERE role_name = 'admin' LIMIT 1`,
     );
 
     if (!adminRole || adminRole.length === 0) {
@@ -13,7 +13,7 @@ export class CreateDefaultAdmin implements MigrationInterface {
     }
 
     const defaultCompany = await queryRunner.query(
-      `SELECT company_id FROM companies WHERE company_email = 'default@company.com' LIMIT 1`,
+      `SELECT id FROM companies WHERE company_email = 'default@company.com' LIMIT 1`,
     );
 
     if (!defaultCompany || defaultCompany.length === 0) {
@@ -26,6 +26,7 @@ export class CreateDefaultAdmin implements MigrationInterface {
 
     await queryRunner.query(`
       INSERT INTO users (
+        uuid,
         user_name,
         user_email,
         user_password,
@@ -34,12 +35,13 @@ export class CreateDefaultAdmin implements MigrationInterface {
         user_fk_company_id
       )
       VALUES (
+        'f47ac10b-58cc-4372-a567-0e02b2c3d479',
         'ADMIN',
         'admin@admin.com',
         '${hashedPassword}',
         true,
-        ${adminRole[0].role_id},
-        ${defaultCompany[0].company_id}
+        ${adminRole[0].id},
+        ${defaultCompany[0].id}
       )
       ON CONFLICT (user_email) DO NOTHING
     `);

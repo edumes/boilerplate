@@ -1,4 +1,4 @@
-import { IBaseModel } from '@modules/base/base.model';
+import { BaseModel } from '@modules/base/base.model';
 import { Company } from '@modules/companies/company.model';
 import { Role } from '@modules/roles/role.model';
 import {
@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'users' })
-export class User implements IBaseModel {
+export class User extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'user_id' })
   id: number;
 

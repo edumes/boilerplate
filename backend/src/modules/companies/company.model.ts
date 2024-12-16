@@ -1,4 +1,4 @@
-import { IBaseModel } from '@modules/base/base.model';
+import { BaseModel } from '@modules/base/base.model';
 import {
   Column,
   CreateDateColumn,
@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'companies' })
-export class Company implements IBaseModel {
+export class Company extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'company_id' })
   id: number;
 

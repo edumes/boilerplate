@@ -1,9 +1,9 @@
-import { FieldConfig, FIELD_TYPE } from '@core/decorators/field-config.decorator';
-import { IBaseModel } from '@modules/base/base.model';
+import { FIELD_TYPE, FieldConfig } from '@core/decorators/field-config.decorator';
+import { BaseModel } from '@modules/base/base.model';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'roles' })
-export class Role implements IBaseModel {
+export class Role extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'role_id' })
   @FieldConfig({
     type: FIELD_TYPE.NUMBER,

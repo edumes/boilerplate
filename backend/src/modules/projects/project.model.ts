@@ -1,5 +1,5 @@
 import { FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
-import { IBaseModel } from '@modules/base/base.model';
+import { BaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import {
   Column,
@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'projects' })
-export class Project implements IBaseModel {
+export class Project extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'project_id' })
   id: number;
 
