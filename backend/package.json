@@ -21,6 +21,7 @@
   "author": "Eduardo Santarosa",
   "license": "MIT",
   "dependencies": {
+    "@fastify/helmet": "^13.0.0",
     "@fastify/swagger": "^9.4.0",
     "@fastify/swagger-ui": "^5.2.0",
     "@google-cloud/translate": "^8.5.0",
