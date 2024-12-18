@@ -4,6 +4,7 @@ import { IBaseModel } from '@modules/base/base.model';
 import { BaseService, SearchOptions, SelectPickerOptions } from '@modules/base/base.service';
 // import genericRoutes, { RouteSchema } from '@utils/route-schema.decorator';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import i18next from 'i18next';
 import { DeepPartial } from 'typeorm';
 
 export class BaseController<T extends IBaseModel> {
@@ -29,8 +30,8 @@ export class BaseController<T extends IBaseModel> {
         .status(500)
         .send(
           ApiResponseBuilder.error(
-            'INTERNAL_SERVER_ERROR',
-            'Unable to fetch items. Please try again later.',
+            'FIND_ALL_ERROR',
+            i18next.t('FIND_ALL_ERROR'),
             error instanceof Error ? error.stack : undefined,
           ),
         );

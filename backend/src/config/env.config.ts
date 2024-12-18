@@ -13,5 +13,14 @@ export const env = {
   DB_PASSWORD: process.env.DB_PASSWORD || 'postgres',
   DB_DATABASE: process.env.DB_DATABASE || 'database',
 
+  REDIS_HOST: process.env.REDIS_HOST || 'localhost',
+  REDIS_PORT: parseInt(process.env.REDIS_PORT || '6379'),
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'password',
+  REDIS_TTL: parseInt(process.env.REDIS_TTL || '3600'),
+
   JWT_SECRET: process.env.JWT_SECRET || 'secret',
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '1d',
+
+  RATE_LIMIT_MAX: parseInt(process.env.RATE_LIMIT_MAX || '100'),
+  RATE_LIMIT_WINDOW: parseInt(process.env.RATE_LIMIT_WINDOW || '3600'),
 };
