@@ -1,3 +1,12 @@
 {
-  "FIND_ALL_ERROR": "Não foi possível buscar itens"
+  "FIND_ALL_ERROR": "Não foi possível buscar itens",
+  "CREATE_FAILED": "Não foi possível criar o item. Por favor, tente novamente mais tarde.",
+  "UPDATE_FAILED": "Não foi possível atualizar o item. Por favor, tente novamente mais tarde.",
+  "DELETE_FAILED": "Não foi possível excluir o item.",
+  "ITEM_NOT_FOUND": "Item com ID {{id}} não encontrado.",
+  "SEARCH_FAILED": "Não foi possível realizar a operação de busca",
+  "COUNT_FAILED": "Não foi possível contar os itens",
+  "CLONE_FAILED": "Não foi possível clonar o item",
+  "SELECT_OPTIONS_FAILED": "Não foi possível buscar as opções de seleção",
+  "FIELDS_FETCH_FAILED": "Não foi possível buscar os campos da entidade"
 }

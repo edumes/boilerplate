@@ -1,3 +1,12 @@
 {
-  "FIND_ALL_ERROR": "Unable to fetch items"
+  "FIND_ALL_ERROR": "Unable to fetch items",
+  "CREATE_FAILED": "Unable to create the item. Please try again later.",
+  "UPDATE_FAILED": "Unable to update the item. Please try again later.",
+  "DELETE_FAILED": "Unable to delete the item.",
+  "ITEM_NOT_FOUND": "Item with ID {{id}} not found.",
+  "SEARCH_FAILED": "Unable to perform search operation",
+  "COUNT_FAILED": "Unable to count items",
+  "CLONE_FAILED": "Unable to clone the item",
+  "SELECT_OPTIONS_FAILED": "Unable to fetch select options",
+  "FIELDS_FETCH_FAILED": "Unable to fetch entity fields"
 }

@@ -68,7 +68,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'CREATE_FAILED',
-            'Unable to create the item. Please try again later.',
+            i18next.t('CREATE_FAILED'),
             error instanceof Error ? error.stack : undefined,
           ),
         );
@@ -89,7 +89,7 @@ export class BaseController<T extends IBaseModel> {
       if (!updatedItem) {
         return reply
           .status(404)
-          .send(ApiResponseBuilder.error('ITEM_NOT_FOUND', `Item with ID ${id} not found.`));
+          .send(ApiResponseBuilder.error('ITEM_NOT_FOUND', i18next.t('ITEM_NOT_FOUND', { id })));
       }
 
       return reply.send(ApiResponseBuilder.success(updatedItem));
@@ -99,7 +99,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'UPDATE_FAILED',
-            'Unable to update the item. Please try again later.',
+            i18next.t('UPDATE_FAILED'),
             error instanceof Error ? error.stack : undefined,
           ),
         );
@@ -178,7 +178,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'SEARCH_FAILED',
-            'Unable to perform search operation',
+            i18next.t('SEARCH_FAILED'),
             error instanceof Error ? error.message : undefined,
           ),
         );
