@@ -4,6 +4,7 @@ backend/.env
 backend/logs
 backend/coverage
 backend/*.log
+backend/temp
 
 frontend/build
 frontend/node_modules

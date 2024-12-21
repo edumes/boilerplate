@@ -1,4 +1,5 @@
 import { FieldConfigOptions, getFieldConfigs } from '@core/decorators/field-config.decorator';
+import { ReportOptions, ReportService } from '@core/reports/report.service';
 import { PaginationOptions } from '@core/utils/api-response.util';
 import { AuditAction } from '@modules/audits/audit.model';
 import { auditService } from '@modules/audits/audit.service';
@@ -366,6 +367,14 @@ export class BaseService<T extends IBaseModel> {
       }));
     } catch (error) {
       throw new Error(`Failed to get select options: ${error.message}`);
+    }
+  }
+
+  async generateReport(options: ReportOptions = {}): Promise<string> {
+    try {
+      return ReportService.generateReport(this, options);
+    } catch (error) {
+      throw new Error(`Failed to generate report: ${error.message}`);
     }
   }
 }

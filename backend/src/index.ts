@@ -13,6 +13,8 @@ import { i18nMiddleware } from '@core/middlewares/i18n.middleware';
 import getSystemStatus from '@core/utils/health.util';
 import { logger } from '@core/utils/logger';
 import fastifyHelmet from '@fastify/helmet';
+import fastifyStatic from '@fastify/static';
+import path from 'path';
 
 const server = Fastify({ logger: false });
 
@@ -27,6 +29,11 @@ const configureMiddlewares = () => {
         connectSrc: ["'self'", 'https:'],
       },
     },
+  });
+
+  server.register(fastifyStatic, {
+    root: path.join(__dirname, '../temp/reports'),
+    prefix: '/reports/',
   });
 
   server.setErrorHandler(fastifyErrorHandler);

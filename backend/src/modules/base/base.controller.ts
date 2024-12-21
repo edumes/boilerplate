@@ -1,5 +1,6 @@
 import { ApiResponseBuilder, PaginationOptions } from '@core/utils/api-response.util';
 import { NotFoundError, ValidationError } from '@core/utils/errors.util';
+import { logger } from '@core/utils/logger';
 import { IBaseModel } from '@modules/base/base.model';
 import { BaseService, SearchOptions, SelectPickerOptions } from '@modules/base/base.service';
 // import genericRoutes, { RouteSchema } from '@utils/route-schema.decorator';
@@ -284,6 +285,21 @@ export class BaseController<T extends IBaseModel> {
             'Unable to fetch entity fields',
             error instanceof Error ? error.stack : undefined,
           ),
+        );
+    }
+  }
+
+  async generateReport(request: FastifyRequest, reply: FastifyReply): Promise<string> {
+    try {
+      const pdfPath = await this.service.generateReport();
+      return reply.send(ApiResponseBuilder.success(pdfPath));
+    } catch (error) {
+      console.error(error);
+      logger.error('Error generating project report', { error });
+      return reply
+        .status(500)
+        .send(
+          ApiResponseBuilder.error('REPORT_GENERATION_FAILED', 'Failed to generate project report'),
         );
     }
   }

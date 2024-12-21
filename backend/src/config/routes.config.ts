@@ -31,6 +31,7 @@ interface GenericController {
   clone: (request: any, reply: any) => Promise<void> | void;
   getSelectOptions: (request: any, reply: any) => Promise<void> | void;
   getFields: (request: any, reply: any) => Promise<void> | void;
+  generateReport: (request: any, reply: any) => Promise<void | string> | void;
 }
 
 async function* getRouteFiles(dir: string): AsyncGenerator<string> {
@@ -88,6 +89,7 @@ export function registerGenericRoutes(
     { method: 'post', url: '/:id/clone', handler: controller.clone },
     { method: 'get', url: '/select-options', handler: controller.getSelectOptions },
     { method: 'get', url: '/fields', handler: controller.getFields },
+    { method: 'get', url: '/report', handler: controller.generateReport },
   ];
 
   const routes = additionalRoutes ? [...baseRoutes, ...additionalRoutes] : baseRoutes;

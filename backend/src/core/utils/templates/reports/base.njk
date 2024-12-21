@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <style>
+      body {
+        font-family: {{styles.fontFamily}};
+        font-size: {{styles.fontSize}};
+        line-height: {{styles.lineHeight}};
+        margin: 0;
+        padding: 0;
+      }
+
+      .watermark {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        opacity: 0.1;
+        font-size: 96px;
+        z-index: -1;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      td,
+      th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: {{styles.primaryColor}};
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    {% if watermark %}
+      <div class="watermark">{{ watermark }}</div>
+    {% endif %}
+    {% if header %}
+      <header style="height: {{ header.height }}">
+        {{ header.contents | safe }}
+      </header>
+    {% endif %}
+
+    <main>{{ content | safe }}</main>
+
+    {% if footer %}
+      <footer style="height: {{ footer.height }}">
+        {{ footer.contents | safe }}
+      </footer>
+    {% endif %}
+  </body>
+</html>

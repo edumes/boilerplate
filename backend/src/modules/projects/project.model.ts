@@ -1,4 +1,4 @@
-import { FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
+import { FIELD_TYPE, FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
 import { BaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import {
@@ -18,7 +18,9 @@ export class Project extends BaseModel {
 
   @Column({ nullable: false })
   @FieldConfig({
+    label: 'Código',
     canRead: true,
+    canBrowse: true,
     canEdit: true,
     order: 1,
     width: 4,
@@ -29,18 +31,63 @@ export class Project extends BaseModel {
   project_code: string;
 
   @Column({ nullable: false })
+  @FieldConfig({
+    label: 'Descrição',
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 2,
+    width: 8,
+    type: FIELD_TYPE.TEXT,
+  })
   project_description: string;
 
   @Column({ type: 'text', nullable: true })
+  @FieldConfig({
+    label: 'Observações',
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 3,
+    width: 12,
+    type: FIELD_TYPE.RICHTEXT,
+  })
   project_obs: string;
 
   @Column({ nullable: true })
+  @FieldConfig({
+    label: 'Situação',
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 4,
+    width: 4,
+    type: FIELD_TYPE.SELECT,
+  })
   project_fk_situation_id: number;
 
   @Column({ type: 'timestamp', nullable: true })
+  @FieldConfig({
+    label: 'Data de Início',
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 5,
+    width: 4,
+    type: FIELD_TYPE.DATE,
+  })
   project_inital_date: Date;
 
   @Column({ type: 'timestamp', nullable: true })
+  @FieldConfig({
+    label: 'Data de Término',
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 6,
+    width: 4,
+    type: FIELD_TYPE.DATE,
+  })
   project_final_date: Date;
 
   @CreateDateColumn({ name: 'project_created_at' })

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <style>
+      body {
+        font-family: {{defaultStyles.fontFamily}};
+        font-size: {{defaultStyles.fontSize}};
+        line-height: {{defaultStyles.lineHeight}};
+        margin: 0;
+        padding: 20px;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .report-info {
+        margin-bottom: 20px;
+        color: {{defaultStyles.secondaryColor}};
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      td,
+      th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: {{defaultStyles.primaryColor}};
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 0.8em;
+        color: {{defaultStyles.secondaryColor}};
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>{{ title }}</h1>
+    </div>
+
+    <div class="report-info">
+      <p>Generated on: {{ date }}</p>
+      <p>Total items: {{ total }}</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          {% for field, config in fields %}
+            {% if config.canBrowse %}
+              <th>{{ config['label'] }}</th>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            {% for field, config in fields %}
+              {% if config.canBrowse %}
+                <td>
+                  {% if config.type === 'date' %}
+                    {{ item[field] | date }}
+                  {% elif config.type === 'currency' %}
+                    {{ item[field] | currency }}
+                  {% else %}
+                    {{ item[field] }}
+                  {% endif %}
+                </td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
