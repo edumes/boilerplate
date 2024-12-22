@@ -7,6 +7,7 @@ import fs, { mkdir, writeFile } from 'fs/promises';
 import * as htmlPdf from 'html-pdf-node';
 import nunjucks from 'nunjucks';
 import path from 'path';
+import * as XLSX from 'xlsx';
 
 export interface ReportOptions {
   title?: string;
@@ -26,6 +27,7 @@ export interface ReportOptions {
     height?: string;
     contents?: string;
   };
+  format?: 'pdf' | 'excel';
 }
 
 export class ReportService {
@@ -52,6 +54,10 @@ export class ReportService {
         ...options.filters,
         limit: 1000,
       });
+
+      if (options.format === 'excel') {
+        return this.generateExcel(items, service.getModelName(), service.getFields());
+      }
 
       const templateData = {
         title: options.title || `${service.getModelName()} Report`,
@@ -88,6 +94,52 @@ export class ReportService {
     } catch (error) {
       logger.error('Error generating report', { error });
       throw new Error(`Failed to generate report: ${error.message}`);
+    }
+  }
+
+  private static async generateExcel<T>(
+    data: T[],
+    modelName: string,
+    fields: Record<string, any>,
+  ): Promise<string> {
+    try {
+      const formattedData = data.map(item => {
+        const formattedItem = {};
+        Object.entries(fields).forEach(([key, field]) => {
+          if (field.label) {
+            formattedItem[field.label] = item[key];
+          }
+        });
+        return formattedItem;
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+      const colWidths = {};
+      Object.entries(fields).forEach(([_, field], index) => {
+        if (field.label && field.width) {
+          colWidths[XLSX.utils.encode_col(index)] = field.width * 4;
+        }
+      });
+      worksheet['!cols'] = Object.keys(formattedData[0] || {}).map((_, index) => ({
+        wch: colWidths[XLSX.utils.encode_col(index)] || 10,
+      }));
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
+
+      await mkdir(reportConfig.outputPath, { recursive: true });
+
+      const fileName = `${modelName}_${dayjs().format('YYYYMMDD_HHmmss')}.xlsx`;
+      const filePath = path.join(reportConfig.outputPath, fileName);
+
+      XLSX.writeFile(workbook, filePath);
+
+      logger.info(`Excel report generated successfully: ${fileName}`);
+      return filePath;
+    } catch (error) {
+      logger.error('Error generating Excel report', { error });
+      throw new Error(`Failed to generate Excel report: ${error.message}`);
     }
   }
 

@@ -1,3 +1,4 @@
+import { ReportOptions } from '@core/reports/report.service';
 import { ApiResponseBuilder, PaginationOptions } from '@core/utils/api-response.util';
 import { NotFoundError, ValidationError } from '@core/utils/errors.util';
 import { logger } from '@core/utils/logger';
@@ -289,9 +290,14 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
-  async generateReport(request: FastifyRequest, reply: FastifyReply): Promise<string> {
+  async generateReport(
+    request: FastifyRequest<{
+      Querystring: ReportOptions;
+    }>, 
+    reply: FastifyReply
+  ): Promise<string> {
     try {
-      const pdfPath = await this.service.generateReport();
+      const pdfPath = await this.service.generateReport(request.query);
       return reply.send(ApiResponseBuilder.success(pdfPath));
     } catch (error) {
       console.error(error);
