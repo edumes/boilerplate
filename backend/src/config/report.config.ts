@@ -2,7 +2,7 @@ import { filters } from '@core/utils/report-filters.util';
 import nunjucks from 'nunjucks';
 import path from 'path';
 
-const templatesPath = path.resolve(__dirname, '../core/utils/templates/reports');
+const templatesPath = path.resolve(__dirname, '../core/utils/templates/report');
 const outputPath = path.resolve(__dirname, '../../temp/reports');
 
 const defaultStyles = {

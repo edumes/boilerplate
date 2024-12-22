@@ -23,4 +23,12 @@ export const env = {
 
   RATE_LIMIT_MAX: parseInt(process.env.RATE_LIMIT_MAX || '100'),
   RATE_LIMIT_WINDOW: parseInt(process.env.RATE_LIMIT_WINDOW || '3600'),
+
+  SMTP_HOST: process.env.SMTP_HOST || 'smtp.gmail.com',
+  SMTP_PORT: parseInt(process.env.SMTP_PORT || '587'),
+  SMTP_SECURE: process.env.SMTP_SECURE || 'false',
+  SMTP_USER: process.env.SMTP_USER || 'your-email@gmail.com',
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD || 'your-app-specific-password',
+  MAIL_FROM_NAME: process.env.MAIL_FROM_NAME || 'Your App Name',
+  MAIL_FROM_ADDRESS: process.env.MAIL_FROM_ADDRESS || 'noreply@yourapp.com',
 };
