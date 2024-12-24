@@ -1,6 +1,30 @@
 import { AppDataSource } from '@config/database.config';
+import { formatUptime } from '@core/utils/date.util';
 import os from 'os';
-import formatUptime from './date.util';
+
+const formatMemory = (memory: number): string => `${Math.round(memory / 1024 / 1024)}MB`;
+
+const getMemoryUsage = () => {
+  const memoryUsage = process.memoryUsage();
+  return {
+    ...memoryUsage,
+    formatted: {
+      heapUsed: formatMemory(memoryUsage.heapUsed),
+      rss: formatMemory(memoryUsage.rss),
+      heapTotal: formatMemory(memoryUsage.heapTotal),
+      external: formatMemory(memoryUsage.external),
+    },
+  };
+};
+
+const getSystemInfo = () => ({
+  platform: process.platform,
+  arch: process.arch,
+  cpus: os.cpus().length,
+  loadAvg: os.loadavg(),
+  totalMemory: formatMemory(os.totalmem()),
+  freeMemory: formatMemory(os.freemem()),
+});
 
 const getSystemStatus = () => ({
   status: 'ok',
@@ -8,25 +32,10 @@ const getSystemStatus = () => ({
   database: AppDataSource.isInitialized ? 'connected' : 'disconnected',
   uptime: {
     seconds: process.uptime(),
-    formatted: formatUptime(process.uptime()),
+    formatted: formatUptime(new Date(process.uptime() * 1000)),
   },
-  memory: {
-    ...process.memoryUsage(),
-    formatted: {
-      heapUsed: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
-      rss: `${Math.round(process.memoryUsage().rss / 1024 / 1024)}MB`,
-      heapTotal: `${Math.round(process.memoryUsage().heapTotal / 1024 / 1024)}MB`,
-      external: `${Math.round(process.memoryUsage().external / 1024 / 1024)}MB`,
-    },
-  },
-  system: {
-    platform: process.platform,
-    arch: process.arch,
-    cpus: os.cpus().length,
-    loadAvg: os.loadavg(),
-    totalMemory: `${Math.round(os.totalmem() / 1024 / 1024)}MB`,
-    freeMemory: `${Math.round(os.freemem() / 1024 / 1024)}MB`,
-  },
+  memory: getMemoryUsage(),
+  system: getSystemInfo(),
 });
 
 export default getSystemStatus;
