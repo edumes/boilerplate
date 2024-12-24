@@ -1,7 +1,8 @@
 import { registerGenericRoutes, RouteDefinition } from '@config/routes.config';
 import { authMiddleware } from '@core/middlewares/auth.middleware';
+import { roleController } from '@modules/roles/role.controller';
+import { Role } from '@modules/roles/role.model';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import { roleController } from './role.controller';
 
 export default async function roleRoutes(server: FastifyInstance, options: FastifyPluginOptions) {
   server.addHook('onRequest', authMiddleware);
@@ -12,5 +13,5 @@ export default async function roleRoutes(server: FastifyInstance, options: Fasti
     { method: 'get', url: '/users/:userId/roles', handler: roleController.getUserRoles },
   ];
 
-  registerGenericRoutes(server, roleController, additionalRoutes);
+  registerGenericRoutes(server, roleController, Role, additionalRoutes);
 }

@@ -1,6 +1,7 @@
 import { BaseModel } from '@modules/base/base.model';
 import { Company } from '@modules/companies/company.model';
 import { Role } from '@modules/roles/role.model';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -17,14 +18,20 @@ export class User extends BaseModel {
   id: number;
 
   @Column({ length: 100 })
+  @IsOptional()
+  @IsString({ message: 'Name must be a string' })
   user_name: string;
 
   @Column({ unique: true })
+  @IsEmail({}, { message: 'Invalid email format' })
+  @IsNotEmpty({ message: 'Email is required' })
   user_email: string;
 
   @Column({
     length: 60,
   })
+  @IsNotEmpty({ message: 'Password is required' })
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
   user_password: string;
 
   @Column({ length: 20, nullable: true })

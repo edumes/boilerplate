@@ -32,6 +32,15 @@ export async function fastifyErrorHandler(
     },
   });
 
+  if (error.name === 'BadRequestError' && 'validationErrors' in error) {
+    return reply.status(400).send({
+      success: false,
+      timestamp: new Date().toISOString(),
+      message: 'VALIDATION_ERROR',
+      errors: (error as any).validationErrors,
+    });
+  }
+
   const errorMessage =
     process.env.NODE_ENV === 'production' ? 'Internal Server Error' : error.message;
 

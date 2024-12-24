@@ -1,6 +1,7 @@
 import { registerGenericRoutes } from '@config/routes.config';
-import { companyController } from '@modules/companies/company.controller';
 import { authMiddleware } from '@core/middlewares/auth.middleware';
+import { companyController } from '@modules/companies/company.controller';
+import { Company } from '@modules/companies/company.model';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 export default async function companyRoutes(
@@ -8,5 +9,5 @@ export default async function companyRoutes(
   options: FastifyPluginOptions,
 ) {
   server.addHook('onRequest', authMiddleware);
-  registerGenericRoutes(server, companyController);
+  registerGenericRoutes(server, companyController, Company);
 }

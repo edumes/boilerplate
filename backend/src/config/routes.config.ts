@@ -1,8 +1,10 @@
+import { validationMiddleware } from '@core/middlewares/validation.middleware';
 import { logger } from '@core/utils/logger';
 import { User } from '@modules/users/user.model';
 import { FastifyInstance } from 'fastify';
 import { readdir } from 'fs/promises';
 import path from 'path';
+import { EntityTarget } from 'typeorm';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -17,9 +19,10 @@ export type RouteDefinition = {
   method: HttpMethod;
   url: string;
   handler: (request: any, reply: any) => any;
+  preHandler?: (request: any, reply: any) => Promise<void>;
 };
 
-interface GenericController {
+export interface GenericController {
   findAll: (request: any, reply: any) => Promise<void> | void;
   findById: (request: any, reply: any) => Promise<void> | void;
   findByConditions: (request: any, reply: any) => Promise<void> | void;
@@ -75,14 +78,25 @@ export async function registerRoutes(server: FastifyInstance) {
 export function registerGenericRoutes(
   server: FastifyInstance,
   controller: GenericController,
+  entityType: EntityTarget<any>,
   additionalRoutes?: RouteDefinition[],
 ) {
   const baseRoutes: RouteDefinition[] = [
     { method: 'get', url: '/', handler: controller.findAll },
     { method: 'get', url: '/filter', handler: controller.findByConditions },
     { method: 'get', url: '/:id', handler: controller.findById },
-    { method: 'post', url: '/', handler: controller.create },
-    { method: 'put', url: '/:id', handler: controller.update },
+    {
+      method: 'post',
+      url: '/',
+      handler: controller.create,
+      preHandler: validationMiddleware(entityType),
+    },
+    {
+      method: 'put',
+      url: '/:id',
+      handler: controller.update,
+      preHandler: validationMiddleware(entityType),
+    },
     { method: 'delete', url: '/:id', handler: controller.delete },
     { method: 'get', url: '/search', handler: controller.search },
     { method: 'get', url: '/count', handler: controller.count },
@@ -94,7 +108,11 @@ export function registerGenericRoutes(
 
   const routes = additionalRoutes ? [...baseRoutes, ...additionalRoutes] : baseRoutes;
 
-  routes.forEach(({ method, url, handler }) => {
-    server[method](url, handler.bind(controller));
+  routes.forEach(({ method, url, handler, preHandler }) => {
+    if (preHandler) {
+      server[method](url, { preHandler }, handler.bind(controller));
+    } else {
+      server[method](url, handler.bind(controller));
+    }
   });
 }

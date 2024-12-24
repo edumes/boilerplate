@@ -33,3 +33,15 @@ export class ForbiddenError extends AppError {
     super('FORBIDDEN', message, 403);
   }
 }
+
+export class BadRequestError extends Error {
+  public statusCode: number;
+  public validationErrors?: Record<string, string[]>;
+
+  constructor(message: string, validationErrors?: Record<string, string[]>) {
+    super(message);
+    this.name = 'BadRequestError';
+    this.statusCode = 400;
+    this.validationErrors = validationErrors;
+  }
+}
