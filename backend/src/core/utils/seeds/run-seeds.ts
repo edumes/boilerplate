@@ -21,7 +21,6 @@ async function runSeeds() {
     process.exit(0);
   } catch (error) {
     logger.error('Error running seeds:', error);
-    console.error(error);
     process.exit(1);
   }
 }

@@ -300,7 +300,6 @@ export class BaseController<T extends IBaseModel> {
       const pdfPath = await this.service.generateReport(request.query);
       return reply.send(ApiResponseBuilder.success(pdfPath));
     } catch (error) {
-      console.error(error);
       logger.error('Error generating project report', { error });
       return reply
         .status(500)

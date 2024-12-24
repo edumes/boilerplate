@@ -166,7 +166,6 @@ export class ReportService {
       logger.info(`Report generated successfully: ${outputPath}`);
       return outputPath;
     } catch (error) {
-      console.error(error);
       logger.error('Error generating report', { error, options });
       throw new Error('Failed to generate report');
     }

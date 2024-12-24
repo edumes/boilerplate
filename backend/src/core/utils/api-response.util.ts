@@ -52,7 +52,6 @@ export class ApiResponseBuilder {
     };
 
     logger.error('API Error Response', { response });
-    console.error(response.error);
     return response;
   }
 

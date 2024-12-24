@@ -24,6 +24,12 @@ const format = winston.format.combine(
   winston.format.metadata(),
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
+  winston.format((info: any) => {
+    if (info.level === 'error') {
+      console.error(info?.metadata?.error);
+    }
+    return info;
+  })(),
   winston.format.json(),
 );
 

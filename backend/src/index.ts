@@ -72,7 +72,6 @@ const initializeServer = async () => {
 
 const handleStartupError = (error: Error) => {
   logger.error('Server startup failed', { error });
-  console.error(error);
 
   if (!AppDataSource.isInitialized || !server.server.listening) {
     logger.info('Retrying in 5 seconds...');
@@ -107,7 +106,6 @@ const gracefulShutdown = async (signal: string) => {
     process.exit(0);
   } catch (error) {
     logger.error('Shutdown error', { error });
-    console.error(error);
     process.exit(1);
   }
 };

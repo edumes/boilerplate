@@ -1,4 +1,5 @@
 import { env } from '@config/env.config';
+import { logger } from '@core/utils/logger';
 import nodemailer from 'nodemailer';
 
 export const emailConfig = {
@@ -24,5 +25,5 @@ export const transporter = nodemailer.createTransport(emailConfig.smtp);
 
 transporter
   .verify()
-  .then(() => console.log('SMTP connection established'))
-  .catch(err => console.error('SMTP connection error:', err));
+  .then(() => logger.info('SMTP connection established'))
+  .catch(err => logger.error('SMTP connection error:', err));
