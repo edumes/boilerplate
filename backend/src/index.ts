@@ -10,8 +10,10 @@ import { fastifyErrorHandler, globalErrorHandler } from '@core/handlers/error.ha
 import { httpLogger } from '@core/middlewares/http-logger.middleware';
 import { i18nMiddleware } from '@core/middlewares/i18n.middleware';
 // import { rateLimitMiddleware } from '@core/middlewares/rate-limit.middleware';
+import { setupWebSocket } from '@config/websocket.config';
 import getSystemStatus from '@core/utils/health.util';
 import { logger } from '@core/utils/logger';
+import websocketRoutes from '@core/websocket/websocket.routes';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyStatic from '@fastify/static';
 import path from 'path';
@@ -49,7 +51,12 @@ const configureRoutes = async () => {
 
 const configureExternalServices = async () => {
   await setupI18n();
+
   await setupSwagger(server);
+
+  await setupWebSocket(server);
+  await server.register(websocketRoutes, { prefix: '/api/v1' });
+
   await AppDataSource.initialize();
   logger.info('Database connected successfully');
 

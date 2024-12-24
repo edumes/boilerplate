@@ -23,7 +23,7 @@ export const appConfig = {
 
   features: {
     redis: {
-      enabled: true,
+      enabled: false,
     },
   },
 };

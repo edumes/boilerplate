@@ -2,6 +2,7 @@ import { env } from '@config/env.config';
 import { logger } from '@core/utils/logger';
 import { Audit } from '@modules/audits/audit.model';
 import { Company } from '@modules/companies/company.model';
+import { Notification } from '@modules/notifications/notification.model';
 import { Project } from '@modules/projects/project.model';
 import { Role } from '@modules/roles/role.model';
 import { User } from '@modules/users/user.model';
@@ -18,7 +19,7 @@ const AppDataSource = new DataSource({
   synchronize: env.NODE_ENV === 'development', // apenas em desenvolvimento
   // logging: env.NODE_ENV === 'development',
   logging: false,
-  entities: [User, Audit, Company, Project, Role],
+  entities: [User, Audit, Company, Project, Role, Notification],
   migrations: ['src/migrations/*.ts'],
 });
 
