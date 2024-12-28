@@ -1,3 +1,4 @@
+import { EncryptionService } from '@core/utils/encryption.util';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -31,4 +32,7 @@ export const env = {
   SMTP_PASSWORD: process.env.SMTP_PASSWORD || 'your-app-specific-password',
   MAIL_FROM_NAME: process.env.MAIL_FROM_NAME || 'Your App Name',
   MAIL_FROM_ADDRESS: process.env.MAIL_FROM_ADDRESS || 'noreply@yourapp.com',
+
+  ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || EncryptionService.generateEncryptionKey(),
+  ENCRYPTION_ENABLED: process.env.ENCRYPTION_ENABLED === 'true',
 };

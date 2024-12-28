@@ -1,11 +1,10 @@
-import { authConfig } from '@config/auth.config';
 import { ForbiddenError, ValidationError } from '@core/utils/errors.util';
+import { generateToken, verifyToken } from '@core/utils/jwt.util';
 import { companyService } from '@modules/companies/company.service';
 import { User } from '@modules/users/user.model';
 import { userService } from '@modules/users/user.service';
 import bcrypt from 'bcrypt';
 import { FastifyRequest } from 'fastify';
-import jwt from 'jsonwebtoken';
 
 export class AuthService {
   async login(email: string, password: string) {
@@ -39,17 +38,11 @@ export class AuthService {
   }
 
   private generateToken(user: User): string {
-    return jwt.sign(
-      {
-        id: user.id,
-        email: user.user_email,
-        companyId: user.user_fk_company_id,
-      },
-      authConfig.jwt.secret,
-      {
-        expiresIn: authConfig.jwt.expiresIn,
-      },
-    );
+    return generateToken({
+      id: user.id,
+      email: user.user_email,
+      companyId: user.user_fk_company_id,
+    });
   }
 
   async getCurrentUser(request: FastifyRequest): Promise<User | null> {
@@ -60,7 +53,7 @@ export class AuthService {
     }
 
     try {
-      const decoded = jwt.verify(token, authConfig.jwt.secret) as {
+      const decoded = (await verifyToken(token)) as {
         id: number;
         email: string;
         companyId: number;
