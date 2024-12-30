@@ -109,4 +109,35 @@ export class Project extends BaseModel {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by_fk_user_id' })
   updated_by: User;
+
+  // static getFormConfig(): FormConfig {
+  //   const fieldConfigs = getFieldConfigs(Project);
+
+  //   const tabs: TabConfig[] = Object.keys(fieldConfigs).reduce((tabs: TabConfig[], fieldName: string) => {
+  //     const config = fieldConfigs[fieldName];
+
+  //     if (config.tabs) {
+  //       config.tabs.forEach((tabKey: string) => {
+  //         if (!tabs.some(tab => tab.key === tabKey)) {
+  //           tabs.push({
+  //             key: tabKey,
+  //             label: tabKey.charAt(0).toUpperCase() + tabKey.slice(1),
+  //           });
+  //         }
+  //       });
+  //     }
+
+  //     return tabs;
+  //   }, []);
+
+  //   return {
+  //     prefix: 'project', // Prefixo do formulário
+  //     table: 'projects', // Nome da tabela
+  //     singularName: 'Projeto', // Nome singular
+  //     pluralName: 'Projetos', // Nome plural
+  //     icon: 'project', // Ícone
+  //     tabs, // Abas
+  //     version: '1.0.0', // Versão do formulário
+  //   };
+  // }
 }

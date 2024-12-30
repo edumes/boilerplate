@@ -1,11 +1,11 @@
 import { BrowserlizeProps } from '@/@types/forms';
+import { useCrud } from '@/utils/hooks/useCrud';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Card, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCrud } from '@/utils/hooks/useCrud';
 
 export default function BrowseTable({ form }: BrowserlizeProps) {
     const navigate = useNavigate();
@@ -15,8 +15,8 @@ export default function BrowseTable({ form }: BrowserlizeProps) {
         pageSize: 10,
     });
 
-    const { useList, useDelete } = useCrud({ 
-        entity: form.config.pluralName.toLowerCase() 
+    const { useList, useDelete } = useCrud({
+        entity: form.config.pluralName.toLowerCase()
     });
 
     const { data, isLoading } = useList({

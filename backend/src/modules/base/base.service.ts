@@ -1,4 +1,4 @@
-import { FieldConfigOptions, getFieldConfigs } from '@core/decorators/field-config.decorator';
+import { FieldConfigOptions, FormConfig, getFieldConfigs, getFormConfig } from '@core/decorators/field-config.decorator';
 import { ReportOptions, ReportService } from '@core/reports/report.service';
 import { PaginationOptions } from '@core/utils/api-response.util';
 import { AuditAction } from '@modules/audits/audit.model';
@@ -47,15 +47,22 @@ export class BaseService<T extends IBaseModel> {
   constructor(
     protected repository: Repository<T>,
     protected modelName: string,
-  ) {}
+  ) { }
 
   public getModelName(): string {
     return this.modelName;
   }
 
-  public getFields(): Record<string, FieldConfigOptions> {
+  public getFields(): { config: FormConfig, fields: Record<string, FieldConfigOptions> } {
     const entityClass = this.repository.target;
-    return getFieldConfigs(entityClass);
+
+    const fieldConfigs = getFieldConfigs(entityClass);
+    const formConfig = getFormConfig(entityClass);
+
+    return {
+      config: formConfig,
+      fields: fieldConfigs,
+    };
   }
 
   setHooks(hooks: IServiceHooks<T>) {
@@ -92,7 +99,7 @@ export class BaseService<T extends IBaseModel> {
             (prefix === ''
               ? column.propertyName.includes(relation.propertyName)
               : column.propertyName.includes(relation.propertyName) ||
-                column.propertyName.includes(prefix.split('.').pop() || '')),
+              column.propertyName.includes(prefix.split('.').pop() || '')),
         );
 
         if (hasForeignKey) {

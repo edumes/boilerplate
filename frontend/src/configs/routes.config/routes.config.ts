@@ -11,30 +11,30 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/pages/Home')),
         authority: [],
     },
-    {
-        key: 'customers.clients',
-        path: '/customers/clients',
-        component: lazy(() => import('@/pages/crud/customers/Clients')),
-        authority: [],
-    },
-    {
-        key: 'customers.clients',
-        path: '/customers/clients/add',
-        component: lazy(() => import('@/pages/crud/customers/Clients')),
-        authority: [],
-    },
+    // {
+    //     key: 'customers.clients',
+    //     path: '/customers/clients',
+    //     component: lazy(() => import('@/pages/crud/customers/Clients')),
+    //     authority: [],
+    // },
+    // {
+    //     key: 'customers.clients',
+    //     path: '/customers/clients/add',
+    //     component: lazy(() => import('@/pages/crud/customers/Clients')),
+    //     authority: [],
+    // },
     // {
     //     key: 'customers.client_users',
     //     path: '/customers/client-users',
     //     component: lazy(() => import('@/views/customers/ClientUsers')),
     //     authority: [],
     // },
-    // {
-    //     key: 'projects.projects',
-    //     path: '/projects',
-    //     component: lazy(() => import('@/views/projects/Projects')),
-    //     authority: [],
-    // },
+    {
+        key: 'projects',
+        path: '/projects',
+        component: lazy(() => import('@/pages/crud/projects/Projects')),
+        authority: [],
+    },
     // {
     //     key: 'projects.templates',
     //     path: '/projects/templates',

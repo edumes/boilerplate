@@ -18,6 +18,11 @@ const AppDataSource = new DataSource({
   database: env.DB_DATABASE,
   synchronize: env.NODE_ENV === 'development', // apenas em desenvolvimento
   // logging: env.NODE_ENV === 'development',
+  extra: {
+    ssl: {
+      rejectUnauthorized: false
+    }
+  },
   logging: false,
   entities: [User, Audit, Company, Project, Role, Notification],
   migrations: ['src/migrations/*.ts'],

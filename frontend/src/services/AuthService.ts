@@ -10,7 +10,7 @@ import type {
 } from '@/@types/auth';
 
 export async function apiSignIn(data: SignInCredential) {
-    return ApiService.fetchDataWithAxios<SignInResponse>({
+    return ApiService.fetchData<SignInResponse>({
         url: endpointConfig.signIn,
         method: 'post',
         data,
@@ -18,7 +18,7 @@ export async function apiSignIn(data: SignInCredential) {
 }
 
 export async function apiSignUp(data: SignUpCredential) {
-    return ApiService.fetchDataWithAxios<SignUpResponse>({
+    return ApiService.fetchData<SignUpResponse>({
         url: endpointConfig.signUp,
         method: 'post',
         data,
@@ -26,14 +26,14 @@ export async function apiSignUp(data: SignUpCredential) {
 }
 
 export async function apiSignOut() {
-    return ApiService.fetchDataWithAxios({
+    return ApiService.fetchData({
         url: endpointConfig.signOut,
         method: 'post',
     });
 }
 
 export async function apiForgotPassword<T>(data: ForgotPassword) {
-    return ApiService.fetchDataWithAxios<T>({
+    return ApiService.fetchData<T>({
         url: endpointConfig.forgotPassword,
         method: 'post',
         data,
@@ -41,7 +41,7 @@ export async function apiForgotPassword<T>(data: ForgotPassword) {
 }
 
 export async function apiResetPassword<T>(data: ResetPassword) {
-    return ApiService.fetchDataWithAxios<T>({
+    return ApiService.fetchData<T>({
         url: endpointConfig.resetPassword,
         method: 'post',
         data,

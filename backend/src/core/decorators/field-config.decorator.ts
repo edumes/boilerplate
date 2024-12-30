@@ -1,3 +1,4 @@
+import { pluralize } from '@core/utils/string.util';
 import 'reflect-metadata';
 
 export enum FIELD_TYPE {
@@ -80,6 +81,21 @@ interface FieldSelectConfig {
   options?: string[];
 }
 
+export interface FormConfig {
+  prefix: string;
+  table: string;
+  singularName: string;
+  pluralName: string;
+  icon: string;
+  tabs: TabConfig[];
+  version: string;
+}
+
+export interface TabConfig {
+  key: string;
+  label: string;
+}
+
 export function FieldConfig(config: FieldConfigOptions) {
   return (target: any, propertyKey: string) => {
     const existingConfigs = Reflect.getMetadata('fieldConfigs', target.constructor) || {};
@@ -90,4 +106,31 @@ export function FieldConfig(config: FieldConfigOptions) {
 
 export function getFieldConfigs(entityClass: any): Record<string, FieldConfigOptions> {
   return Reflect.getMetadata('fieldConfigs', entityClass) || {};
+}
+
+export function getFormConfig(entityClass: any): FormConfig {
+  const fieldConfigs = getFieldConfigs(entityClass);
+
+  const tabs: TabConfig[] = Object.keys(fieldConfigs)
+    .reduce((tabs: TabConfig[], fieldName: string) => {
+      const config = fieldConfigs[fieldName];
+      if (config.tabs) {
+        config.tabs.forEach(tabKey => {
+          if (!tabs.some(tab => tab.key === tabKey)) {
+            tabs.push({ key: tabKey, label: tabKey.charAt(0).toUpperCase() + tabKey.slice(1) });
+          }
+        });
+      }
+      return tabs;
+    }, []);
+
+  return {
+    prefix: entityClass.name.toLowerCase(),
+    table: pluralize(entityClass.name.toLowerCase()),
+    singularName: entityClass.name.toLowerCase(),
+    pluralName: pluralize(entityClass.name.toLowerCase()),
+    icon: entityClass.name.toLowerCase(),
+    tabs,
+    version: '1.0.0',
+  };
 }

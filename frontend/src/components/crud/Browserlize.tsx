@@ -16,8 +16,6 @@ import { useNavigate } from 'react-router-dom';
 import { BrowserlizeProps } from '@/@types/forms';
 
 export default function Browserlize({ form }: BrowserlizeProps) {
-    const { config } = form;
-    console.log({ form });
     const navigate = useNavigate();
 
     const generateFieldLabels = (fieldsObject: any) => {
@@ -63,7 +61,7 @@ export default function Browserlize({ form }: BrowserlizeProps) {
                             variant="h5"
                             sx={{ flexGrow: 1 }}
                         >
-                            Listando {config.pluralName}
+                            {/* Listando {config.pluralName} */}
                         </Typography>
                         <Stack
                             direction="row"
@@ -79,7 +77,7 @@ export default function Browserlize({ form }: BrowserlizeProps) {
                                     navigate(`${window.location.pathname}/add`)
                                 }
                             >
-                                Adicionar {config.singularName}
+                                {/* Adicionar {config.singularName} */}
                             </Button>
                         </Stack>
                     </Box>
@@ -103,7 +101,7 @@ export default function Browserlize({ form }: BrowserlizeProps) {
                 variants={item}
                 style={{ marginTop: 15 }}
             >
-                <BrowseTable form={form} />
+                {/* <BrowseTable form={form} /> */}
             </motion.div>
         </>
     );
