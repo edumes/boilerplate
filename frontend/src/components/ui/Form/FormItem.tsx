@@ -1,11 +1,11 @@
-import { forwardRef } from 'react';
-import classNames from '../utils/classNames';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useForm, FormItemContextProvider } from './context';
-import { useConfig } from '../ConfigProvider';
-import { CONTROL_SIZES, LAYOUT } from '../utils/constants';
-import type { CommonProps, TypeAttributes } from '../@types/common';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { ReactNode } from 'react';
+import { forwardRef } from 'react';
+import type { CommonProps, TypeAttributes } from '../@types/common';
+import { useConfig } from '../ConfigProvider';
+import classNames from '../utils/classNames';
+import { CONTROL_SIZES, LAYOUT } from '../utils/constants';
+import { FormItemContextProvider, useForm } from './context';
 
 export interface FormItemProps extends CommonProps {
     asterisk?: boolean;
@@ -48,16 +48,14 @@ const FormItem = forwardRef<HTMLDivElement, FormItemProps>((props, ref) => {
         switch (formItemLayout) {
             case LAYOUT.HORIZONTAL:
                 return label
-                    ? `${CONTROL_SIZES[formItemLabelHeight].h} ${
-                          label && 'ltr:pr-2 rtl:pl-2'
-                      }`
+                    ? `${CONTROL_SIZES[formItemLabelHeight].h} ${label && 'ltr:pr-2 rtl:pl-2'
+                    }`
                     : 'ltr:pr-2 rtl:pl-2';
             case LAYOUT.VERTICAL:
-                return `mb-2`;
+                return `mb-1`;
             case LAYOUT.INLINE:
-                return `${CONTROL_SIZES[formItemLabelHeight].h} ${
-                    label && 'ltr:pr-2 rtl:pl-2'
-                }`;
+                return `${CONTROL_SIZES[formItemLabelHeight].h} ${label && 'ltr:pr-2 rtl:pl-2'
+                    }`;
             default:
                 return '';
         }
@@ -84,7 +82,7 @@ const FormItem = forwardRef<HTMLDivElement, FormItemProps>((props, ref) => {
         return { ...style };
     };
 
-    const enterStyle = { opacity: 1, marginTop: 3, bottom: -21 };
+    const enterStyle = { opacity: 1, marginTop: 3, bottom: -25 };
     const exitStyle = { opacity: 0, marginTop: -10 };
     const initialStyle = exitStyle;
 

@@ -1,11 +1,13 @@
 import { FormFieldConfig } from '@/@types/forms';
-import { useCrud } from '@/utils/hooks/useCrud';
+import { BaseService } from '@/services/crud/BaseService';
 import { ArrowBack } from '@mui/icons-material';
-import { Box, Button, Card, Grid2 as Grid, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, Snackbar, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { FiPlusCircle } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { item } from '../ui/motion/MotionSettings';
+import Formalize from './Formalize';
 
 interface AddFormProps {
     form: FormFieldConfig;
@@ -15,33 +17,46 @@ export default function AddForm({ form }: AddFormProps) {
     const { config, fields } = form;
     const navigate = useNavigate();
     const [formData, setFormData] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const { useCreate } = useCrud({
-        entity: config.pluralName.toLowerCase()
-    });
+    const service = new BaseService<any>(config.table);
 
-    const createMutation = useCreate();
-
-    const handleInputChange = (fieldName: string, value: string) => {
-        setFormData((prev) => ({
-            ...prev,
-            [fieldName]: value,
-        }));
-        console.log({ formData });
+    const handleFormSubmit = async (data: any) => {
+        setIsSubmitting(true);
+        try {
+            await service.create(data);
+            navigate(-1);
+        } catch (error: any) {
+            console.log({ error })
+            const errorMessage = error.response?.data?.error.details;
+            setError(errorMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        createMutation.mutate(formData, {
-            onSuccess: () => {
-                navigate(-1);
-            },
-        });
+    const handleErrorClose = () => {
+        setError(null);
     };
+
+    console.log({ fields });
 
     return (
         <motion.div initial="hidden" animate="visible" variants={item}>
-            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box
+                sx={{
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 2,
+                    backgroundColor: 'background.paper',
+                    borderRadius: 1,
+                    p: 2,
+                    boxShadow: 1
+                }}
+            >
                 <Button
                     variant="outlined"
                     startIcon={<ArrowBack />}
@@ -49,49 +64,49 @@ export default function AddForm({ form }: AddFormProps) {
                 >
                     Voltar para listagem
                 </Button>
-                <Typography variant="h5" component="h1">
-                    {`Adicionar novo ${config.singularName}`}
-                </Typography>
+
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    color: 'primary.main'
+                }}>
+                    <FiPlusCircle size={24} />
+                    <Typography
+                        variant="h5"
+                        component="h1"
+                        sx={{
+                            fontWeight: 'medium',
+                        }}
+                    >
+                        {`Adicionar novo ${config.singularName}`}
+                    </Typography>
+                </Box>
+
+                <Box sx={{ width: '140px' }} />
             </Box>
 
             <Card sx={{ p: 2 }}>
-                <Box component="form" onSubmit={handleSubmit}>
-                    <Grid container spacing={2}>
-                        {Object.entries(fields).map(
-                            ([fieldName, field]) =>
-                                field.canAdd && (
-                                    <Grid key={fieldName} size={field.width}>
-                                        <TextField
-                                            fullWidth
-                                            variant="outlined"
-                                            label={field.label}
-                                            required={field.required}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    fieldName,
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </Grid>
-                                )
-                        )}
-                    </Grid>
-
-                    <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                        >
-                            Salvar
-                        </Button>
-                        <Button variant="outlined" onClick={() => navigate(-1)}>
-                            Cancelar
-                        </Button>
-                    </Box>
-                </Box>
+                <Formalize
+                    fields={fields}
+                    onSubmit={handleFormSubmit}
+                    onError={(error) => {
+                        const errorMessage = error.response?.data?.message || error.message || 'Erro ao salvar os dados';
+                        setError(errorMessage);
+                    }}
+                />
             </Card>
+
+            <Snackbar
+                open={!!error}
+                autoHideDuration={4000}
+                onClose={handleErrorClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={handleErrorClose} severity="error" sx={{ width: '100%' }}>
+                    {error}
+                </Alert>
+            </Snackbar>
         </motion.div>
     );
 }

@@ -1,18 +1,12 @@
 export type SignInCredential = {
-    email: string;
-    password: string;
+    user_email: string;
+    user_password: string;
 };
 
-export type SignInResponse = {
+export interface SignInResponse {
     token: string;
-    user: {
-        userId: string;
-        userName: string;
-        authority: string[];
-        avatar: string;
-        email: string;
-    };
-};
+    user: User;
+}
 
 export type SignUpResponse = SignInResponse;
 

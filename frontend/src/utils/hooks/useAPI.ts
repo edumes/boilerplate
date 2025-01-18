@@ -1,3 +1,4 @@
+import AxiosRequestIntrceptorConfigCallback from '@/services/axios/AxiosRequestInterceptorConfigCallback';
 import axios from 'axios';
 
 interface IAuth {
@@ -10,11 +11,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
+        return AxiosRequestIntrceptorConfigCallback(config);
     },
     (error) => {
         return Promise.reject(error);

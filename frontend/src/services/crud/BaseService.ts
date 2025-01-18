@@ -1,6 +1,12 @@
 import AxiosBase from "../axios/AxiosBase";
 
-export abstract class BaseService<T> {
+interface PaginationOptions {
+    page?: number;
+    limit?: number;
+    order?: 'ASC' | 'DESC';
+}
+
+export class BaseService<T> {
     protected http = AxiosBase;
     
     constructor(protected endpoint: string) { }
@@ -10,8 +16,22 @@ export abstract class BaseService<T> {
         return response.data;
     }
 
-    async getAll(): Promise<T[]> {
-        const response = await this.http.get<T[]>(this.endpoint);
+    async list(options?: PaginationOptions): Promise<T[]> {
+        const params = new URLSearchParams();
+        
+        if (options?.page !== undefined) {
+            params.append('page', String(options.page + 1)); // +1 because DataGrid uses 0-based indexing
+        }
+        
+        if (options?.limit !== undefined) {
+            params.append('limit', String(options.limit));
+        }
+        
+        // if (options?.order) {
+        //     params.append('order', options.order);
+        // }
+
+        const response = await this.http.get<T[]>(`${this.endpoint}?${params.toString()}`);
         return response.data;
     }
 

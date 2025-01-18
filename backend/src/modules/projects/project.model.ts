@@ -19,6 +19,7 @@ export class Project extends BaseModel {
   @Column({ nullable: false })
   @FieldConfig({
     label: 'Código',
+    canAdd: true,
     canRead: true,
     canBrowse: true,
     canEdit: true,
@@ -33,6 +34,7 @@ export class Project extends BaseModel {
   @Column({ nullable: false })
   @FieldConfig({
     label: 'Descrição',
+    canAdd: true,
     canRead: true,
     canBrowse: true,
     canEdit: true,
@@ -45,10 +47,12 @@ export class Project extends BaseModel {
   @Column({ type: 'text', nullable: true })
   @FieldConfig({
     label: 'Observações',
+    canAdd: true,
     canRead: true,
     canBrowse: true,
     canEdit: true,
     order: 3,
+    required: false,
     width: 12,
     type: FIELD_TYPE.RICHTEXT,
   })
@@ -57,6 +61,7 @@ export class Project extends BaseModel {
   @Column({ nullable: true })
   @FieldConfig({
     label: 'Situação',
+    canAdd: true,
     canRead: true,
     canBrowse: true,
     canEdit: true,

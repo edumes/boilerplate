@@ -43,7 +43,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     );
     const { token, setToken } = useToken();
 
-    const authenticated = Boolean(token && signedIn);
+    const authenticated = Boolean(token);
 
     const navigatorRef = useRef<IsolatedNavigatorRef>(null);
 
@@ -74,9 +74,9 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     const signIn = async (values: SignInCredential): AuthResult => {
         try {
-            const resp = await apiSignIn(values);
-            if (resp) {
-                handleSignIn({ accessToken: resp.token }, resp.user);
+            const response = await apiSignIn(values) as { token: string; user: User };
+            if (response?.token) {
+                handleSignIn({ accessToken: response.token }, response.user);
                 redirect();
                 return {
                     status: 'success',
@@ -87,7 +87,6 @@ function AuthProvider({ children }: AuthProviderProps) {
                 status: 'failed',
                 message: 'Unable to sign in',
             };
-            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         } catch (errors: any) {
             return {
                 status: 'failed',
@@ -98,9 +97,9 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     const signUp = async (values: SignUpCredential): AuthResult => {
         try {
-            const resp = await apiSignUp(values);
-            if (resp) {
-                handleSignIn({ accessToken: resp.token }, resp.user);
+            const response = await apiSignUp(values);
+            if (response) {
+                handleSignIn({ accessToken: response.token }, response.user);
                 redirect();
                 return {
                     status: 'success',

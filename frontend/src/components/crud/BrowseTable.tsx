@@ -1,10 +1,10 @@
 import { BrowserlizeProps } from '@/@types/forms';
-import { useCrud } from '@/utils/hooks/useCrud';
+import { BaseService } from '@/services/crud/BaseService';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Card, IconButton } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function BrowseTable({ form }: BrowserlizeProps) {
@@ -14,20 +14,39 @@ export default function BrowseTable({ form }: BrowserlizeProps) {
         page: 0,
         pageSize: 10,
     });
+    const [data, setData] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const { useList, useDelete } = useCrud({
-        entity: form.config.pluralName.toLowerCase()
-    });
+    const service = new BaseService<any>(form.config.table);
 
-    const { data, isLoading } = useList({
-        page: paginationModel.page,
-        limit: paginationModel.pageSize,
-    });
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const response = await service.list({
+                page: paginationModel.page,
+                limit: paginationModel.pageSize,
+                // order: "DESC"
+            });
+            console.log(response)
+            setData(response);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    const deleteMutation = useDelete();
+    useEffect(() => {
+        fetchData();
+    }, [paginationModel]);
 
-    const handleDeleteClick = (id: number) => {
-        deleteMutation.mutate(id);
+    const handleDeleteClick = async (id: number) => {
+        try {
+            await service.delete(id);
+            fetchData(); // Refresh the data after deletion
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
     };
 
     function transformObjectToGridFormat(object: any) {
@@ -36,7 +55,7 @@ export default function BrowseTable({ form }: BrowserlizeProps) {
         for (const key in object) {
             const field = object[key];
             const gridField: any = {
-                field: field.name,
+                field: key,
                 headerName: field.label,
                 width: field.width * 50,
             };
@@ -47,19 +66,13 @@ export default function BrowseTable({ form }: BrowserlizeProps) {
         return fields;
     }
 
-    const addIdsToListItems = (items: any[]) => {
-        return items.map((item, index) => {
-            return { id: index + 1, ...item };
-        });
-    };
-
     const handleEditClick = (id: number) => {
-        console.log('Editar linha com ID:', id);
-        navigate(`${form.config.singularName}/add`)
+        navigate(`${form.config.singularName}/${id}`);
     };
 
     const columns = useMemo(() => {
         const baseColumns = transformObjectToGridFormat(fields);
+        console.log({ baseColumns });
         return [
             ...baseColumns,
             {
@@ -96,7 +109,7 @@ export default function BrowseTable({ form }: BrowserlizeProps) {
                 sx={{ border: 'none', borderWidth: 0 }}
                 localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                 columns={columns}
-                rows={data?.data || []}
+                rows={data || []}
                 loading={isLoading}
                 slots={{
                     toolbar: GridToolbar,

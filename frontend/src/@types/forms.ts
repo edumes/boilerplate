@@ -1,3 +1,44 @@
+export enum FIELD_TYPE {
+    TEXT = 'text',
+    CHECKBOX = 'checkbox',
+    RICHTEXT = 'richtext',
+    NUMBER = 'number',
+    DATE = 'date',
+    EMAIL = 'email',
+    URL = 'url',
+    FILE = 'file',
+    BOOLEAN = 'boolean',
+    SELECT = 'select',
+    MULTISELECT = 'multiselect',
+    COLOR = 'color',
+    DATE_TIME = 'datetime',
+    TIME = 'time',
+    CURRENCY = 'currency',
+}
+
+export enum DATE_TYPE {
+    DATE_ONLY = 'date',
+    DATE_TIME = 'datetime',
+}
+
+export enum CURRENCY_TYPE {
+    USD = 'USD',
+    EUR = 'EUR',
+    BRL = 'BRL',
+}
+
+export enum NUMBER_TYPE {
+    INTEGER = 'integer',
+    DECIMAL = 'decimal',
+    PERCENT = 'percent',
+    CURRENCY = 'currency',
+}
+
+export enum SELECT_TYPE {
+    SINGLE = 'single',
+    MULTIPLE = 'multiple',
+}
+
 export interface TabConfig {
     key: string;
     label: string;
@@ -26,7 +67,7 @@ export interface FormField {
     width: number;
     browserOrder?: number;
     browserWidth?: number;
-    type: string;
+    type: FIELD_TYPE;
     canBrowse: boolean;
     canRead: boolean;
     canEdit: boolean;
@@ -40,6 +81,22 @@ export interface FormField {
     tabs: string[];
     api?: string;
     showOnTop: boolean;
+    date?: {
+        type: DATE_TYPE;
+    };
+    currency?: {
+        type: CURRENCY_TYPE;
+    };
+    number?: {
+        type: NUMBER_TYPE;
+        min?: number;
+        max?: number;
+    };
+    select?: {
+        type: SELECT_TYPE;
+        options?: string[];
+    };
+    options?: Array<{ label: string; value: any }>;
 }
 
 export interface FormFieldConfig {

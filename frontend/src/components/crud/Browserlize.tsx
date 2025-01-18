@@ -1,3 +1,4 @@
+import { BrowserlizeProps } from '@/@types/forms';
 import {
     Box,
     Button,
@@ -7,13 +8,12 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
+import { motion } from 'framer-motion';
 import { HiOutlineMenu, HiOutlinePlus } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { item } from '../ui/motion/MotionSettings';
 import BrowseTable from './BrowseTable';
 import SearchBar from './SearchBar';
-import { motion } from 'framer-motion';
-import { item } from '../ui/motion/MotionSettings';
-import { useNavigate } from 'react-router-dom';
-import { BrowserlizeProps } from '@/@types/forms';
 
 export default function Browserlize({ form }: BrowserlizeProps) {
     const navigate = useNavigate();
@@ -77,7 +77,7 @@ export default function Browserlize({ form }: BrowserlizeProps) {
                                     navigate(`${window.location.pathname}/add`)
                                 }
                             >
-                                {/* Adicionar {config.singularName} */}
+                                Adicionar {form.config.singularName}
                             </Button>
                         </Stack>
                     </Box>
@@ -101,7 +101,7 @@ export default function Browserlize({ form }: BrowserlizeProps) {
                 variants={item}
                 style={{ marginTop: 15 }}
             >
-                {/* <BrowseTable form={form} /> */}
+                <BrowseTable form={form} />
             </motion.div>
         </>
     );

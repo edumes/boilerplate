@@ -23,12 +23,7 @@ const getPersistStorage = () => {
     if (appConfig.accessTokenPersistStrategy === 'localStorage') {
         return localStorage;
     }
-
-    if (appConfig.accessTokenPersistStrategy === 'sessionStorage') {
-        return sessionStorage;
-    }
-
-    return cookiesStorage;
+    return localStorage;
 };
 
 const initialState: AuthState = {

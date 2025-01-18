@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
-import { FormItem, Form } from '@/components/ui/Form';
-import PasswordInput from '@/components/shared/PasswordInput';
-import classNames from '@/utils/classNames';
-import { useAuth } from '@/auth';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import type { ZodType } from 'zod';
 import type { CommonProps } from '@/@types/common';
+import { useAuth } from '@/auth';
+import PasswordInput from '@/components/shared/PasswordInput';
+import Button from '@/components/ui/Button';
+import { Form, FormItem } from '@/components/ui/Form';
+import Input from '@/components/ui/Input';
+import classNames from '@/utils/classNames';
+import { zodResolver } from '@hookform/resolvers/zod';
 import type { ReactNode } from 'react';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import type { ZodType } from 'zod';
+import { z } from 'zod';
 
 interface SignInFormProps extends CommonProps {
     disableSubmit?: boolean;
@@ -49,7 +49,7 @@ const SignInForm = (props: SignInFormProps) => {
     } = useForm<SignInFormSchema>({
         defaultValues: {
             email: 'admin@admin.com',
-            password: '123Qwe',
+            password: '1234',
         },
         resolver: zodResolver(validationSchema),
     });
@@ -62,7 +62,10 @@ const SignInForm = (props: SignInFormProps) => {
         if (!disableSubmit) {
             setSubmitting(true);
 
-            const result = await signIn({ email, password });
+            const result = await signIn({
+                user_email: email,
+                user_password: password
+            });
 
             if (result?.status === 'failed') {
                 setMessage?.(result.message);

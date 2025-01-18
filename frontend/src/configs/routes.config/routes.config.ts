@@ -35,6 +35,12 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/pages/crud/projects/Projects')),
         authority: [],
     },
+    {
+        key: 'projects.add',
+        path: '/projects/add',
+        component: lazy(() => import('@/pages/crud/projects/Projects')),
+        authority: [],
+    },
     // {
     //     key: 'projects.templates',
     //     path: '/projects/templates',

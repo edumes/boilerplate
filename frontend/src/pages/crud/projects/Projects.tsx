@@ -3,23 +3,35 @@ import AddForm from '@/components/crud/AddForm';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { projectService } from '@/services/crud/ProjectService';
+import { BrowserlizeProps } from '@/@types/forms';
 
 export default function Projects() {
     const location = useLocation();
+    const isAddRoute = location.pathname.endsWith('/add');
 
-    const [fields, setFields] = useState<any[]>([]);
+    const [formConfig, setFormConfig] = useState<BrowserlizeProps | any>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         projectService
             .getFields()
-            .then(setFields)
+            .then((form) => {
+                setFormConfig(form);
+            })
             .catch(err => setError(err.message));
     }, []);
 
-    if (error) return <p>Erro: {error}</p>;
+    if (!formConfig) return null;
 
-    // if (fields) return (
-    //     <Browserlize form={fields} />
-    // );
+    return isAddRoute ? (
+        <AddForm form={{
+            config: formConfig.config,
+            fields: formConfig.fields,
+        }} />
+    ) : (
+        <Browserlize form={{
+            config: formConfig.config,
+            fields: formConfig.fields,
+        }} />
+    );
 }
