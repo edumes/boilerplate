@@ -3,12 +3,13 @@ import Button from '@/components/ui/Button';
 import { Form, FormItem } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Grid2 as Grid } from '@mui/material';
+import { Box, Grid2 as Grid, Switch } from '@mui/material';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import Select from '../ui/Select/Select';
+import Select from '../ui/Select';
 import { createValidationSchema } from './formValidationSchema';
+import { SelectOption } from '../ui/Select/Select';
 
 interface FormalizeProps {
     fields: FormFieldConfig['fields'];
@@ -30,12 +31,14 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
         resolver: zodResolver(validationSchema)
     });
 
-    console.log({ errors });
+    const watchedValues = useWatch({ control });
 
-    const handleFormSubmit = async (data: any) => {
+    console.log({ watchedValues, errors });
+
+    const handleFormSubmit = (data: any) => {
         setSubmitting(true);
         try {
-            await onSubmit(data);
+            onSubmit(data);
         } catch (error) {
             onError?.(error);
         } finally {
@@ -60,17 +63,32 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                         control={control}
                                         render={({ field: { onChange, value, ...rest } }) => {
                                             switch (field.type) {
-                                                case 'select':
+                                                case 'boolean': {
+                                                    return (
+                                                        <Switch
+                                                            {...rest}
+                                                            checked={value || false}
+                                                            onChange={(e, checked) => onChange(checked)}
+                                                            inputProps={{ 'aria-label': field.label }}
+                                                        />
+                                                    );
+                                                }
+                                                case 'select': {
+                                                    const selectedOption = (field.options || []).find(option => option.value === value);
+                                    
                                                     return (
                                                         <Select
                                                             {...rest}
-                                                            size='md'
-                                                            value={value || ''}
-                                                            onChange={onChange}
+                                                            value={selectedOption || null}
+                                                            onChange={(option: SelectOption) => onChange(option.value)}
                                                             placeholder={field.label}
-                                                            options={field.options || []}
+                                                            options={field.options || [
+                                                                { label: 'The Shawshank Redemption', value: 1 },
+                                                                { label: 'The Godfather', value: 2 }
+                                                            ]}
                                                         />
                                                     );
+                                                }
                                                 case 'text':
                                                 default:
                                                     return (
