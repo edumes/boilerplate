@@ -68,8 +68,8 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                         <Switch
                                                             {...rest}
                                                             checked={value || false}
-                                                            onChange={(e, checked) => onChange(checked)}
                                                             inputProps={{ 'aria-label': field.label }}
+                                                            onChange={(e, checked) => onChange(checked)}
                                                         />
                                                     );
                                                 }
@@ -80,12 +80,12 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                         <Select
                                                             {...rest}
                                                             value={selectedOption || null}
-                                                            onChange={(option: SelectOption) => onChange(option.value)}
                                                             placeholder={field.label}
                                                             options={field.options || [
                                                                 { label: 'The Shawshank Redemption', value: 1 },
                                                                 { label: 'The Godfather', value: 2 }
                                                             ]}
+                                                            onChange={(option: SelectOption) => onChange(option.value)}
                                                         />
                                                     );
                                                 }
@@ -96,8 +96,8 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                             {...rest}
                                                             size='md'
                                                             value={value || ''}
-                                                            onChange={onChange}
                                                             placeholder={field.label}
+                                                            onChange={onChange}
                                                         />
                                                     );
                                             }

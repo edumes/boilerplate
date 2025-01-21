@@ -1,4 +1,4 @@
-import ForgotPassword from './ForgotPassword';
+// import ForgotPassword from './ForgotPassword';
 
-export { ForgotPasswordBase } from './ForgotPassword';
-export default ForgotPassword;
+// export { ForgotPasswordBase } from './ForgotPassword';
+// export default ForgotPassword;

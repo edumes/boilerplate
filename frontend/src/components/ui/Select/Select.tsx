@@ -1,12 +1,12 @@
-import { forwardRef } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
+import { forwardRef } from 'react';
+import type { CommonProps, TypeAttributes } from '../@types/common';
 import { useConfig } from '../ConfigProvider';
 import { useForm, useFormItem } from '../Form/context';
 import { useInputGroup } from '../InputGroup/context';
 import { CONTROL_SIZES } from '../utils/constants';
-import type { CommonProps, TypeAttributes } from '../@types/common';
-import type { ReactNode } from 'react';
 
 export interface SelectOption {
     label: string;
@@ -57,7 +57,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     const selectDefaultClass = 'select';
     const selectSizeClass = `select-${selectSize} ${CONTROL_SIZES[selectSize].h}`;
     const selectFocusClass = `focus:ring-primary focus-within:ring-primary focus-within:border-primary focus:border-primary`;
-    
+
     const selectClass = classNames(
         selectDefaultClass,
         selectSizeClass,
@@ -75,7 +75,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
             options={options}
             value={value}
             defaultValue={defaultValue}
-            onChange={(_, newValue: any) => onChange?.(newValue)}
             className={!unstyle ? selectClass : ''}
             renderInput={(params) => (
                 <TextField
@@ -87,7 +86,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
                         startAdornment: (
                             <>
                                 {prefix && (
-                                    <div className="select-prefix">{prefix}</div>
+                                    <div className="select-prefix">
+                                        {prefix}
+                                    </div>
                                 )}
                                 {params.InputProps.startAdornment}
                             </>
@@ -96,13 +97,16 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
                             <>
                                 {params.InputProps.endAdornment}
                                 {suffix && (
-                                    <div className="select-suffix">{suffix}</div>
+                                    <div className="select-suffix">
+                                        {suffix}
+                                    </div>
                                 )}
                             </>
                         ),
                     }}
                 />
             )}
+            onChange={(_, newValue: any) => onChange?.(newValue)}
             {...rest}
         />
     );
@@ -110,4 +114,4 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
 
 Select.displayName = 'Select';
 
-export default Select; 
+export default Select;

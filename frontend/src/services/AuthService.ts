@@ -2,8 +2,8 @@ import ApiService from './ApiService';
 import type {
     SignInCredential,
     SignUpCredential,
-    ForgotPassword,
-    ResetPassword,
+    // ForgotPassword,
+    // ResetPassword,
     SignInResponse,
     SignUpResponse,
 } from '@/@types/auth';

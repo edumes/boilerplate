@@ -1,4 +1,4 @@
-import ResetPassword from './ResetPassword';
+// import ResetPassword from './ResetPassword';
 
-export { ResetPasswordBase } from './ResetPassword';
-export default ResetPassword;
+// export { ResetPasswordBase } from './ResetPassword';
+// export default ResetPassword;

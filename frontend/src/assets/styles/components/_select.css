@@ -1,0 +1,55 @@
+.autocomplete {
+  @apply border
+    border-gray-100 
+    dark:border-gray-700
+    bg-gray-100 
+    dark:bg-gray-700 
+    rounded-xl 
+    w-full 
+    py-2 px-3
+    focus:outline-none 
+    focus:ring-1 
+    focus-within:ring-1
+    focus:bg-transparent
+    focus:dark:bg-transparent
+    appearance-none 
+    transition 
+    duration-150 
+    text-gray-800
+    dark:text-gray-100
+    font-semibold
+    ease-in-out;
+
+  /* Remove default MUI styles */
+  & .MuiOutlinedInput-notchedOutline {
+    @apply border-0;
+  }
+
+  & .MuiInputBase-root {
+    @apply p-0;
+  }
+
+  & .MuiAutocomplete-endAdornment {
+    @apply ltr:right-2.5 rtl:left-2.5;
+  }
+
+  & .MuiAutocomplete-input {
+    @apply p-0;
+  }
+
+  &.autocomplete-invalid {
+    @apply focus:ring-1 focus:ring-error focus:border-error focus:bg-transparent bg-error-subtle focus-within:ring-1 focus-within:ring-error focus-within:border-error focus-within:bg-transparent;
+  }
+
+  &.autocomplete-disabled {
+    @apply opacity-50 !cursor-not-allowed;
+  }
+}
+
+.autocomplete-prefix {
+  @apply absolute top-2/4 transform -translate-y-2/4 ltr:left-2.5 rtl:right-2.5;
+}
+
+.autocomplete-suffix {
+  @apply absolute top-2/4 transform -translate-y-2/4 ltr:right-2.5 rtl:left-2.5 flex;
+}
