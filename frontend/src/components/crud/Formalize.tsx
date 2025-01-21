@@ -1,15 +1,16 @@
 import { FormFieldConfig } from '@/@types/forms';
 import Button from '@/components/ui/Button';
 import { Form, FormItem } from '@/components/ui/Form';
-import { Input } from '@/components/ui/Input';
+// import { Input } from '@/components/ui/Input';
+import { Input, Select, Switch } from 'antd';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Grid2 as Grid, Switch } from '@mui/material';
+import { Box, Grid2 as Grid } from '@mui/material';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import Select from '../ui/Select';
+// import Select from '../ui/Select';
 import { createValidationSchema } from './formValidationSchema';
-import { SelectOption } from '../ui/Select/Select';
+// import { SelectOption } from '../ui/Select/Select';
 
 interface FormalizeProps {
     fields: FormFieldConfig['fields'];
@@ -67,25 +68,30 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                     return (
                                                         <Switch
                                                             {...rest}
+                                                            size='default'
+                                                            defaultChecked={value || false}
                                                             checked={value || false}
-                                                            inputProps={{ 'aria-label': field.label }}
-                                                            onChange={(e, checked) => onChange(checked)}
+                                                            onChange={(checked) => onChange(checked)}
                                                         />
                                                     );
                                                 }
                                                 case 'select': {
-                                                    const selectedOption = (field.options || []).find(option => option.value === value);
+                                                    const selectedValue = value || null;
                                     
                                                     return (
                                                         <Select
                                                             {...rest}
-                                                            value={selectedOption || null}
+                                                            size='middle'
+                                                            allowClear
+                                                            showSearch
+                                                            optionFilterProp="label"
+                                                            value={selectedValue}
                                                             placeholder={field.label}
                                                             options={field.options || [
                                                                 { label: 'The Shawshank Redemption', value: 1 },
                                                                 { label: 'The Godfather', value: 2 }
                                                             ]}
-                                                            onChange={(option: SelectOption) => onChange(option.value)}
+                                                            onChange={(value) => onChange(value)}
                                                         />
                                                     );
                                                 }
@@ -94,7 +100,7 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                     return (
                                                         <Input
                                                             {...rest}
-                                                            size='md'
+                                                            size='middle'
                                                             value={value || ''}
                                                             placeholder={field.label}
                                                             onChange={onChange}
