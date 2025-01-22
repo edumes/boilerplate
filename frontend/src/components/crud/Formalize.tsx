@@ -2,13 +2,13 @@ import { FormFieldConfig } from '@/@types/forms';
 import Button from '@/components/ui/Button';
 import { Form, FormItem } from '@/components/ui/Form';
 // import { Input } from '@/components/ui/Input';
-import { Input, Select, Switch } from 'antd';
+import { Input, Switch } from 'antd';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Grid2 as Grid } from '@mui/material';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-// import Select from '../ui/Select';
+import Select from '../ui/Select';
 import { createValidationSchema } from './formValidationSchema';
 // import { SelectOption } from '../ui/Select/Select';
 
@@ -71,7 +71,7 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                             size='default'
                                                             defaultChecked={value || false}
                                                             checked={value || false}
-                                                            onChange={(checked) => onChange(checked)}
+                                                            onChange={(value) => onChange(value)}
                                                         />
                                                     );
                                                 }
@@ -81,10 +81,7 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                     return (
                                                         <Select
                                                             {...rest}
-                                                            size='middle'
-                                                            allowClear
-                                                            showSearch
-                                                            optionFilterProp="label"
+                                                            size='md'
                                                             value={selectedValue}
                                                             placeholder={field.label}
                                                             options={field.options || [

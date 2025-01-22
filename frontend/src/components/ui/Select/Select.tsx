@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import type { CommonProps, TypeAttributes } from '../@types/common';
 import { useConfig } from '../ConfigProvider';
+import { Select as AntdSelect } from 'antd';
 import { useForm, useFormItem } from '../Form/context';
 import { useInputGroup } from '../InputGroup/context';
 import { CONTROL_SIZES } from '../utils/constants';
@@ -16,7 +17,6 @@ export interface SelectOption {
 export interface SelectProps extends CommonProps {
     disabled?: boolean;
     invalid?: boolean;
-    multiple?: boolean;
     options: SelectOption[];
     size?: TypeAttributes.ControlSize;
     value?: SelectOption | SelectOption[] | null;
@@ -33,7 +33,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
         className,
         disabled,
         invalid,
-        multiple = false,
         options,
         size,
         value,
@@ -68,45 +67,17 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     );
 
     return (
-        <Autocomplete
-            ref={ref}
-            multiple={multiple}
+        <AntdSelect
+            // ref={ref}
+            allowClear
+            showSearch
+            optionFilterProp="label"
             disabled={disabled}
             options={options}
             value={value}
             defaultValue={defaultValue}
             className={!unstyle ? selectClass : ''}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    placeholder={placeholder}
-                    error={isSelectInvalid}
-                    InputProps={{
-                        ...params.InputProps,
-                        startAdornment: (
-                            <>
-                                {prefix && (
-                                    <div className="select-prefix">
-                                        {prefix}
-                                    </div>
-                                )}
-                                {params.InputProps.startAdornment}
-                            </>
-                        ),
-                        endAdornment: (
-                            <>
-                                {params.InputProps.endAdornment}
-                                {suffix && (
-                                    <div className="select-suffix">
-                                        {suffix}
-                                    </div>
-                                )}
-                            </>
-                        ),
-                    }}
-                />
-            )}
-            onChange={(_, newValue: any) => onChange?.(newValue)}
+            onChange={(value) => onChange(value)}
             {...rest}
         />
     );
