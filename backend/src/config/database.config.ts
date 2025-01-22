@@ -5,6 +5,7 @@ import { Company } from '@modules/companies/company.model';
 import { Notification } from '@modules/notifications/notification.model';
 import { Project } from '@modules/projects/project.model';
 import { Role } from '@modules/roles/role.model';
+import { Situation } from '@modules/situations/situation.model';
 import { User } from '@modules/users/user.model';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
@@ -24,7 +25,7 @@ const AppDataSource = new DataSource({
     }
   },
   logging: false,
-  entities: [User, Audit, Company, Project, Role, Notification],
+  entities: [User, Audit, Company, Project, Role, Notification, Situation],
   migrations: ['src/migrations/*.ts'],
 });
 
