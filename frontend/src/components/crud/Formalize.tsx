@@ -81,13 +81,10 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
                                                     return (
                                                         <Select
                                                             {...rest}
-                                                            size='md'
+                                                            size='sm'
+                                                            name={fieldName}
                                                             value={selectedValue}
                                                             placeholder={field.label}
-                                                            options={field.options || [
-                                                                { label: 'The Shawshank Redemption', value: 1 },
-                                                                { label: 'The Godfather', value: 2 }
-                                                            ]}
                                                             onChange={(value) => onChange(value)}
                                                         />
                                                     );

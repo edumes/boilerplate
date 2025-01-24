@@ -2,8 +2,7 @@ import { BrowserlizeProps } from '@/@types/forms';
 import { BaseService } from '@/services/crud/BaseService';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Card, IconButton } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { ptBR } from '@mui/x-data-grid/locales';
+import { Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -105,7 +104,7 @@ export default function BrowseTable({ form }: BrowserlizeProps) {
 
     return (
         <Card>
-            <DataGrid
+            {/* <DataGrid
                 sx={{ border: 'none', borderWidth: 0 }}
                 localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                 columns={columns}
@@ -119,6 +118,19 @@ export default function BrowseTable({ form }: BrowserlizeProps) {
                 paginationMode="server"
                 rowCount={data?.meta?.totalItems || 0}
                 onPaginationModelChange={setPaginationModel}
+            /> */}
+            <Table
+                bordered
+                columns={columns}
+                dataSource={data || []}
+                loading={isLoading}
+                pagination={{ position: ['bottomRight'] }}
+                rowHoverable
+                showSorterTooltip
+                size='middle'
+                sortDirections={["ascend", "descend"]}
+                sticky
+                showHeader
             />
         </Card>
     );

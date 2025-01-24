@@ -40,6 +40,11 @@ export class BaseService<T> {
         return response.data;
     }
 
+    async selectOptions(): Promise<T[]> {
+        const response = await this.http.get<T[]>(`${this.endpoint}/select-options`);
+        return response.data;
+    }
+
     async create(data: T): Promise<T> {
         const response = await this.http.post<T>(this.endpoint, data);
         return response.data;

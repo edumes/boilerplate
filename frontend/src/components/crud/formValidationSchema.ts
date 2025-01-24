@@ -40,6 +40,9 @@ export const createValidationSchema = (fields: Record<string, FormField>) => {
                                 message: `${field.label} deve ser uma data válida`,
                             });
                             break;
+                        case 'select':
+                            fieldSchema = z.number();
+                            break;
                         default:
                             fieldSchema = z.string();
                     }
