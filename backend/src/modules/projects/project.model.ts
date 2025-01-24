@@ -1,5 +1,6 @@
 import { FIELD_TYPE, FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
 import { BaseModel } from '@modules/base/base.model';
+import { Situation } from '@modules/situations/situation.model';
 import { User } from '@modules/users/user.model';
 import {
   Column,
@@ -70,6 +71,10 @@ export class Project extends BaseModel {
     type: FIELD_TYPE.SELECT,
   })
   project_fk_situation_id: number;
+
+  @ManyToOne(() => Situation)
+  @JoinColumn({ name: 'project_fk_situation_id' })
+  situation: Situation;
 
   @Column({ type: 'timestamp', nullable: true })
   @FieldConfig({

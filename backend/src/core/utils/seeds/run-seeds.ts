@@ -3,13 +3,14 @@ import { logger } from '@core/utils/logger';
 import { CreateDefaultAdmin } from './create-default-admin.seed';
 import { CreateDefaultCompany } from './create-default-company.seed';
 import { CreateDefaultRoles } from './create-default-roles.seed';
+import { CreateDefaultSituations } from './create-default-situations.seed';
 
 async function runSeeds() {
   try {
     await AppDataSource.initialize();
     logger.info('Database connection initialized');
 
-    const seeds = [new CreateDefaultRoles(), new CreateDefaultCompany(), new CreateDefaultAdmin()];
+    const seeds = [new CreateDefaultRoles(), new CreateDefaultCompany(), new CreateDefaultAdmin(), new CreateDefaultSituations()];
 
     for (const seed of seeds) {
       logger.info(`Running seed: ${seed.constructor.name}`);
