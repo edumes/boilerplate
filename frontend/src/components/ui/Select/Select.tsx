@@ -57,6 +57,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
 
     const [options, setOptions] = useState(null);
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const selectSize = size || inputGroupSize || formControlSize || controlSize;
     const isSelectInvalid = invalid || formItemInvalid;
@@ -74,19 +75,26 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
         isSelectInvalid && 'select-invalid'
     );
 
-    useEffect(() => {
+    const loadOptions = (search?: string) => {
+        setLoading(true);
         baseService
-            .selectOptions()
+            .selectOptions(search)
             .then((options) => {
                 setOptions(options);
             })
-            .catch(err => setError(err.message));
+            .catch(err => setError(err.message))
+            .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        loadOptions();
     }, []);
 
     return (
         <AntdSelect
             // ref={ref}
-            size='small'
+            size='middle'
+            placeholder="Selecione uma opção..."
             allowClear
             showSearch
             optionFilterProp="label"
@@ -96,6 +104,10 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
             defaultValue={defaultValue}
             className={!unstyle ? selectClass : ''}
             onChange={(value) => onChange(value)}
+            loading={loading}
+            onFocus={() => loadOptions()}
+            onSearch={(value) => loadOptions(value)}
+            filterOption={false}
             {...rest}
         />
     );

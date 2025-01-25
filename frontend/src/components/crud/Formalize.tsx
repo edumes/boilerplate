@@ -1,16 +1,14 @@
 import { FormFieldConfig } from '@/@types/forms';
 import Button from '@/components/ui/Button';
-import { Form, FormItem } from '@/components/ui/Form';
-// import { Input } from '@/components/ui/Input';
-import { Input, Switch } from 'antd';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Grid2 as Grid } from '@mui/material';
+import { Form, Input, Switch } from 'antd';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from '../ui/DatePicker';
 import Select from '../ui/Select';
 import { createValidationSchema } from './formValidationSchema';
-// import { SelectOption } from '../ui/Select/Select';
 
 interface FormalizeProps {
     fields: FormFieldConfig['fields'];
@@ -27,19 +25,19 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
     const {
         control,
         handleSubmit,
-        formState: { errors }
+        formState: { errors, isValid }
     } = useForm({
-        resolver: zodResolver(validationSchema)
+        resolver: zodResolver(validationSchema),
     });
 
     const watchedValues = useWatch({ control });
 
-    console.log({ watchedValues, errors });
+    console.log({ watchedValues, errors, isValid });
 
-    const handleFormSubmit = (data: any) => {
+    const handleFormSubmit = async (data: any) => {
         setSubmitting(true);
         try {
-            onSubmit(data);
+            await onSubmit(data);
         } catch (error) {
             onError?.(error);
         } finally {
@@ -48,64 +46,86 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
     };
 
     return (
-        <Form onSubmit={handleSubmit(handleFormSubmit)}>
+        <Form
+            layout="vertical"
+            onFinish={handleSubmit(handleFormSubmit)}
+        >
             <Grid container spacing={1.5}>
-                {Object.entries(fields).map(
-                    ([fieldName, field]) =>
-                        field.canAdd && (
-                            <Grid key={fieldName} size={field.width}>
-                                <FormItem
-                                    label={field.label}
-                                    invalid={Boolean(errors[fieldName])}
-                                    errorMessage={errors[fieldName]?.message?.toString()}
-                                >
-                                    <Controller
-                                        name={fieldName}
-                                        control={control}
-                                        render={({ field: { onChange, value, ...rest } }) => {
-                                            switch (field.type) {
-                                                case 'boolean': {
-                                                    return (
-                                                        <Switch
-                                                            {...rest}
-                                                            size='default'
-                                                            defaultChecked={value || false}
-                                                            checked={value || false}
-                                                            onChange={(value) => onChange(value)}
-                                                        />
-                                                    );
-                                                }
-                                                case 'select': {
-                                                    const selectedValue = value || null;
-                                    
-                                                    return (
-                                                        <Select
-                                                            {...rest}
-                                                            size='sm'
-                                                            name={fieldName}
-                                                            value={selectedValue}
-                                                            placeholder={field.label}
-                                                            onChange={(value) => onChange(value)}
-                                                        />
-                                                    );
-                                                }
-                                                case 'text':
-                                                default:
-                                                    return (
-                                                        <Input
-                                                            {...rest}
-                                                            size='middle'
-                                                            value={value || ''}
-                                                            placeholder={field.label}
-                                                            onChange={onChange}
-                                                        />
-                                                    );
+                {Object.entries(fields).map(([fieldName, field]) =>
+                    field.canAdd ? (
+                        <Grid key={fieldName} size={field.width}>
+                            <Form.Item
+                                label={field.label}
+                                validateStatus={errors[fieldName] ? 'error' : ''}
+                                help={errors[fieldName]?.message?.toString()}
+                            >
+                                <Controller
+                                    name={fieldName}
+                                    control={control}
+                                    render={({ field: { onChange, value, ...rest } }) => {
+                                        switch (field.type) {
+                                            case 'boolean': {
+                                                return (
+                                                    <Switch
+                                                        {...rest}
+                                                        checked={value || false}
+                                                        onChange={(checked) => onChange(checked)}
+                                                    />
+                                                );
                                             }
-                                        }}
-                                    />
-                                </FormItem>
-                            </Grid>
-                        )
+                                            case 'date': {
+                                                return (
+                                                    <DatePicker
+                                                        {...rest}
+                                                        name={fieldName}
+                                                        value={value}
+                                                        placeholder={field.label}
+                                                        onChange={(date) => {onChange(date); console.log({date})}}
+                                                        format='DD/MM/YYYY'
+                                                    />
+                                                );
+                                            }
+                                            case 'datetime': {
+                                                return (
+                                                    <DatePicker
+                                                        {...rest}
+                                                        name={fieldName}
+                                                        value={value}
+                                                        placeholder={field.label}
+                                                        onChange={(date) => onChange(date)}
+                                                        format='DD/MM/YYYY HH:mm'
+                                                        showTime={true}
+                                                    />
+                                                );
+                                            }
+                                            case 'select': {
+                                                return (
+                                                    <Select
+                                                        {...rest}
+                                                        name={fieldName}
+                                                        value={value || null}
+                                                        placeholder={field.label}
+                                                        onChange={(selected) => onChange(selected)}
+                                                    />
+                                                );
+                                            }
+                                            case 'text':
+                                            default:
+                                                return (
+                                                    <Input
+                                                        {...rest}
+                                                        size='large'
+                                                        value={value || ''}
+                                                        placeholder={field.label}
+                                                        onChange={onChange}
+                                                    />
+                                                );
+                                        }
+                                    }}
+                                />
+                            </Form.Item>
+                        </Grid>
+                    ) : null
                 )}
             </Grid>
             <Box sx={{ mt: 2, display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
@@ -125,4 +145,4 @@ export default function Formalize({ fields, onSubmit, onError }: FormalizeProps)
             </Box>
         </Form>
     );
-} 
+}

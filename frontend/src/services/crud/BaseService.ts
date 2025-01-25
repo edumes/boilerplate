@@ -40,8 +40,12 @@ export class BaseService<T> {
         return response.data;
     }
 
-    async selectOptions(): Promise<T[]> {
-        const response = await this.http.get<T[]>(`${this.endpoint}/select-options`);
+    async selectOptions(search?: string): Promise<T[]> {
+        const params = new URLSearchParams();
+        if (search) {
+            params.append('search', search);
+        }
+        const response = await this.http.get<T[]>(`${this.endpoint}/select-options?${params.toString()}`);
         return response.data;
     }
 
@@ -57,5 +61,10 @@ export class BaseService<T> {
 
     async delete(id: string | number): Promise<void> {
         await this.http.delete(`${this.endpoint}/${id}`);
+    }
+
+    async filter(queryString: string): Promise<any> {
+        const response = await this.http.get<T[]>(`${this.endpoint}/filter?${queryString}`);
+        return response;
     }
 }

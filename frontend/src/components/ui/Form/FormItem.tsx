@@ -83,7 +83,7 @@ const FormItem = forwardRef<HTMLDivElement, FormItemProps>((props, ref) => {
     };
 
     const enterStyle = { opacity: 1, marginTop: 3, bottom: -25 };
-    const exitStyle = { opacity: 0, marginTop: -10 };
+    const exitStyle = { opacity: 0, marginTop: 0 };
     const initialStyle = exitStyle;
 
     return (

@@ -25,10 +25,9 @@ export class Project extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 1,
+    required: true,
     width: 4,
-    number: {
-      type: NUMBER_TYPE.DECIMAL,
-    },
+    type: FIELD_TYPE.TEXT,
   })
   project_code: string;
 
@@ -53,7 +52,6 @@ export class Project extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 3,
-    required: false,
     width: 12,
     type: FIELD_TYPE.RICHTEXT,
   })
@@ -67,7 +65,8 @@ export class Project extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 4,
-    width: 4,
+    required: true,
+    width: 2,
     type: FIELD_TYPE.SELECT,
   })
   project_fk_situation_id: number;
@@ -79,6 +78,7 @@ export class Project extends BaseModel {
   @Column({ type: 'timestamp', nullable: true })
   @FieldConfig({
     label: 'Data de Início',
+    canAdd: true,
     canRead: true,
     canBrowse: true,
     canEdit: true,

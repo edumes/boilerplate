@@ -19,6 +19,7 @@ export default function AddForm({ form }: AddFormProps) {
     const [formData, setFormData] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<boolean>(false);
 
     const service = new BaseService<any>(config.table);
 
@@ -26,7 +27,10 @@ export default function AddForm({ form }: AddFormProps) {
         setIsSubmitting(true);
         try {
             await service.create(data);
-            navigate(-1);
+            setSuccess(true);
+            setTimeout(() => {
+                navigate(-1);
+            }, 2000);
         } catch (error: any) {
             console.log({ error })
             const errorMessage = error.response?.data?.error.details;
@@ -38,6 +42,10 @@ export default function AddForm({ form }: AddFormProps) {
 
     const handleErrorClose = () => {
         setError(null);
+    };
+
+    const handleSuccessClose = () => {
+        setSuccess(false);
     };
 
     console.log({ fields });
@@ -105,6 +113,17 @@ export default function AddForm({ form }: AddFormProps) {
             >
                 <Alert onClose={handleErrorClose} severity="error" sx={{ width: '100%' }}>
                     {error}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar
+                open={success}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSuccessClose} severity="success" sx={{ width: '100%' }}>
+                    registro salvo com sucesso!
                 </Alert>
             </Snackbar>
         </motion.div>
