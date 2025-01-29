@@ -1,10 +1,4 @@
-import { HTMLAttributes, useState } from 'react';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from '@tanstack/react-router';
-import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react';
-import { cn } from '@/lib/utils';
+import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -15,8 +9,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { PasswordInput } from '@/components/password-input';
-// import { useAuth } from '@/context/auth-context';
+import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { authService } from '@/services/auth.service';
+import { useAuthStore } from '@/stores/authStore';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { HTMLAttributes, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -31,13 +33,14 @@ const formSchema = z.object({
       message: 'Please enter your password',
     })
     .min(4, {
-      message: 'Password must be at least 7 characters long',
+      message: 'Password must be at least 4 characters long',
     }),
 });
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  // const { login } = useAuth();
+  const { auth } = useAuthStore();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,9 +53,36 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true);
-      // await login(data.email, data.password);
+      const response = await authService.login(data.email, data.password);
+
+      auth.setAccessToken(response.token);
+      auth.setUser({
+        id: response.user.id,
+        uuid: response.user.uuid,
+        user_name: response.user.user_name,
+        user_email: response.user.user_email,
+        user_telephone: response.user.user_telephone,
+        user_is_active: response.user.user_is_active,
+        company: {
+          id: response.user.company.id,
+          company_name: response.user.company.company_name,
+          company_email: response.user.company.company_email,
+        },
+        role: {
+          role_name: response.user.role.role_name,
+          role_permissions: response.user.role.role_permissions,
+        },
+      });
+
+      navigate({ to: '/' });
+
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
+      console.log(error)
+      toast({
+        variant: 'destructive',
+        title: 'Falha no login',
+        description: 'Verifique suas credenciais',
+      });
     } finally {
       setIsLoading(false);
     }

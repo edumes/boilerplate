@@ -1,3 +1,6 @@
+import { NavGroup } from '@/components/layout/nav-group';
+import { NavUser } from '@/components/layout/nav-user';
+import { TeamSwitcher } from '@/components/layout/team-switcher';
 import {
   Sidebar,
   SidebarContent,
@@ -5,12 +8,18 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { NavGroup } from '@/components/layout/nav-group';
-import { NavUser } from '@/components/layout/nav-user';
-import { TeamSwitcher } from '@/components/layout/team-switcher';
+import { useAuthStore } from '@/stores/authStore';
 import { sidebarData } from './data/sidebar-data';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuthStore().auth;
+
+  const userData = {
+    name: user?.user_name || '',
+    email: user?.user_email || '',
+    avatar: '/avatars/shadcn.jpg',
+  };
+
   return (
     <Sidebar collapsible='icon' variant='floating' {...props}>
       <SidebarHeader>
@@ -22,7 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={sidebarData.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
