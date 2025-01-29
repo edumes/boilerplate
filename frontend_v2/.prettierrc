@@ -22,7 +22,6 @@
     "^globals$",
     "^zod$",
     "^axios$",
-    "^date-fns$",
     "^js-cookie$",
     "^react-hook-form$",
     "^use-intl$",

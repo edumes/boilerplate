@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+import { useAuthStore } from '@/stores/authStore';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,18 +12,16 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuthStore } from '@/stores/authStore';
-import { Link } from '@tanstack/react-router';
 
 export function ProfileDropdown() {
-  const { user, accessToken } = useAuthStore().auth;
+  const { user, accessToken } = useAuthStore();
   console.log({ user, accessToken });
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
     return name
       .split(' ')
-      .map(word => word[0])
+      .map((word) => word[0])
       .join('')
       .toUpperCase()
       .slice(0, 2);
@@ -40,7 +40,9 @@ export function ProfileDropdown() {
       <DropdownMenuContent className='w-56' align='end' forceMount>
         <DropdownMenuLabel className='font-normal'>
           <div className='flex flex-col space-y-1'>
-            <p className='text-sm font-medium leading-none'>{user?.user_name}</p>
+            <p className='text-sm font-medium leading-none'>
+              {user?.user_name}
+            </p>
             <p className='text-xs leading-none text-muted-foreground'>
               {user?.user_email}
             </p>

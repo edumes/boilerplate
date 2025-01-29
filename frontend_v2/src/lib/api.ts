@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: '/api/v1'
+  baseURL: '/api/v1',
 });
 
 api.interceptors.request.use((config) => {
@@ -21,4 +21,4 @@ api.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-); 
+);

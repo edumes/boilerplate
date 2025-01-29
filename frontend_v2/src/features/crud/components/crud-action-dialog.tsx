@@ -1,9 +1,7 @@
 'use client';
 
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from '@/hooks/use-toast';
+import { PasswordInput } from '@/components/password-input';
+import { SelectDropdown } from '@/components/select-dropdown';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -23,8 +21,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PasswordInput } from '@/components/password-input';
-import { SelectDropdown } from '@/components/select-dropdown';
+import { toast } from '@/hooks/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { userTypes } from '../data/data';
 import { User } from '../data/schema';
 
@@ -94,28 +94,28 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
-export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
+export function CrudActionDialog({ currentRow, open, onOpenChange }: Props) {
   const isEdit = !!currentRow;
   const form = useForm<UserForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
-          ...currentRow,
-          password: '',
-          confirmPassword: '',
-          isEdit,
-        }
+        ...currentRow,
+        password: '',
+        confirmPassword: '',
+        isEdit,
+      }
       : {
-          firstName: '',
-          lastName: '',
-          username: '',
-          email: '',
-          role: '',
-          phoneNumber: '',
-          password: '',
-          confirmPassword: '',
-          isEdit,
-        },
+        firstName: '',
+        lastName: '',
+        username: '',
+        email: '',
+        role: '',
+        phoneNumber: '',
+        password: '',
+        confirmPassword: '',
+        isEdit,
+      },
   });
 
   const onSubmit = (values: UserForm) => {

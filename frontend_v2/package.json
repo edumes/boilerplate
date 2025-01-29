@@ -1,7 +1,7 @@
 {
-  "name": "shadcn-admin",
+  "name": "frontend",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -37,16 +37,14 @@
     "@tanstack/react-query": "^5.62.3",
     "@tanstack/react-router": "^1.86.1",
     "@tanstack/react-table": "^8.20.5",
-    "antd": "^5.23.2",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
-    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",
-    "react-day-picker": "8.10.1",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.0",
     "recharts": "^2.14.1",
@@ -80,6 +78,6 @@
     "tailwindcss": "^3.4.16",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.17.0",
-    "vite": "^6.0.9"
+    "vite": "^6.0.11"
   }
 }

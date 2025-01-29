@@ -30,14 +30,12 @@ interface AuthUser {
 }
 
 interface AuthState {
-  auth: {
-    user: AuthUser | null;
-    setUser: (user: AuthUser | null) => void;
-    accessToken: string;
-    setAccessToken: (accessToken: string) => void;
-    resetAccessToken: () => void;
-    reset: () => void;
-  };
+  user: AuthUser | null;
+  accessToken: string;
+  setUser: (user: AuthUser | null) => void;
+  setAccessToken: (accessToken: string) => void;
+  resetAccessToken: () => void;
+  reset: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -46,36 +44,31 @@ export const useAuthStore = create<AuthState>()(
       const cookieState = Cookies.get(ACCESS_TOKEN);
       const initToken = cookieState ? JSON.parse(cookieState) : '';
       return {
-        auth: {
-          user: null,
-          setUser: (user) =>
-            set((state) => ({ ...state, auth: { ...state.auth, user } })),
-          accessToken: initToken,
-          setAccessToken: (accessToken) =>
-            set((state) => {
-              Cookies.set(ACCESS_TOKEN, JSON.stringify(accessToken));
-              return { ...state, auth: { ...state.auth, accessToken } };
-            }),
-          resetAccessToken: () =>
-            set((state) => {
-              Cookies.remove(ACCESS_TOKEN);
-              return { ...state, auth: { ...state.auth, accessToken: '' } };
-            }),
-          reset: () =>
-            set((state) => {
-              Cookies.remove(ACCESS_TOKEN);
-              return {
-                ...state,
-                auth: { ...state.auth, user: null, accessToken: '' },
-              };
-            }),
+        user: null,
+        accessToken: initToken,
+        setUser: (user) => set({ user }),
+        setAccessToken: (accessToken) => {
+          Cookies.set(ACCESS_TOKEN, JSON.stringify(accessToken));
+          set({ accessToken });
+        },
+        resetAccessToken: () => {
+          Cookies.remove(ACCESS_TOKEN);
+          set({ accessToken: '' });
+        },
+        reset: () => {
+          Cookies.remove(ACCESS_TOKEN);
+          set({ user: null, accessToken: '' });
         },
       };
     },
     {
       name: 'auth-storage',
+      partialize: (state) => ({
+        user: state.user,
+        accessToken: state.accessToken,
+      }),
     }
   )
 );
 
-export const useAuth = () => useAuthStore((state) => state.auth);
+export const useAuth = () => useAuthStore((state) => state);

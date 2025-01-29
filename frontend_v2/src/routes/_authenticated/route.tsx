@@ -1,18 +1,18 @@
+import Cookies from 'js-cookie';
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { useAuthStore } from '@/stores/authStore';
+import { cn } from '@/lib/utils';
+import { SearchProvider } from '@/context/search-context';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import SkipToMain from '@/components/skip-to-main';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { SearchProvider } from '@/context/search-context';
-import { cn } from '@/lib/utils';
-import { useAuthStore } from '@/stores/authStore';
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import Cookies from 'js-cookie';
 
 export const Route = createFileRoute('/_authenticated')({
   component: RouteComponent,
   beforeLoad: ({ location }) => {
-    const { auth } = useAuthStore.getState();
+    const { accessToken } = useAuthStore.getState();
 
-    if (!auth.accessToken) {
+    if (!accessToken) {
       throw redirect({
         to: '/sign-in',
         search: {

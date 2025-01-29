@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
-import { format } from 'date-fns';
 import {
   IconArrowLeft,
   IconDotsVertical,
@@ -44,7 +43,7 @@ export default function Chats() {
 
   const currentMessage = selectedUser.messages.reduce(
     (acc: Record<string, Convo[]>, obj) => {
-      const key = format(obj.timestamp, 'd MMM, yyyy');
+      const key = obj.timestamp;
 
       // Create an array for the category if it doesn't exist
       if (!acc[key]) {
@@ -231,7 +230,7 @@ export default function Chats() {
                                   msg.sender === 'You' && 'text-right'
                                 )}
                               >
-                                {format(msg.timestamp, 'h:mm a')}
+                                {/* {dayjs(msg.timestamp, 'h:mm a')} */}
                               </span>
                             </div>
                           ))}

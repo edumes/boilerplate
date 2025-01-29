@@ -11,11 +11,9 @@ import { useAuthStore } from '@/stores/authStore';
 import { handleServerError } from '@/utils/handle-server-error';
 import { toast } from '@/hooks/use-toast';
 import { ThemeProvider } from './context/theme-context';
-import ptBR from 'antd/locale/pt_BR';
 import './index.css';
 // Generated Routes
 import { routeTree } from './routeTree.gen';
-import { ConfigProvider } from 'antd';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,7 +56,7 @@ const queryClient = new QueryClient({
             variant: 'destructive',
             title: 'Session expired!',
           });
-          useAuthStore.getState().auth.reset();
+          useAuthStore.getState().reset();
           const redirect = `${router.history.location.href}`;
           router.navigate({ to: '/sign-in', search: { redirect } });
         }
@@ -99,11 +97,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ConfigProvider locale={ptBR}>
-          <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
-            <RouterProvider router={router} />
-          </ThemeProvider>
-        </ConfigProvider>
+        <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>
   );

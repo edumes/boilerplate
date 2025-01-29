@@ -19,7 +19,7 @@ interface BaseNavItem {
 }
 
 type NavLink = BaseNavItem & {
-  url: LinkProps['to'];
+  url: LinkProps['to'] | string;
   items?: never;
 };
 
@@ -36,7 +36,7 @@ interface NavGroup {
 }
 
 interface SidebarData {
-  user: User;
+  user?: User;
   teams: Team[];
   navGroups: NavGroup[];
 }

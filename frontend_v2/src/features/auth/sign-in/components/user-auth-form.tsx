@@ -15,8 +15,10 @@ import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/authStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react';
+import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { HTMLAttributes, useState } from 'react';
+import { AxiosError } from 'axios';
+import { HTMLAttributes } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -38,8 +40,7 @@ const formSchema = z.object({
 });
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const { auth } = useAuthStore();
+  const { setAccessToken, setUser } = useAuthStore();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,42 +51,27 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true);
-      const response = await authService.login(data.email, data.password);
-
-      auth.setAccessToken(response.token);
-      auth.setUser({
-        id: response.user.id,
-        uuid: response.user.uuid,
-        user_name: response.user.user_name,
-        user_email: response.user.user_email,
-        user_telephone: response.user.user_telephone,
-        user_is_active: response.user.user_is_active,
-        company: {
-          id: response.user.company.id,
-          company_name: response.user.company.company_name,
-          company_email: response.user.company.company_email,
-        },
-        role: {
-          role_name: response.user.role.role_name,
-          role_permissions: response.user.role.role_permissions,
-        },
-      });
-
+  const { mutate: login, isPending } = useMutation({
+    mutationFn: (data: z.infer<typeof formSchema>) =>
+      authService.login(data.email, data.password),
+    onSuccess: (response) => {
+      console.log(response)
+      setAccessToken(response.token);
+      setUser(response.user);
       navigate({ to: '/' });
-
-    } catch (error) {
-      console.log(error)
+    },
+    onError: (error: AxiosError) => {
+      console.error(error);
       toast({
         variant: 'destructive',
-        title: 'Falha no login',
-        description: 'Verifique suas credenciais',
+        title: error.code + ': ' + error.name,
+        description: error.message,
       });
-    } finally {
-      setIsLoading(false);
     }
+  });
+
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    login(data);
   }
 
   return (
@@ -127,7 +113,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' disabled={isLoading}>
+            <Button className='mt-2' disabled={isPending}>
               Login
             </Button>
 
@@ -147,7 +133,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 variant='outline'
                 className='w-full'
                 type='button'
-                disabled={isLoading}
+                disabled={isPending}
               >
                 <IconBrandGithub className='h-4 w-4' /> GitHub
               </Button>
@@ -155,7 +141,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 variant='outline'
                 className='w-full'
                 type='button'
-                disabled={isLoading}
+                disabled={isPending}
               >
                 <IconBrandFacebook className='h-4 w-4' /> Facebook
               </Button>
