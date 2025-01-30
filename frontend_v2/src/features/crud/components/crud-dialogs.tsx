@@ -2,7 +2,7 @@ import { useCrud } from '../context/crud-context';
 import { CrudActionDialog } from './crud-action-dialog';
 import { CrudDeleteDialog } from './crud-delete-dialog';
 
-export function CrudDialogs() {
+export function CrudDialogs(fields: any) {
   const { open, setOpen, currentRow, setCurrentRow } = useCrud();
   return (
     <>
@@ -10,6 +10,7 @@ export function CrudDialogs() {
         key='user-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
+        fields={fields.fields}
       />
 
       {currentRow && (
@@ -24,6 +25,7 @@ export function CrudDialogs() {
               }, 500);
             }}
             currentRow={currentRow}
+            fields={fields}
           />
 
           <CrudDeleteDialog
