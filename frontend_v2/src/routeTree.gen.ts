@@ -46,11 +46,11 @@ const AuthenticatedSettingsIndexLazyImport = createFileRoute(
 const AuthenticatedHelpCenterIndexLazyImport = createFileRoute(
   '/_authenticated/help-center/',
 )()
-const AuthenticatedCrudIndexLazyImport = createFileRoute(
-  '/_authenticated/crud/',
-)()
 const AuthenticatedChatsIndexLazyImport = createFileRoute(
   '/_authenticated/chats/',
+)()
+const AuthenticatedCrudIndexLazyImport = createFileRoute(
+  '/_authenticated/$crud/',
 )()
 const AuthenticatedSettingsNotificationsLazyImport = createFileRoute(
   '/_authenticated/settings/notifications',
@@ -209,16 +209,6 @@ const AuthenticatedHelpCenterIndexLazyRoute =
     ),
   )
 
-const AuthenticatedCrudIndexLazyRoute = AuthenticatedCrudIndexLazyImport.update(
-  {
-    id: '/crud/',
-    path: '/crud/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/_authenticated/crud/index.lazy').then((d) => d.Route),
-)
-
 const AuthenticatedChatsIndexLazyRoute =
   AuthenticatedChatsIndexLazyImport.update({
     id: '/chats/',
@@ -227,6 +217,16 @@ const AuthenticatedChatsIndexLazyRoute =
   } as any).lazy(() =>
     import('./routes/_authenticated/chats/index.lazy').then((d) => d.Route),
   )
+
+const AuthenticatedCrudIndexLazyRoute = AuthenticatedCrudIndexLazyImport.update(
+  {
+    id: '/$crud/',
+    path: '/$crud/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/_authenticated/$crud/index.lazy').then((d) => d.Route),
+)
 
 const AuthenticatedSettingsNotificationsLazyRoute =
   AuthenticatedSettingsNotificationsLazyImport.update({
@@ -402,18 +402,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsNotificationsLazyImport
       parentRoute: typeof AuthenticatedSettingsRouteLazyImport
     }
+    '/_authenticated/$crud/': {
+      id: '/_authenticated/$crud/'
+      path: '/$crud'
+      fullPath: '/$crud'
+      preLoaderRoute: typeof AuthenticatedCrudIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/chats/': {
       id: '/_authenticated/chats/'
       path: '/chats'
       fullPath: '/chats'
       preLoaderRoute: typeof AuthenticatedChatsIndexLazyImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
-    '/_authenticated/crud/': {
-      id: '/_authenticated/crud/'
-      path: '/crud'
-      fullPath: '/crud'
-      preLoaderRoute: typeof AuthenticatedCrudIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/help-center/': {
@@ -478,8 +478,8 @@ const AuthenticatedSettingsRouteLazyRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteLazyRoute: typeof AuthenticatedSettingsRouteLazyRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedChatsIndexLazyRoute: typeof AuthenticatedChatsIndexLazyRoute
   AuthenticatedCrudIndexLazyRoute: typeof AuthenticatedCrudIndexLazyRoute
+  AuthenticatedChatsIndexLazyRoute: typeof AuthenticatedChatsIndexLazyRoute
   AuthenticatedHelpCenterIndexLazyRoute: typeof AuthenticatedHelpCenterIndexLazyRoute
   AuthenticatedTasksIndexLazyRoute: typeof AuthenticatedTasksIndexLazyRoute
   AuthenticatedUsersIndexLazyRoute: typeof AuthenticatedUsersIndexLazyRoute
@@ -489,8 +489,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteLazyRoute:
     AuthenticatedSettingsRouteLazyRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedChatsIndexLazyRoute: AuthenticatedChatsIndexLazyRoute,
   AuthenticatedCrudIndexLazyRoute: AuthenticatedCrudIndexLazyRoute,
+  AuthenticatedChatsIndexLazyRoute: AuthenticatedChatsIndexLazyRoute,
   AuthenticatedHelpCenterIndexLazyRoute: AuthenticatedHelpCenterIndexLazyRoute,
   AuthenticatedTasksIndexLazyRoute: AuthenticatedTasksIndexLazyRoute,
   AuthenticatedUsersIndexLazyRoute: AuthenticatedUsersIndexLazyRoute,
@@ -517,8 +517,8 @@ export interface FileRoutesByFullPath {
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceLazyRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayLazyRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsLazyRoute
+  '/$crud': typeof AuthenticatedCrudIndexLazyRoute
   '/chats': typeof AuthenticatedChatsIndexLazyRoute
-  '/crud': typeof AuthenticatedCrudIndexLazyRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexLazyRoute
   '/settings/': typeof AuthenticatedSettingsIndexLazyRoute
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
@@ -541,8 +541,8 @@ export interface FileRoutesByTo {
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceLazyRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayLazyRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsLazyRoute
+  '/$crud': typeof AuthenticatedCrudIndexLazyRoute
   '/chats': typeof AuthenticatedChatsIndexLazyRoute
-  '/crud': typeof AuthenticatedCrudIndexLazyRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexLazyRoute
   '/settings': typeof AuthenticatedSettingsIndexLazyRoute
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
@@ -569,8 +569,8 @@ export interface FileRoutesById {
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceLazyRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayLazyRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsLazyRoute
+  '/_authenticated/$crud/': typeof AuthenticatedCrudIndexLazyRoute
   '/_authenticated/chats/': typeof AuthenticatedChatsIndexLazyRoute
-  '/_authenticated/crud/': typeof AuthenticatedCrudIndexLazyRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexLazyRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexLazyRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexLazyRoute
@@ -597,8 +597,8 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
+    | '/$crud'
     | '/chats'
-    | '/crud'
     | '/help-center'
     | '/settings/'
     | '/tasks'
@@ -620,8 +620,8 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
+    | '/$crud'
     | '/chats'
-    | '/crud'
     | '/help-center'
     | '/settings'
     | '/tasks'
@@ -646,8 +646,8 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/notifications'
+    | '/_authenticated/$crud/'
     | '/_authenticated/chats/'
-    | '/_authenticated/crud/'
     | '/_authenticated/help-center/'
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
@@ -714,8 +714,8 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/settings",
         "/_authenticated/",
+        "/_authenticated/$crud/",
         "/_authenticated/chats/",
-        "/_authenticated/crud/",
         "/_authenticated/help-center/",
         "/_authenticated/tasks/",
         "/_authenticated/users/"
@@ -785,12 +785,12 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/settings/notifications.lazy.tsx",
       "parent": "/_authenticated/settings"
     },
-    "/_authenticated/chats/": {
-      "filePath": "_authenticated/chats/index.lazy.tsx",
+    "/_authenticated/$crud/": {
+      "filePath": "_authenticated/$crud/index.lazy.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/crud/": {
-      "filePath": "_authenticated/crud/index.lazy.tsx",
+    "/_authenticated/chats/": {
+      "filePath": "_authenticated/chats/index.lazy.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/help-center/": {

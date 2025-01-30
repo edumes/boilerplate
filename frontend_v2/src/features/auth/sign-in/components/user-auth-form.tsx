@@ -64,7 +64,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       console.error(error);
       toast({
         variant: 'destructive',
-        title: error.code + ': ' + error.name,
+        title: 'Error: ' + error.code,
         description: error.message,
       });
     }

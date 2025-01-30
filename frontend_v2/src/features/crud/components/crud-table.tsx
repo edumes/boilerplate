@@ -21,32 +21,58 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import { User } from '../data/schema';
+import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
 
 declare module '@tanstack/react-table' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
     className: string;
   }
 }
 
 interface DataTableProps {
-  columns: ColumnDef<User>[];
   data: User[];
+  fields: ColumnDef<User>[];
 }
 
-export function CrudTable({ columns, data }: DataTableProps) {
+export function CrudTable({ data, fields }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  console.log({ fields });
+
+  const columns = Array.isArray(fields)
+    ? fields
+    : Object.keys(fields || {}).map((fieldKey: any) => {
+      const field: any = fields[fieldKey];
+
+      if (field.type === 'date') {
+        return {
+          accessorKey: fieldKey,
+          header: ({ column }: any) => <DataTableColumnHeader column={column} title={field.label} />,
+          cell: ({ row }: any) => {
+            const date = row.getValue(fieldKey);
+            return <div>{date ? dayjs(date).format('DD/MM/YYYY') : '-'}</div>;
+          },
+        };
+      }
+
+      return {
+        accessorKey: fieldKey,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={field.label} />,
+        cell: ({ row }) => <div>{row.getValue(fieldKey)}</div>,
+      };
+    });
+
   const table = useReactTable({
     data,
-    columns,
+    columns: columns || [],
     state: {
       sorting,
       columnVisibility,
@@ -67,13 +93,13 @@ export function CrudTable({ columns, data }: DataTableProps) {
   });
 
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className='rounded-md border'>
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
+              <TableRow key={headerGroup.id} className="group/row">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -83,10 +109,7 @@ export function CrudTable({ columns, data }: DataTableProps) {
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -96,30 +119,17 @@ export function CrudTable({ columns, data }: DataTableProps) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className='group/row'
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} className="group/row">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.className ?? ''}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                    <TableCell key={cell.id} className={cell.column.columnDef.meta?.className ?? ''}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
+                <TableCell colSpan={columns.length || 1} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
