@@ -62,7 +62,7 @@ import React, {
     const [customSize, setCustomSize] = useState<{
       width?: number;
       height?: number;
-    }>({ width: 384 });
+    }>({ width: 484 });
     const cardRef = useRef<HTMLDivElement>(null);
   
     const onMouseDown = useCallback(
@@ -257,9 +257,9 @@ import React, {
       }
   
       return (
-        <CardHeader className="flex flex-row items-center justify-between space-x-2 p-0 px-6">
+        <CardHeader className="flex flex-row items-center justify-between space-x-2 p-0 px-6 py-3 bg-muted/50">
           {title && (
-            <CardTitle className="translate-y-1 truncate text-base">
+            <CardTitle className="truncate text-base">
               {title}
             </CardTitle>
           )}

@@ -1,53 +1,41 @@
 'use client';
 
-import { PasswordInput } from '@/components/password-input';
-import { SelectDropdown } from '@/components/select-dropdown';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  DialogFooter
 } from '@/components/ui/dialog';
+import DraggableWrapper from '@/components/ui/draggable-wrapper';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  Form
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from '@/hooks/use-toast';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { userTypes } from '../data/data';
-import { User } from '../data/schema';
-import { ChevronDown } from 'lucide-react';
-import DraggableWrapper from '@/components/ui/draggable-wrapper';
 import { cn } from '@/lib/utils';
-import { Select } from '@/components/ui/select';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useWatch } from 'react-hook-form';
+import { CrudFormalize } from './crud-formalize';
 import { createValidationSchema } from './formValidationSchema';
 
 interface Props {
-  currentRow?: User;
+  currentRow?: any;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  fields: any;
+  config: any;
 }
 
-export function CrudActionDialog({ currentRow, open, onOpenChange, fields }: Props) {
+export function CrudActionDialog({ currentRow, open, onOpenChange, config }: Props) {
   const isEdit = !!currentRow;
 
-  const formSchema = createValidationSchema(fields);
+  const formSchema = createValidationSchema(config.fields ?? {});
 
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
+
+  const { control } = form;
+  const watchedValues = useWatch({ control });
+  console.log({ watchedValues });
+  console.log({ config });
 
   const onSubmit = (values: any) => {
     form.reset();
@@ -62,11 +50,9 @@ export function CrudActionDialog({ currentRow, open, onOpenChange, fields }: Pro
     onOpenChange(false);
   };
 
-  console.log({ fields })
-
   return (
     <DraggableWrapper
-      title={isEdit ? 'Edit User' : 'Add New User'}
+      title={isEdit ? `Edit ${config.config.singularName}` : `Add New ${config.config.singularName}`}
       width="min-w-96"
       height="auto"
       className={cn(
@@ -74,46 +60,19 @@ export function CrudActionDialog({ currentRow, open, onOpenChange, fields }: Pro
         !open ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
       )}
       defaultPosition={{
-        x: window.innerWidth / 2 - 192,
-        y: window.innerHeight / 2 - 200
+        x: window.innerWidth / 2 - 150,
+        y: window.innerHeight / 2 - 300
       }}
+      maximizeButton={null}
     >
-      <ScrollArea className="h-[26.25rem] w-full pr-4 -mr-4 py-1">
+      <ScrollArea className="h-[36.25rem] pr-4 -mr-4 py-1">
         <Form {...form}>
           <form
-            id="crud-form"
+            id='crud-form'
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 p-0.5"
+            className='space-y-4 p-0.5'
           >
-            <div>
-              {Object.entries(fields).map(([fieldName, field]: any) => (
-                <FormField
-                  key={fieldName}
-                  control={form.control}
-                  name={fieldName}
-                  render={({ field: formField }) => (
-                    <FormItem className="flex flex-col space-y-1.5">
-                      <FormLabel>{field.label}</FormLabel>
-                      <FormControl>
-                        {field.type === 'text' && (
-                          <Input placeholder={field.label} {...formField} />
-                        )}
-                        {/* {field.type === 'password' && (
-                          <PasswordInput placeholder={field.label} {...formField} />
-                        )}
-                        {field.type === 'select' && (
-                          <Select
-                            // items={field.options} // Passando opções para o dropdown
-                            {...formField}
-                          />
-                        )} */}
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </div>
+            <CrudFormalize control={form.control} config={config} />
           </form>
         </Form>
       </ScrollArea>

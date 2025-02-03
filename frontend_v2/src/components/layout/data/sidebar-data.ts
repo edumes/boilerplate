@@ -63,17 +63,17 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Users',
-          url: '/users',
+          url: '/general/users',
           icon: IconUsers,
         },
         {
           title: 'Roles',
-          url: '/roles',
+          url: '/general/roles',
           icon: IconUsers,
         },
         {
           title: 'Projects',
-          url: '/projects',
+          url: '/general/projects',
           icon: IconChecklist,
         },
       ],

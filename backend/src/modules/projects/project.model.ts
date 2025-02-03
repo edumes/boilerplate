@@ -66,8 +66,9 @@ export class Project extends BaseModel {
     canEdit: true,
     order: 4,
     required: true,
-    width: 2,
+    width: 4,
     type: FIELD_TYPE.SELECT,
+    select: { url: 'situations/select-options' },
   })
   project_fk_situation_id: number;
 

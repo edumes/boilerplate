@@ -63,7 +63,7 @@ export default function Crud() {
         </div>
       </Main>
 
-      <CrudDialogs fields={crudConfig.fields} />
+      <CrudDialogs config={crudConfig} />
     </CrudProvider>
   );
 }
