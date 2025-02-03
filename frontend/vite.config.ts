@@ -1,15 +1,18 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import path from 'path';
-import dynamicImport from 'vite-plugin-dynamic-import'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), dynamicImport()],
-  assetsInclude: ['**/*.md'],
+  plugins: [react(), TanStackRouterVite()],
   resolve: {
     alias: {
-      '@': path.join(__dirname, 'src'),
+      '@': path.resolve(__dirname, './src'),
+
+      // fix loading all icon chunks in dev mode
+      // https://github.com/tabler/tabler-icons/issues/1233
+      '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
     },
   },
   server: {
@@ -19,10 +22,7 @@ export default defineConfig({
         target: 'http://localhost:3333',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
-      }
-    }
+      },
+    },
   },
-  build: {
-    outDir: 'build'
-  }
-})
+});
