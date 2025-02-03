@@ -77,7 +77,8 @@ interface FieldNumberConfig {
 }
 
 interface FieldSelectConfig {
-  type: SELECT_TYPE;
+  // type: SELECT_TYPE;
+  url: string;
   options?: string[];
 }
 
