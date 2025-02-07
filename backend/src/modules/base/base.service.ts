@@ -22,6 +22,7 @@ export interface IServiceHooks<T> {
   afterUpdate?(entity: T): Promise<void>;
   beforeDelete?(id: number): Promise<void>;
   afterDelete?(entity: T): Promise<void>;
+  defineRelationFields?(): string[];
 }
 
 export interface ServiceContext {
@@ -78,6 +79,10 @@ export class BaseService<T extends IBaseModel> {
   }
 
   private getRelationFields(): string[] {
+    if (this.hooks.defineRelationFields) {
+      return this.hooks.defineRelationFields();
+    }
+
     const relations: string[] = [];
     const metadata = this.repository.metadata;
     const processedPaths = new Set<string>();

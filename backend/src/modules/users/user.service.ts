@@ -44,6 +44,9 @@ export class UserService extends BaseService<User> {
       afterDelete: async entity => {
         await this.cleanupUserData(entity.id);
       },
+      // defineRelationFields: () => {
+      //   return ['relation1', 'relation2', 'relation3.relation6'];
+      // }
     });
   }
 
