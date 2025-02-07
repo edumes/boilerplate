@@ -3,45 +3,21 @@ import { Main } from '@/components/layout/main';
 import { ProfileDropdown } from '@/components/profile-dropdown';
 import { Search } from '@/components/search';
 import { ThemeSwitch } from '@/components/theme-switch';
-import { api } from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
 import { Outlet, useParams } from '@tanstack/react-router';
 import { CrudPrimaryButtons } from './components/crud-primary-buttons';
-import { CrudTable } from './components/crud-table';
-import { CrudProviderProps } from './context/crud-context';
+import { CrudTabs } from './components/crud-tabs';
+import CrudProvider, { CrudProviderProps, useCrud } from './context/crud-context';
 
-export default function Crud() {
+export default function CrudEditAddPage() {
   const params = useParams({ strict: false });
-  const { crud } = params as Required<CrudProviderProps>;
+  const { crud, id } = params as Required<CrudProviderProps>;
+  const { crudConfig, isLoadingConfig, crudEditData, isLoadingEditData } = useCrud();
 
-  const {
-    data: crudConfig,
-    isLoading: isLoadingConfig,
-  } = useQuery({
-    queryKey: [`${crud}-fields`],
-    queryFn: async () => {
-      const response = await api.get(`/${crud}/fields`);
-      return response.data.data || {};
-    },
-    staleTime: 150000,
-  });
-
-  const {
-    data: crudData,
-    isLoading: isLoadingData,
-  } = useQuery({
-    queryKey: [crud],
-    queryFn: async () => {
-      const response = await api.get(`/${crud}`);
-      return response.data.data || [];
-    },
-  });
-
-  console.log({ crud });
+  console.log({ params });
   console.log({ crudConfig });
-  console.log({ crudData });
+  console.log({ crudEditData });
 
-  if (isLoadingConfig || isLoadingData) {
+  if (isLoadingConfig || isLoadingEditData) {
     return <Outlet />;
   }
 
@@ -66,7 +42,7 @@ export default function Crud() {
           <CrudPrimaryButtons />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <CrudTable data={crudData} fields={crudConfig.fields} />
+          <CrudTabs />
         </div>
       </Main>
     </>

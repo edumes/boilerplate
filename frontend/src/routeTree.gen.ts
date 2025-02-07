@@ -64,6 +64,12 @@ const AuthenticatedSettingsAccountLazyImport = createFileRoute(
 const AuthenticatedGeneralCrudIndexLazyImport = createFileRoute(
   '/_authenticated/general/$crud/',
 )()
+const AuthenticatedGeneralCrudAddIndexLazyImport = createFileRoute(
+  '/_authenticated/general/$crud/add/',
+)()
+const AuthenticatedGeneralCrudIdIndexLazyImport = createFileRoute(
+  '/_authenticated/general/$crud/$id/',
+)()
 
 // Create/Update Routes
 
@@ -273,6 +279,28 @@ const AuthenticatedGeneralCrudIndexLazyRoute =
     ),
   )
 
+const AuthenticatedGeneralCrudAddIndexLazyRoute =
+  AuthenticatedGeneralCrudAddIndexLazyImport.update({
+    id: '/general/$crud/add/',
+    path: '/general/$crud/add/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/general/$crud/add/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedGeneralCrudIdIndexLazyRoute =
+  AuthenticatedGeneralCrudIdIndexLazyImport.update({
+    id: '/general/$crud/$id/',
+    path: '/general/$crud/$id/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/general/$crud/$id/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -445,6 +473,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGeneralCrudIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/general/$crud/$id/': {
+      id: '/_authenticated/general/$crud/$id/'
+      path: '/general/$crud/$id'
+      fullPath: '/general/$crud/$id'
+      preLoaderRoute: typeof AuthenticatedGeneralCrudIdIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/general/$crud/add/': {
+      id: '/_authenticated/general/$crud/add/'
+      path: '/general/$crud/add'
+      fullPath: '/general/$crud/add'
+      preLoaderRoute: typeof AuthenticatedGeneralCrudAddIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
   }
 }
 
@@ -484,6 +526,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTasksIndexLazyRoute: typeof AuthenticatedTasksIndexLazyRoute
   AuthenticatedUsersIndexLazyRoute: typeof AuthenticatedUsersIndexLazyRoute
   AuthenticatedGeneralCrudIndexLazyRoute: typeof AuthenticatedGeneralCrudIndexLazyRoute
+  AuthenticatedGeneralCrudIdIndexLazyRoute: typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  AuthenticatedGeneralCrudAddIndexLazyRoute: typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -496,6 +540,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUsersIndexLazyRoute: AuthenticatedUsersIndexLazyRoute,
   AuthenticatedGeneralCrudIndexLazyRoute:
     AuthenticatedGeneralCrudIndexLazyRoute,
+  AuthenticatedGeneralCrudIdIndexLazyRoute:
+    AuthenticatedGeneralCrudIdIndexLazyRoute,
+  AuthenticatedGeneralCrudAddIndexLazyRoute:
+    AuthenticatedGeneralCrudAddIndexLazyRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -525,6 +573,8 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
   '/general/$crud': typeof AuthenticatedGeneralCrudIndexLazyRoute
+  '/general/$crud/$id': typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  '/general/$crud/add': typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -549,6 +599,8 @@ export interface FileRoutesByTo {
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
   '/general/$crud': typeof AuthenticatedGeneralCrudIndexLazyRoute
+  '/general/$crud/$id': typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  '/general/$crud/add': typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -577,6 +629,8 @@ export interface FileRoutesById {
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexLazyRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexLazyRoute
   '/_authenticated/general/$crud/': typeof AuthenticatedGeneralCrudIndexLazyRoute
+  '/_authenticated/general/$crud/$id/': typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  '/_authenticated/general/$crud/add/': typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -605,6 +659,8 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/users'
     | '/general/$crud'
+    | '/general/$crud/$id'
+    | '/general/$crud/add'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/500'
@@ -628,6 +684,8 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/users'
     | '/general/$crud'
+    | '/general/$crud/$id'
+    | '/general/$crud/add'
   id:
     | '__root__'
     | '/_authenticated'
@@ -654,6 +712,8 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
     | '/_authenticated/general/$crud/'
+    | '/_authenticated/general/$crud/$id/'
+    | '/_authenticated/general/$crud/add/'
   fileRoutesById: FileRoutesById
 }
 
@@ -720,7 +780,9 @@ export const routeTree = rootRoute
         "/_authenticated/help-center/",
         "/_authenticated/tasks/",
         "/_authenticated/users/",
-        "/_authenticated/general/$crud/"
+        "/_authenticated/general/$crud/",
+        "/_authenticated/general/$crud/$id/",
+        "/_authenticated/general/$crud/add/"
       ]
     },
     "/(auth)/500": {
@@ -809,6 +871,14 @@ export const routeTree = rootRoute
     },
     "/_authenticated/general/$crud/": {
       "filePath": "_authenticated/general/$crud/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/general/$crud/$id/": {
+      "filePath": "_authenticated/general/$crud/$id/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/general/$crud/add/": {
+      "filePath": "_authenticated/general/$crud/add/index.lazy.tsx",
       "parent": "/_authenticated"
     }
   }
