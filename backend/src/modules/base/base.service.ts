@@ -1,4 +1,9 @@
-import { FieldConfigOptions, FormConfig, getFieldConfigs, getFormConfig } from '@core/decorators/field-config.decorator';
+import {
+  FieldConfigOptions,
+  FormConfig,
+  getFieldConfigs,
+  getFormConfig,
+} from '@core/decorators/field-config.decorator';
 import { ReportOptions, ReportService } from '@core/reports/report.service';
 import { PaginationOptions } from '@core/utils/api-response.util';
 import { AuditAction } from '@modules/audits/audit.model';
@@ -48,13 +53,13 @@ export class BaseService<T extends IBaseModel> {
   constructor(
     protected repository: Repository<T>,
     protected modelName: string,
-  ) { }
+  ) {}
 
   public getModelName(): string {
     return this.modelName;
   }
 
-  public getFields(): { config: FormConfig, fields: Record<string, FieldConfigOptions> } {
+  public getFields(): { config: FormConfig; fields: Record<string, FieldConfigOptions> } {
     const entityClass = this.repository.target;
 
     const fieldConfigs = getFieldConfigs(entityClass);
@@ -104,7 +109,7 @@ export class BaseService<T extends IBaseModel> {
             (prefix === ''
               ? column.propertyName.includes(relation.propertyName)
               : column.propertyName.includes(relation.propertyName) ||
-              column.propertyName.includes(prefix.split('.').pop() || '')),
+                column.propertyName.includes(prefix.split('.').pop() || '')),
         );
 
         if (hasForeignKey) {
@@ -274,11 +279,29 @@ export class BaseService<T extends IBaseModel> {
     const skip = (page - 1) * limit;
     const relations = this.getRelationFields();
 
-    if (!searchTerm || searchFields.length === 0) {
+    if (!searchTerm) {
       return this.findAll(options);
     }
 
-    const whereConditions = searchFields.map(field => ({
+    let fieldsToSearch: string[] = [];
+
+    if (searchFields.length === 0) {
+      fieldsToSearch = this.repository.metadata.columns
+        .filter(column => {
+          const type =
+            typeof column.type === 'string'
+              ? column.type.toLowerCase()
+              : (column.type as Function).name.toLowerCase();
+
+          const textTypes = ['varchar', 'character varying', 'text'];
+          return textTypes.includes(type);
+        })
+        .map(column => column.propertyName);
+    } else {
+      fieldsToSearch = searchFields;
+    }
+
+    const whereConditions = fieldsToSearch.map(field => ({
       [field]: ILike(`%${searchTerm}%`),
     })) as FindOptionsWhere<T>[];
 

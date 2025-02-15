@@ -6,8 +6,9 @@ import { ThemeSwitch } from '@/components/theme-switch';
 import { api } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { Outlet, useParams } from '@tanstack/react-router';
+import { useState } from 'react';
 import { CrudPrimaryButtons } from './components/crud-primary-buttons';
-import { CrudTable } from './components/crud-table';
+import { CrudTable, PaginationProps } from './components/crud-table';
 import { CrudProviderProps } from './context/crud-context';
 
 export default function Crud() {
@@ -26,16 +27,39 @@ export default function Crud() {
     staleTime: 150000,
   });
 
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [meta, setMeta] = useState<PaginationProps>({
+    page: 1,
+    limit: 10,
+    totalItems: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  });
+
   const {
     data: crudData,
     isLoading: isLoadingData,
+    // refetch,
   } = useQuery({
-    queryKey: [crud],
+    queryKey: [crud, page, limit],
     queryFn: async () => {
-      const response = await api.get(`/${crud}`);
+      const response = await api.get(`/${crud}?page=${page}&limit=${limit}`);
+      setMeta(response.data.meta);
       return response.data.data || [];
     },
   });
+
+  const handlePageChange = async (newPage: number) => {
+    console.log('Changing to page:', newPage);
+    setPage(newPage);
+  };
+
+  const handleLimitChange = async (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
+  };
 
   console.log({ crud });
   console.log({ crudConfig });
@@ -66,7 +90,14 @@ export default function Crud() {
           <CrudPrimaryButtons />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <CrudTable data={crudData} fields={crudConfig.fields} />
+          <CrudTable 
+            data={crudData} 
+            meta={meta} 
+            crud={crudConfig.config.table} 
+            fields={crudConfig.fields}
+            onPageChange={handlePageChange}
+            onLimitChange={handleLimitChange}
+          />
         </div>
       </Main>
     </>

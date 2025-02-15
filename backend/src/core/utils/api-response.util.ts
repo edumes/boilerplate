@@ -56,8 +56,8 @@ export class ApiResponseBuilder {
   }
 
   static buildPaginationMeta(totalItems: number, options: PaginationOptions): PaginationMeta {
-    const page = options.page || 1;
-    const limit = options.limit || 10;
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 10;
     const totalPages = Math.ceil(totalItems / limit);
 
     return {
