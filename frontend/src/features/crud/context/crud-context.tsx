@@ -12,9 +12,9 @@ interface CrudContextType {
   currentRow: User | null;
   setCurrentRow: React.Dispatch<React.SetStateAction<User | null>>;
   crudConfig: any;
-  crudEditData: any;
+  crudEditData?: any;
   isLoadingConfig: boolean;
-  isLoadingEditData: boolean;
+  isLoadingEditData?: boolean;
 }
 
 const CrudContext = React.createContext<CrudContextType | null>(null);
@@ -25,7 +25,7 @@ export interface CrudProviderProps {
   id?: string;
 }
 
-export default function CrudProvider({ children, crud, id }: CrudProviderProps) {
+export default function CrudProvider({ children, crud }: CrudProviderProps) {
   const {
     data: crudConfig,
     isLoading: isLoadingConfig,
@@ -38,16 +38,16 @@ export default function CrudProvider({ children, crud, id }: CrudProviderProps) 
     staleTime: 150000,
   });
 
-  const {
-    data: crudEditData,
-    isLoading: isLoadingEditData,
-  } = useQuery({
-    queryKey: [`${crud}-${id}`],
-    queryFn: async () => {
-      const response = await api.get(`/${crud}/${id}`);
-      return response.data.data || [];
-    },
-  });
+  // const {
+  //   data: crudEditData,
+  //   isLoading: isLoadingEditData,
+  // } = useQuery({
+  //   queryKey: [`${crud}-${id}`],
+  //   queryFn: async () => {
+  //     const response = await api.get(`/${crud}/${id}`);
+  //     return response.data.data || [];
+  //   },
+  // });
 
   const [open, setOpen] = useDialogState<CrudDialogType>(null);
   const [currentRow, setCurrentRow] = useState<User | null>(null);
@@ -60,9 +60,9 @@ export default function CrudProvider({ children, crud, id }: CrudProviderProps) 
         currentRow,
         setCurrentRow,
         crudConfig,
-        crudEditData,
+        // crudEditData,
         isLoadingConfig,
-        isLoadingEditData,
+        // isLoadingEditData,
       }}
     >
       {children}

@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField as IFormField } from '@/types/forms';
+import { CircleXIcon } from 'lucide-react';
 import { Control } from 'react-hook-form';
 
 const widthClasses: { [key: number]: string } = {
@@ -97,12 +98,24 @@ export function CrudFormalize({ control, config }: CrudFormalizeProps) {
                                         );
                                     default:
                                         return (
-                                            <Input
-                                                type={field.type}
-                                                autoComplete="off"
-                                                placeholder={field.label}
-                                                {...renderField}
-                                            />
+                                            <div className="relative">
+                                                <Input
+                                                    type={field.type}
+                                                    autoComplete="off"
+                                                    placeholder={field.label}
+                                                    {...renderField}
+                                                />
+                                                {renderField.value && (
+                                                    <button
+                                                        className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                                                        aria-label="Clear input"
+                                                        type='button'
+                                                        onClick={() => renderField.onChange('')}
+                                                    >
+                                                        <CircleXIcon size={16} strokeWidth={2} aria-hidden="true" />
+                                                    </button>
+                                                )}
+                                            </div>
                                         );
                                 }
                             };

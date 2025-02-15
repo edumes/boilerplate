@@ -28,6 +28,7 @@ export class Project extends BaseModel {
     required: true,
     width: 4,
     type: FIELD_TYPE.TEXT,
+    tabs: ['main'],
   })
   project_code: string;
 
@@ -39,8 +40,10 @@ export class Project extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 2,
+    required: true,
     width: 8,
     type: FIELD_TYPE.TEXT,
+    tabs: ['main'],
   })
   project_description: string;
 
@@ -54,6 +57,7 @@ export class Project extends BaseModel {
     order: 3,
     width: 12,
     type: FIELD_TYPE.RICHTEXT,
+    tabs: ['main'],
   })
   project_obs: string;
 
@@ -69,6 +73,7 @@ export class Project extends BaseModel {
     width: 4,
     type: FIELD_TYPE.SELECT,
     select: { url: 'situations/select-options' },
+    tabs: ['main'],
   })
   project_fk_situation_id: number;
 
@@ -84,8 +89,10 @@ export class Project extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 5,
+    // required: true,
     width: 4,
     type: FIELD_TYPE.DATE,
+    tabs: ['dates'],
   })
   project_inital_date: Date;
 
@@ -98,6 +105,7 @@ export class Project extends BaseModel {
     order: 6,
     width: 4,
     type: FIELD_TYPE.DATE,
+    tabs: ['dates'],
   })
   project_final_date: Date;
 

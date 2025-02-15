@@ -16,9 +16,9 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
 
 export interface Option {
     value: string;
@@ -98,13 +98,17 @@ export function AsyncSelect<T>({
     const debouncedSearchTerm = useDebounce(searchTerm, preload ? 0 : 300);
     const [originalOptions, setOriginalOptions] = useState<T[]>([]);
 
-    // Move useQuery to component level
     const { data: queryData, isLoading: queryLoading } = useQuery({
-        queryKey: [`${name}-select-options`],
+        queryKey: [`${name}-select-options`, debouncedSearchTerm],
         queryFn: async () => {
-            const response = await api.get(`${fetcher}`);
+            const response = await api.get(`${fetcher}`, {
+                params: {
+                    search: debouncedSearchTerm
+                }
+            });
             return response.data.data || [];
         },
+        enabled: preload ? !debouncedSearchTerm : true
     });
 
     useEffect(() => {
@@ -112,7 +116,6 @@ export function AsyncSelect<T>({
         setSelectedValue(value);
     }, [value]);
 
-    // Initialize selectedOption when options are loaded and value exists
     useEffect(() => {
         if (value && options.length > 0) {
             const option = options.find(opt => getOptionValue(opt) === value);
@@ -122,13 +125,13 @@ export function AsyncSelect<T>({
         }
     }, [value, options, getOptionValue]);
 
-    // Effect for initial fetch
     useEffect(() => {
         const initializeOptions = async () => {
+            if (!queryData) return;
+
             try {
                 setLoading(true);
                 setError(null);
-                // If we have a value, use it for the initial search
                 const data = await fetchData(value);
                 setOriginalOptions(data);
                 setOptions(data);
@@ -139,40 +142,27 @@ export function AsyncSelect<T>({
             }
         };
 
-        if (!mounted) {
+        if (!mounted && queryData) {
             initializeOptions();
         }
-    }, [mounted, fetcher, value]);
+    }, [mounted, fetcher, value, queryData]);
 
     useEffect(() => {
-        const fetchOptions = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const data = await fetchData(debouncedSearchTerm);
-                setOriginalOptions(data);
-                setOptions(data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to fetch options');
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (!queryData) return;
 
-        if (!mounted) {
-            fetchOptions();
-        } else if (!preload) {
-            fetchOptions();
-        } else if (preload) {
+        if (preload) {
             if (debouncedSearchTerm) {
-                setOptions(originalOptions.filter((option) => filterFn ? filterFn(option, debouncedSearchTerm) : true));
+                setOptions(originalOptions.filter((option) =>
+                    filterFn ? filterFn(option, debouncedSearchTerm) : true
+                ));
             } else {
                 setOptions(originalOptions);
             }
+        } else {
+            setOptions(queryData);
         }
-    }, [fetcher, debouncedSearchTerm, mounted, preload, filterFn]);
+    }, [queryData, debouncedSearchTerm, preload, filterFn, originalOptions]);
 
-    // Update loading state based on queryLoading
     useEffect(() => {
         setLoading(queryLoading);
     }, [queryLoading]);
@@ -187,18 +177,16 @@ export function AsyncSelect<T>({
 
     async function fetchData(query?: string): Promise<any[]> {
         if (!queryData) return [];
-        
-        // If there's a search query, filter the data
+
         if (query && query !== "") {
             const lowercaseQuery = query.toLowerCase();
             return queryData
-                .filter((option: any) => 
+                .filter((option: any) =>
                     option.label.toLowerCase().includes(lowercaseQuery)
                 )
-                .slice(0, 10); // Return only first 10 matches
+                .slice(0, 10);
         }
-        
-        // Return first 10 if no query
+
         return queryData.slice(0, 10);
     }
 
@@ -210,7 +198,7 @@ export function AsyncSelect<T>({
                     role="combobox"
                     aria-expanded={open}
                     className={cn(
-                        "justify-between",
+                        "justify-between w-full",
                         disabled && "opacity-50 cursor-not-allowed",
                         triggerClassName
                     )}
@@ -225,7 +213,11 @@ export function AsyncSelect<T>({
                     <ChevronsUpDown className="opacity-50" size={10} />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent style={{ width: width }} className={cn("p-0", className)}>
+            <PopoverContent
+                className={cn("p-0 w-[--radix-popover-trigger-width]", className)}
+                style={{ minWidth: "max-content" }}
+                align="start"
+            >
                 <Command shouldFilter={false}>
                     <div className="relative border-b w-full">
                         <CommandInput
@@ -283,7 +275,7 @@ function DefaultLoadingSkeleton() {
             {[1, 2, 3].map((i) => (
                 <CommandItem key={i} disabled>
                     <div className="flex items-center gap-2 w-full">
-                        <div className="h-6 w-6 rounded-full animate-pulse bg-muted" />
+                        {/* <div className="h-6 w-6 rounded-full animate-pulse bg-muted" /> */}
                         <div className="flex flex-col flex-1 gap-1">
                             <div className="h-4 w-24 animate-pulse bg-muted rounded" />
                             <div className="h-3 w-16 animate-pulse bg-muted rounded" />
