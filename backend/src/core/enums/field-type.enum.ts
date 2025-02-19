@@ -1,0 +1,17 @@
+export enum FIELD_TYPE {
+    TEXT = 'text',
+    CHECKBOX = 'checkbox',
+    RICHTEXT = 'richtext',
+    NUMBER = 'number',
+    DATE = 'date',
+    EMAIL = 'email',
+    URL = 'url',
+    FILE = 'file',
+    BOOLEAN = 'boolean',
+    SELECT = 'select',
+    MULTISELECT = 'multiselect',
+    COLOR = 'color',
+    DATE_TIME = 'datetime',
+    TIME = 'time',
+    CURRENCY = 'currency',
+}

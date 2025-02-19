@@ -1,46 +1,9 @@
+import { CURRENCY_TYPE } from '@core/enums/currency-type.enum';
+import { DATE_TYPE } from '@core/enums/date-type.enum';
+import { FIELD_TYPE } from '@core/enums/field-type.enum';
+import { NUMBER_TYPE } from '@core/enums/number-typ.enum';
 import { pluralize } from '@core/utils/string.util';
 import 'reflect-metadata';
-
-export enum FIELD_TYPE {
-  TEXT = 'text',
-  CHECKBOX = 'checkbox',
-  RICHTEXT = 'richtext',
-  NUMBER = 'number',
-  DATE = 'date',
-  EMAIL = 'email',
-  URL = 'url',
-  FILE = 'file',
-  BOOLEAN = 'boolean',
-  SELECT = 'select',
-  MULTISELECT = 'multiselect',
-  COLOR = 'color',
-  DATE_TIME = 'datetime',
-  TIME = 'time',
-  CURRENCY = 'currency',
-}
-
-export enum DATE_TYPE {
-  DATE_ONLY = 'date',
-  DATE_TIME = 'datetime',
-}
-
-export enum CURRENCY_TYPE {
-  USD = 'USD',
-  EUR = 'EUR',
-  BRL = 'BRL',
-}
-
-export enum NUMBER_TYPE {
-  INTEGER = 'integer',
-  DECIMAL = 'decimal',
-  PERCENT = 'percent',
-  CURRENCY = 'currency',
-}
-
-export enum SELECT_TYPE {
-  SINGLE = 'single',
-  MULTIPLE = 'multiple',
-}
 
 export interface FieldConfigOptions {
   name?: string;
@@ -79,7 +42,7 @@ interface FieldNumberConfig {
 interface FieldSelectConfig {
   // type: SELECT_TYPE;
   url: string;
-  options?: string[];
+  options?: any;
 }
 
 export interface FormConfig {
@@ -97,6 +60,15 @@ export interface TabConfig {
   label: string;
 }
 
+export interface FormConfigOptions {
+  prefix?: string;
+  table?: string;
+  singularName?: string;
+  pluralName?: string;
+  icon?: string;
+  version?: string;
+}
+
 export function FieldConfig(config: FieldConfigOptions) {
   return (target: any, propertyKey: string) => {
     const existingConfigs = Reflect.getMetadata('fieldConfigs', target.constructor) || {};
@@ -109,8 +81,15 @@ export function getFieldConfigs(entityClass: any): Record<string, FieldConfigOpt
   return Reflect.getMetadata('fieldConfigs', entityClass) || {};
 }
 
+export function FormMetadata(config: FormConfigOptions) {
+  return function (target: any) {
+    Reflect.defineMetadata('formMetadata', config, target);
+  };
+}
+
 export function getFormConfig(entityClass: any): FormConfig {
   const fieldConfigs = getFieldConfigs(entityClass);
+  const formMetadata = Reflect.getMetadata('formMetadata', entityClass) || {};
 
   const tabs: TabConfig[] = Object.keys(fieldConfigs)
     .reduce((tabs: TabConfig[], fieldName: string) => {
@@ -126,12 +105,12 @@ export function getFormConfig(entityClass: any): FormConfig {
     }, []);
 
   return {
-    prefix: entityClass.name.toLowerCase(),
-    table: pluralize(entityClass.name.toLowerCase()),
-    singularName: entityClass.name.toLowerCase(),
-    pluralName: pluralize(entityClass.name.toLowerCase()),
-    icon: entityClass.name.toLowerCase(),
+    prefix: formMetadata.prefix || entityClass.name.toLowerCase(),
+    table: formMetadata.table || pluralize(entityClass.name.toLowerCase()),
+    singularName: formMetadata.singularName || entityClass.name.toLowerCase(),
+    pluralName: formMetadata.pluralName || pluralize(entityClass.name.toLowerCase()),
+    icon: formMetadata.icon || entityClass.name.toLowerCase(),
     tabs,
-    version: '1.0.0',
+    version: formMetadata.version || '1.0.0',
   };
 }
