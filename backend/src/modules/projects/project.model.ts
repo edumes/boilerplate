@@ -5,7 +5,6 @@ import { BaseModel } from '@modules/base/base.model';
 import { Situation } from '@modules/situations/situation.model';
 import { User } from '@modules/users/user.model';
 import {
-  Check,
   Column,
   CreateDateColumn,
   Entity,
@@ -13,7 +12,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 @Entity({ name: 'projects' })
@@ -95,7 +94,6 @@ export class Project extends BaseModel {
   @JoinColumn({ name: 'project_fk_situation_id' })
   situation: Situation;
 
-  @Check(`"project_initial_date" < "project_final_date"`)
   @Column({ type: 'timestamp', nullable: true })
   @FieldConfig({
     label: 'Data de Início',

@@ -21,7 +21,7 @@ export function CrudTabs() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await api.post(`/${crudConfig.config.pluralName}`, data);
+      const response = await api.post(`/${crudConfig.config.table}`, data);
       return response.data;
     },
     onSuccess: () => {
@@ -29,7 +29,7 @@ export function CrudTabs() {
         variant: 'default',
         title: 'Saved successfully!',
       });
-      navigate({ to: `/general/${crudConfig.config.pluralName}` });
+      navigate({ to: `/general/${crudConfig.config.table}` });
     },
     onError: (error: any) => {
       toast({

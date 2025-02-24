@@ -1,4 +1,5 @@
-import { FIELD_TYPE, FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
+import { FieldConfig } from '@core/decorators/field-config.decorator';
+import { FIELD_TYPE } from '@core/enums/field-type.enum';
 import { BaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import {
