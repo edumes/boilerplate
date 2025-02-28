@@ -19,8 +19,8 @@ import {
 @FormMetadata({
   prefix: 'project',
   table: 'projects',
-  singularName: 'Projeto',
-  pluralName: 'Projetos',
+  singularName: 'Project',
+  pluralName: 'Projects',
   icon: 'project-management',
   version: '1.0.0'
 })

@@ -95,8 +95,9 @@ export function CrudTabs() {
           {crudConfig.config.tabs.map((tab: TabConfig) => (
             <TabsContent key={tab.key} value={tab.key}>
               <CrudFormalize
-                control={methods.control}
+                {...methods}
                 config={{ fields: fieldsByTab[tab.key] || {} }}
+                setValue={methods.setValue}
               />
             </TabsContent>
           ))}
@@ -106,7 +107,7 @@ export function CrudTabs() {
           <Button
             type="submit"
             loading={submitting}
-            effect="gooeyRight"
+            effect="expandIcon"
             icon={SaveIcon}
             iconPlacement="right"
           >
