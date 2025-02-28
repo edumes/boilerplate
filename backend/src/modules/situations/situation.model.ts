@@ -1,4 +1,5 @@
-import { FIELD_TYPE, FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
+import { FieldConfig } from '@core/decorators/field-config.decorator';
+import { FIELD_TYPE } from '@core/enums/field-type.enum';
 import { BaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import {
@@ -24,7 +25,8 @@ export class Situation extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 1,
-    width: 3
+    width: 3,
+    tabs: ['main']
   })
   situation_code: string;
 
@@ -38,6 +40,7 @@ export class Situation extends BaseModel {
     order: 2,
     width: 3,
     type: FIELD_TYPE.TEXT,
+    tabs: ['main']
   })
   situation_name: string;
 
@@ -50,7 +53,8 @@ export class Situation extends BaseModel {
     canEdit: true,
     order: 2,
     width: 5,
-    type: FIELD_TYPE.TEXT,
+    type: FIELD_TYPE.RICHTEXT,
+    tabs: ['main']
   })
   situation_description: string;
 

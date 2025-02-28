@@ -6,6 +6,7 @@ import {
   IconNotification,
   IconPalette,
   IconSettings,
+  IconSubtask,
   IconTool,
   IconUserCog,
   IconUsers
@@ -21,12 +22,12 @@ export const sidebarData: SidebarData = {
   // },
   teams: [
     {
-      name: 'Shadcn Admin',
+      name: 'Projects',
       logo: Command,
       plan: 'Vite + ShadcnUI',
     },
     {
-      name: 'Acme Inc',
+      name: 'Registers',
       logo: GalleryVerticalEnd,
       plan: 'Enterprise',
     },
@@ -75,6 +76,11 @@ export const sidebarData: SidebarData = {
           title: 'Projects',
           url: '/general/projects',
           icon: IconChecklist,
+        },
+        {
+          title: 'Situations',
+          url: '/general/situations',
+          icon: IconSubtask,
         },
       ],
     },

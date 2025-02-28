@@ -44,7 +44,7 @@ function CrudEditAddPageContent() {
           <div>
             <h2 className="text-2xl capitalize font-bold tracking-tight">{crudConfig.config.singularName} Creation</h2>
             <p className="text-muted-foreground">
-              Create your {crudConfig.config.singularName} here.
+              Create your {crudConfig.config.singularName}
             </p>
           </div>
           <CrudPrimaryButtons config={crudConfig.config} />

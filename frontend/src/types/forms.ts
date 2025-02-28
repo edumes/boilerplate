@@ -76,6 +76,7 @@ export interface FormField {
     displayLabel?: string;
     browseLabel?: string;
     readOnly?: boolean;
+    disable?: boolean;
     required?: boolean;
     hidden?: boolean;
     tabs: string[];
@@ -110,3 +111,8 @@ export interface BrowserlizeProps {
         fields: Record<string, FormField>;
     };
 }
+
+export type UpdateFieldConfig = (
+    fieldName: string,
+    newProps: Partial<FormField>
+) => void;

@@ -21,7 +21,7 @@ export function CrudTabs() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await api.post(`/${crudConfig.config.pluralName}`, data);
+      const response = await api.post(`/${crudConfig.config.table}`, data);
       return response.data;
     },
     onSuccess: () => {
@@ -29,7 +29,7 @@ export function CrudTabs() {
         variant: 'default',
         title: 'Saved successfully!',
       });
-      navigate({ to: `/general/${crudConfig.config.pluralName}` });
+      navigate({ to: `/general/${crudConfig.config.table}` });
     },
     onError: (error: any) => {
       toast({
@@ -95,8 +95,9 @@ export function CrudTabs() {
           {crudConfig.config.tabs.map((tab: TabConfig) => (
             <TabsContent key={tab.key} value={tab.key}>
               <CrudFormalize
-                control={methods.control}
+                {...methods}
                 config={{ fields: fieldsByTab[tab.key] || {} }}
+                setValue={methods.setValue}
               />
             </TabsContent>
           ))}
@@ -106,7 +107,7 @@ export function CrudTabs() {
           <Button
             type="submit"
             loading={submitting}
-            effect="gooeyRight"
+            effect="expandIcon"
             icon={SaveIcon}
             iconPlacement="right"
           >

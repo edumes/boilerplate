@@ -1,4 +1,6 @@
-import { FIELD_TYPE, FieldConfig, NUMBER_TYPE } from '@core/decorators/field-config.decorator';
+import { FieldConfig, FormMetadata } from '@core/decorators/field-config.decorator';
+import { FIELD_TYPE } from '@core/enums/field-type.enum';
+import { PriorityLevel } from '@core/enums/priority.enum';
 import { BaseModel } from '@modules/base/base.model';
 import { Situation } from '@modules/situations/situation.model';
 import { User } from '@modules/users/user.model';
@@ -6,18 +8,28 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 @Entity({ name: 'projects' })
+@FormMetadata({
+  prefix: 'project',
+  table: 'projects',
+  singularName: 'Project',
+  pluralName: 'Projects',
+  icon: 'project-management',
+  version: '1.0.0'
+})
 export class Project extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'project_id' })
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ unique: true, nullable: false })
+  @Index('IDX_PROJECT_CODE')
   @FieldConfig({
     label: 'Código',
     canAdd: true,
@@ -62,6 +74,7 @@ export class Project extends BaseModel {
   project_obs: string;
 
   @Column({ nullable: true })
+  @Index('IDX_PROJECT_STATUS')
   @FieldConfig({
     label: 'Situação',
     canAdd: true,
@@ -109,6 +122,23 @@ export class Project extends BaseModel {
   })
   project_final_date: Date;
 
+  @Column({ type: 'decimal', precision: 15, scale: 2, nullable: true })
+  @FieldConfig({
+    label: 'Orçamento',
+    type: FIELD_TYPE.CURRENCY,
+    width: 4,
+    tabs: ['financial']
+  })
+  project_budget: number;
+
+  @Column({ type: 'enum', enum: PriorityLevel, default: PriorityLevel.MEDIUM })
+  @FieldConfig({
+    label: 'Prioridade',
+    type: FIELD_TYPE.SELECT,
+    select: { url: '', options: PriorityLevel }
+  })
+  project_priority: PriorityLevel;
+
   @CreateDateColumn({ name: 'project_created_at' })
   created_at: Date;
 
@@ -128,35 +158,4 @@ export class Project extends BaseModel {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by_fk_user_id' })
   updated_by: User;
-
-  // static getFormConfig(): FormConfig {
-  //   const fieldConfigs = getFieldConfigs(Project);
-
-  //   const tabs: TabConfig[] = Object.keys(fieldConfigs).reduce((tabs: TabConfig[], fieldName: string) => {
-  //     const config = fieldConfigs[fieldName];
-
-  //     if (config.tabs) {
-  //       config.tabs.forEach((tabKey: string) => {
-  //         if (!tabs.some(tab => tab.key === tabKey)) {
-  //           tabs.push({
-  //             key: tabKey,
-  //             label: tabKey.charAt(0).toUpperCase() + tabKey.slice(1),
-  //           });
-  //         }
-  //       });
-  //     }
-
-  //     return tabs;
-  //   }, []);
-
-  //   return {
-  //     prefix: 'project', // Prefixo do formulário
-  //     table: 'projects', // Nome da tabela
-  //     singularName: 'Projeto', // Nome singular
-  //     pluralName: 'Projetos', // Nome plural
-  //     icon: 'project', // Ícone
-  //     tabs, // Abas
-  //     version: '1.0.0', // Versão do formulário
-  //   };
-  // }
 }
