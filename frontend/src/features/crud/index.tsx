@@ -9,7 +9,7 @@ import { Outlet, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { CrudPrimaryButtons } from './components/crud-primary-buttons';
 import { CrudTable, PaginationProps } from './components/crud-table';
-import { CrudProviderProps } from './context/crud-context';
+import CrudProvider, { CrudProviderProps } from './context/crud-context';
 
 export default function Crud() {
   const params = useParams({ strict: false });
@@ -84,20 +84,23 @@ export default function Crud() {
           <div>
             <h2 className="text-2xl capitalize font-bold tracking-tight">{crudConfig.config.pluralName} List</h2>
             <p className="text-muted-foreground">
-              Manage your {crudConfig.config.pluralName} here.
+              Manage your {crudConfig.config.pluralName.toLowerCase()}
             </p>
           </div>
-          <CrudPrimaryButtons />
+          <CrudPrimaryButtons config={crudConfig.config} />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <CrudTable 
-            data={crudData} 
-            meta={meta} 
-            crud={crudConfig.config.table} 
-            fields={crudConfig.fields}
-            onPageChange={handlePageChange}
-            onLimitChange={handleLimitChange}
-          />
+          <CrudProvider crud={crud}>
+            <CrudTable
+              data={crudData}
+              meta={meta}
+              crud={crudConfig.config.table}
+              fields={crudConfig.fields}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+            />
+            {/* <CrudDialogs config={crudConfig} /> */}
+          </CrudProvider>
         </div>
       </Main>
     </>

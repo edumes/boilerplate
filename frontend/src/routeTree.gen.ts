@@ -18,6 +18,7 @@ import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index
 import { Route as authSignInImport } from './routes/(auth)/sign-in'
 import { Route as authOtpImport } from './routes/(auth)/otp'
 import { Route as auth500Import } from './routes/(auth)/500'
+import { Route as AuthenticatedGeneralCrudIdIndexImport } from './routes/_authenticated/general/$crud/$id/index'
 
 // Create Virtual Routes
 
@@ -66,9 +67,6 @@ const AuthenticatedGeneralCrudIndexLazyImport = createFileRoute(
 )()
 const AuthenticatedGeneralCrudAddIndexLazyImport = createFileRoute(
   '/_authenticated/general/$crud/add/',
-)()
-const AuthenticatedGeneralCrudIdIndexLazyImport = createFileRoute(
-  '/_authenticated/general/$crud/$id/',
 )()
 
 // Create/Update Routes
@@ -290,8 +288,8 @@ const AuthenticatedGeneralCrudAddIndexLazyRoute =
     ),
   )
 
-const AuthenticatedGeneralCrudIdIndexLazyRoute =
-  AuthenticatedGeneralCrudIdIndexLazyImport.update({
+const AuthenticatedGeneralCrudIdIndexRoute =
+  AuthenticatedGeneralCrudIdIndexImport.update({
     id: '/general/$crud/$id/',
     path: '/general/$crud/$id/',
     getParentRoute: () => AuthenticatedRouteRoute,
@@ -477,7 +475,7 @@ declare module '@tanstack/react-router' {
       id: '/_authenticated/general/$crud/$id/'
       path: '/general/$crud/$id'
       fullPath: '/general/$crud/$id'
-      preLoaderRoute: typeof AuthenticatedGeneralCrudIdIndexLazyImport
+      preLoaderRoute: typeof AuthenticatedGeneralCrudIdIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/general/$crud/add/': {
@@ -526,7 +524,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTasksIndexLazyRoute: typeof AuthenticatedTasksIndexLazyRoute
   AuthenticatedUsersIndexLazyRoute: typeof AuthenticatedUsersIndexLazyRoute
   AuthenticatedGeneralCrudIndexLazyRoute: typeof AuthenticatedGeneralCrudIndexLazyRoute
-  AuthenticatedGeneralCrudIdIndexLazyRoute: typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  AuthenticatedGeneralCrudIdIndexRoute: typeof AuthenticatedGeneralCrudIdIndexRoute
   AuthenticatedGeneralCrudAddIndexLazyRoute: typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
@@ -540,8 +538,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUsersIndexLazyRoute: AuthenticatedUsersIndexLazyRoute,
   AuthenticatedGeneralCrudIndexLazyRoute:
     AuthenticatedGeneralCrudIndexLazyRoute,
-  AuthenticatedGeneralCrudIdIndexLazyRoute:
-    AuthenticatedGeneralCrudIdIndexLazyRoute,
+  AuthenticatedGeneralCrudIdIndexRoute: AuthenticatedGeneralCrudIdIndexRoute,
   AuthenticatedGeneralCrudAddIndexLazyRoute:
     AuthenticatedGeneralCrudAddIndexLazyRoute,
 }
@@ -573,7 +570,7 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
   '/general/$crud': typeof AuthenticatedGeneralCrudIndexLazyRoute
-  '/general/$crud/$id': typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  '/general/$crud/$id': typeof AuthenticatedGeneralCrudIdIndexRoute
   '/general/$crud/add': typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
@@ -599,7 +596,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
   '/general/$crud': typeof AuthenticatedGeneralCrudIndexLazyRoute
-  '/general/$crud/$id': typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  '/general/$crud/$id': typeof AuthenticatedGeneralCrudIdIndexRoute
   '/general/$crud/add': typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
@@ -629,7 +626,7 @@ export interface FileRoutesById {
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexLazyRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexLazyRoute
   '/_authenticated/general/$crud/': typeof AuthenticatedGeneralCrudIndexLazyRoute
-  '/_authenticated/general/$crud/$id/': typeof AuthenticatedGeneralCrudIdIndexLazyRoute
+  '/_authenticated/general/$crud/$id/': typeof AuthenticatedGeneralCrudIdIndexRoute
   '/_authenticated/general/$crud/add/': typeof AuthenticatedGeneralCrudAddIndexLazyRoute
 }
 
@@ -874,7 +871,7 @@ export const routeTree = rootRoute
       "parent": "/_authenticated"
     },
     "/_authenticated/general/$crud/$id/": {
-      "filePath": "_authenticated/general/$crud/$id/index.lazy.tsx",
+      "filePath": "_authenticated/general/$crud/$id/index.ts",
       "parent": "/_authenticated"
     },
     "/_authenticated/general/$crud/add/": {

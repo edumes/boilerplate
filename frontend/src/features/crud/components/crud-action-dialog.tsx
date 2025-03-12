@@ -72,7 +72,7 @@ export function CrudActionDialog({ currentRow, open, onOpenChange, config }: Pro
             onSubmit={form.handleSubmit(onSubmit)}
             className='space-y-4 p-0.5'
           >
-            <CrudFormalize control={form.control} config={config} />
+            {/* <CrudFormalize control={form.control} config={config} /> */}
           </form>
         </Form>
       </ScrollArea>

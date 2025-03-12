@@ -1,8 +1,8 @@
 import useDialogState from '@/hooks/use-dialog-state';
+import { api } from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { User } from '../data/schema';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
 
 type CrudDialogType = 'add' | 'edit' | 'delete';
 
@@ -25,7 +25,7 @@ export interface CrudProviderProps {
   id?: string;
 }
 
-export default function CrudProvider({ children, crud }: CrudProviderProps) {
+export default function CrudProvider({ children, crud, id: uuid }: CrudProviderProps) {
   const {
     data: crudConfig,
     isLoading: isLoadingConfig,
@@ -38,16 +38,17 @@ export default function CrudProvider({ children, crud }: CrudProviderProps) {
     staleTime: 150000,
   });
 
-  // const {
-  //   data: crudEditData,
-  //   isLoading: isLoadingEditData,
-  // } = useQuery({
-  //   queryKey: [`${crud}-${id}`],
-  //   queryFn: async () => {
-  //     const response = await api.get(`/${crud}/${id}`);
-  //     return response.data.data || [];
-  //   },
-  // });
+  const {
+    data: crudEditData,
+    isLoading: isLoadingEditData,
+  } = useQuery({
+    queryKey: [`${crud}-${uuid}`],
+    queryFn: async () => {
+      const response = await api.get(`/${crud}/${uuid}`);
+      return response.data.data || {};
+    },
+    enabled: !!uuid,
+  });
 
   const [open, setOpen] = useDialogState<CrudDialogType>(null);
   const [currentRow, setCurrentRow] = useState<User | null>(null);
@@ -60,9 +61,9 @@ export default function CrudProvider({ children, crud }: CrudProviderProps) {
         currentRow,
         setCurrentRow,
         crudConfig,
-        // crudEditData,
+        crudEditData,
         isLoadingConfig,
-        // isLoadingEditData,
+        isLoadingEditData,
       }}
     >
       {children}

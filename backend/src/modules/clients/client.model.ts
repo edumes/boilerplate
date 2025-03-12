@@ -6,38 +6,25 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
-@Entity({ name: 'situations' })
+@Entity({ name: 'clients' })
 @FormMetadata({
-  prefix: 'situation',
-  table: 'situations',
-  singularName: 'Situation',
-  pluralName: 'Situations',
-  icon: 'situation',
+  prefix: 'client',
+  table: 'clients',
+  singularName: 'Client',
+  pluralName: 'Clients',
+  icon: 'user-group',
   version: '1.0.0'
 })
-export class Situation extends BaseModel {
-  @PrimaryGeneratedColumn({ name: 'situation_id' })
+export class Client extends BaseModel {
+  @PrimaryGeneratedColumn({ name: 'client_id' })
   id: number;
-
-  @Column({ nullable: false })
-  @FieldConfig({
-    label: 'Código',
-    canAdd: true,
-    canRead: true,
-    canBrowse: true,
-    canEdit: true,
-    order: 1,
-    width: 3,
-    type: FIELD_TYPE.TEXT,
-    tabs: ['main']
-  })
-  situation_code: string;
 
   @Column({ nullable: false })
   @FieldConfig({
@@ -47,30 +34,59 @@ export class Situation extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 2,
-    width: 3,
+    required: true,
+    width: 8,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main']
+    tabs: ['main'],
   })
-  situation_name: string;
+  client_name: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   @FieldConfig({
-    label: 'Descrição',
+    label: 'Email',
     canAdd: true,
     canRead: true,
     canBrowse: true,
     canEdit: true,
-    order: 2,
-    width: 5,
-    type: FIELD_TYPE.TEXTAREA,
-    tabs: ['main']
+    order: 3,
+    width: 6,
+    type: FIELD_TYPE.EMAIL,
+    tabs: ['contact'],
   })
-  situation_description: string;
+  client_email: string;
 
-  @CreateDateColumn({ name: 'situation_created_at' })
+  @Column({ nullable: true })
+  @FieldConfig({
+    label: 'Telefone',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 4,
+    width: 6,
+    type: FIELD_TYPE.PHONE,
+    tabs: ['contact'],
+  })
+  client_phone: string;
+
+  @Column({ type: 'text', nullable: true })
+  @FieldConfig({
+    label: 'Observações',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 5,
+    width: 12,
+    type: FIELD_TYPE.TEXTAREA,
+    tabs: ['main'],
+  })
+  client_observation: string;
+
+  @CreateDateColumn({ name: 'client_created_at' })
   created_at: Date;
 
-  @UpdateDateColumn({ name: 'situation_updated_at' })
+  @UpdateDateColumn({ name: 'client_updated_at' })
   updated_at: Date;
 
   @Column({ nullable: true })
@@ -86,4 +102,4 @@ export class Situation extends BaseModel {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by_fk_user_id' })
   updated_by: User;
-}
+} 

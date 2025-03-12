@@ -9,6 +9,7 @@ import {
   IconSubtask,
   IconTool,
   IconUserCog,
+  IconUserDollar,
   IconUsers
 } from '@tabler/icons-react';
 import { Command, GalleryVerticalEnd } from 'lucide-react';
@@ -66,6 +67,11 @@ export const sidebarData: SidebarData = {
           title: 'Users',
           url: '/general/users',
           icon: IconUsers,
+        },
+        {
+          title: 'Clients',
+          url: '/general/clients',
+          icon: IconUserDollar,
         },
         {
           title: 'Roles',

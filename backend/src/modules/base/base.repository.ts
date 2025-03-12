@@ -5,6 +5,4 @@ export class BaseRepository<T extends IBaseModel> extends Repository<T> {
   constructor(model: { new (): T }, dataSource: DataSource) {
     super(model, dataSource.createEntityManager());
   }
-
-  // Métodos comuns podem ser adicionados aqui
 }

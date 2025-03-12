@@ -2,6 +2,7 @@ export enum FIELD_TYPE {
     TEXT = 'text',
     CHECKBOX = 'checkbox',
     RICHTEXT = 'richtext',
+    TEXTAREA = 'textarea',
     NUMBER = 'number',
     DATE = 'date',
     EMAIL = 'email',

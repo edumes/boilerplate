@@ -31,6 +31,7 @@ export interface Option {
 export interface AsyncSelectProps<T> {
     /** Async function to fetch options */
     fetcher: string;
+    defaultOptions: Array<any>;
     /** Preload all data ahead of time */
     preload?: boolean;
     /** Function to filter options */
@@ -69,6 +70,7 @@ export interface AsyncSelectProps<T> {
 
 export function AsyncSelect<T>({
     fetcher,
+    defaultOptions,
     preload,
     filterFn,
     renderOption,
@@ -101,6 +103,7 @@ export function AsyncSelect<T>({
     const { data: queryData, isLoading: queryLoading } = useQuery({
         queryKey: [`${name}-select-options`, debouncedSearchTerm],
         queryFn: async () => {
+            if (!fetcher) return [];
             const response = await api.get(`${fetcher}`, {
                 params: {
                     search: debouncedSearchTerm
@@ -108,7 +111,7 @@ export function AsyncSelect<T>({
             });
             return response.data.data || [];
         },
-        enabled: preload ? !debouncedSearchTerm : true
+        enabled: fetcher ? (preload ? !debouncedSearchTerm : true) : false
     });
 
     useEffect(() => {
@@ -127,6 +130,21 @@ export function AsyncSelect<T>({
 
     useEffect(() => {
         const initializeOptions = async () => {
+            if (!fetcher && defaultOptions) {
+                const mappedOptions = Object.entries(defaultOptions).map(([value, label]) => ({
+                    value,
+                    label
+                })) as T[];
+                setOriginalOptions(mappedOptions);
+                setOptions(mappedOptions);
+
+                if (value) {
+                    const selectedOpt = mappedOptions.find(opt => getOptionValue(opt) === value);
+                    setSelectedOption(selectedOpt || null);
+                }
+                return;
+            }
+
             if (!queryData) return;
 
             try {
@@ -142,10 +160,10 @@ export function AsyncSelect<T>({
             }
         };
 
-        if (!mounted && queryData) {
+        if (!mounted && (queryData || (!fetcher && defaultOptions))) {
             initializeOptions();
         }
-    }, [mounted, fetcher, value, queryData]);
+    }, [mounted, fetcher, value, queryData, defaultOptions, getOptionValue]);
 
     useEffect(() => {
         if (!queryData) return;
@@ -169,8 +187,11 @@ export function AsyncSelect<T>({
 
     const handleSelect = useCallback((currentValue: string) => {
         const newValue = clearable && currentValue === selectedValue ? "" : currentValue;
+
+        const newSelectedOption = options.find((option) => getOptionValue(option) === newValue) || null;
+
         setSelectedValue(newValue);
-        setSelectedOption(options.find((option) => getOptionValue(option) === newValue) || null);
+        setSelectedOption(newSelectedOption);
         onChange(newValue);
         setOpen(false);
     }, [selectedValue, onChange, clearable, options, getOptionValue]);
@@ -208,7 +229,9 @@ export function AsyncSelect<T>({
                     {selectedOption ? (
                         getDisplayValue(selectedOption)
                     ) : (
-                        placeholder
+                        <p className="text-muted-foreground/70">
+                            {placeholder}
+                        </p>
                     )}
                     <ChevronsUpDown className="opacity-50" size={10} />
                 </Button>

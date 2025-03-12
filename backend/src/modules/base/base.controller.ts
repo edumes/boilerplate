@@ -8,6 +8,7 @@ import { BaseService, SearchOptions, SelectPickerOptions } from '@modules/base/b
 import { FastifyReply, FastifyRequest } from 'fastify';
 import i18next from 'i18next';
 import { DeepPartial } from 'typeorm';
+import { validate as isUUID } from 'uuid';
 
 export class BaseController<T extends IBaseModel> {
   constructor(protected service: BaseService<T>) {}
@@ -41,10 +42,10 @@ export class BaseController<T extends IBaseModel> {
   }
 
   async findById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-    const id = parseInt(request.params.id);
+    const id = request.params.id;
 
-    if (isNaN(id)) {
-      throw new ValidationError('The provided ID must be a valid number');
+    if (!isUUID(id)) {
+      throw new ValidationError('The provided ID must be a valid UUID');
     }
 
     const item = await this.service.findById(id);
@@ -85,7 +86,11 @@ export class BaseController<T extends IBaseModel> {
     reply: FastifyReply,
   ) {
     try {
-      const id = parseInt(request.params.id);
+      const id = request.params.id;
+      if (!isUUID(id)) {
+        throw new ValidationError('The provided ID must be a valid UUID');
+      }
+
       const updatedItem = await this.service.update(id, request.body as any);
 
       if (!updatedItem) {
@@ -293,8 +298,8 @@ export class BaseController<T extends IBaseModel> {
   async generateReport(
     request: FastifyRequest<{
       Querystring: ReportOptions;
-    }>, 
-    reply: FastifyReply
+    }>,
+    reply: FastifyReply,
   ): Promise<string> {
     try {
       const pdfPath = await this.service.generateReport(request.query);

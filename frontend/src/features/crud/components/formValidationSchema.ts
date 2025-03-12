@@ -18,7 +18,7 @@ export const createValidationSchema = (fields: Record<string, FormField>) => {
 
                 switch (field.type) {
                     case 'text':
-                    case 'richtext':
+                    case 'textarea':
                         fieldSchema = z.string({
                             required_error: defaultMessages.required(field.label),
                         });

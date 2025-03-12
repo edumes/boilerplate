@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 import { TabConfig } from '@/types/forms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { House, SaveIcon } from 'lucide-react';
 import { useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
@@ -15,33 +15,49 @@ import { CrudFormalize } from './crud-formalize';
 import { createValidationSchema } from './formValidationSchema';
 
 export function CrudTabs() {
-  const { crudConfig } = useCrud();
+  const { crudConfig, crudEditData, isLoadingEditData } = useCrud();
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-
-  const mutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await api.post(`/${crudConfig.config.table}`, data);
-      return response.data;
-    },
-    onSuccess: () => {
-      toast({
-        variant: 'default',
-        title: 'Saved successfully!',
-      });
-      navigate({ to: `/general/${crudConfig.config.table}` });
-    },
-    onError: (error: any) => {
-      toast({
-        variant: 'destructive',
-        title: error.response?.data?.message || 'An error occurred while saving',
-      });
-    },
-  });
+  const { crud, id: uuid } = useParams({ strict: false });
+  const isEdit = !!uuid;
 
   const validationSchema = createValidationSchema(crudConfig.fields);
   const methods = useForm({
     resolver: zodResolver(validationSchema),
+    defaultValues: crudEditData || {},
+  });
+
+  // useEffect(() => {
+  //   if (isEdit && crudEditData && !isLoadingEditData) {
+  //     Object.entries(crudEditData).forEach(([key, value]) => {
+  //       methods.setValue(key, value);
+  //     });
+  //   }
+  // }, [crudEditData, isEdit, isLoadingEditData, methods]);
+
+  const mutation = useMutation({
+    mutationFn: async (data: any) => {
+      if (isEdit) {
+        const response = await api.put(`/${crud}/${uuid}`, data);
+        return response.data;
+      } else {
+        const response = await api.post(`/${crud}`, data);
+        return response.data;
+      }
+    },
+    onSuccess: () => {
+      toast({
+        variant: 'default',
+        title: `${isEdit ? 'Updated' : 'Created'} successfully!`,
+      });
+      navigate({ to: `/general/${crud}` });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: 'destructive',
+        title: error.response?.data?.message || `An error occurred while ${isEdit ? 'updating' : 'creating'}`,
+      });
+    },
   });
 
   const watchedValues = useWatch({ control: methods.control });
@@ -111,7 +127,7 @@ export function CrudTabs() {
             icon={SaveIcon}
             iconPlacement="right"
           >
-            {submitting ? 'Saving...' : 'Save'}
+            {submitting ? 'Saving...' : isEdit ? 'Update' : 'Save'}
           </Button>
         </div>
       </form>

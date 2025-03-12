@@ -9,16 +9,19 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { Row } from '@tanstack/react-table';
 import { useCrud } from '../context/crud-context';
-import { User } from '../data/schema';
 
 interface DataTableRowActionsProps {
-  row: Row<User>;
+  row: Row<any>;
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useCrud();
+  const navigate = useNavigate();
+  const { crud } = useParams({ strict: false });
+
   return (
     <>
       <DropdownMenu modal={false}>
@@ -34,8 +37,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         <DropdownMenuContent align='end' className='w-[160px]'>
           <DropdownMenuItem
             onClick={() => {
-              setCurrentRow(row.original);
-              setOpen('edit');
+              navigate({ to: `/general/${crud}/${row.original.uuid}` });
             }}
           >
             Edit

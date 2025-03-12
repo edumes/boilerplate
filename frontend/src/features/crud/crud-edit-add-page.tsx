@@ -12,15 +12,20 @@ import CrudProvider, { CrudProviderProps, useCrud } from './context/crud-context
 export default function CrudEditAddPage() {
   const params = useParams({ strict: false });
   const { crud, id } = params as Required<CrudProviderProps>;
+  const isEdit = !!id;
 
   return (
     <CrudProvider crud={crud} id={id}>
-      <CrudEditAddPageContent />
+      <CrudEditAddPageContent isEdit={isEdit} />
     </CrudProvider>
   );
 }
 
-function CrudEditAddPageContent() {
+interface CrudEditAddPageContentProps {
+  isEdit: boolean;
+}
+
+function CrudEditAddPageContent({ isEdit }: CrudEditAddPageContentProps) {
   const { crudConfig, isLoadingConfig, isLoadingEditData } = useCrud();
 
   if (isLoadingConfig || isLoadingEditData) {
@@ -42,9 +47,17 @@ function CrudEditAddPageContent() {
       <Main>
         <div className="mb-2 flex items-center justify-between space-y-2 flex-wrap">
           <div>
-            <h2 className="text-2xl capitalize font-bold tracking-tight">{crudConfig.config.singularName} Creation</h2>
+            <h2 className="text-2xl capitalize font-bold tracking-tight">
+              {isEdit 
+                ? `Edit ${crudConfig.config.singularName}`
+                : `New ${crudConfig.config.singularName}`
+              }
+            </h2>
             <p className="text-muted-foreground">
-              Create your {crudConfig.config.singularName}
+              {isEdit 
+                ? `Edit your ${crudConfig.config.singularName.toLowerCase()}`
+                : `Create your ${crudConfig.config.singularName.toLowerCase()}`
+              }
             </p>
           </div>
           <CrudPrimaryButtons config={crudConfig.config} />

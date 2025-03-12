@@ -12,6 +12,7 @@ import { IBaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import { DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { validate as isUUID } from 'uuid';
 
 type WhereConditions<T> = FindOptionsWhere<T>;
 
@@ -27,7 +28,7 @@ export interface IServiceHooks<T> {
   afterUpdate?(entity: T): Promise<void>;
   beforeDelete?(id: number): Promise<void>;
   afterDelete?(entity: T): Promise<void>;
-  defineRelationFields?(): string[];
+  defineRelationFields?(defaultRelations): string[];
 }
 
 export interface ServiceContext {
@@ -84,10 +85,6 @@ export class BaseService<T extends IBaseModel> {
   }
 
   private getRelationFields(): string[] {
-    if (this.hooks.defineRelationFields) {
-      return this.hooks.defineRelationFields();
-    }
-
     const relations: string[] = [];
     const metadata = this.repository.metadata;
     const processedPaths = new Set<string>();
@@ -120,6 +117,11 @@ export class BaseService<T extends IBaseModel> {
     };
 
     processRelations();
+
+    if (this.hooks.defineRelationFields) {
+      return this.hooks.defineRelationFields(relations);
+    }
+
     return relations;
   }
 
@@ -141,12 +143,20 @@ export class BaseService<T extends IBaseModel> {
     });
   }
 
-  async findById(id: number): Promise<T | null> {
+  async findById(id: number | string): Promise<T | null> {
     const relations = this.getRelationFields();
-    return this.repository.findOne({
-      where: { id } as any,
-      relations,
-    });
+  
+    if (typeof id === 'string' && isUUID(id)) {
+      return this.repository.findOne({
+        where: { uuid: id } as any,
+        relations,
+      });
+    } else {
+      return this.repository.findOne({
+        where: { id } as any,
+        relations,
+      });
+    }
   }
 
   async create(data: DeepPartial<T>): Promise<T> {
@@ -181,7 +191,7 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
-  async update(id: number, data: QueryDeepPartialEntity<T>): Promise<T | null> {
+  async update(id: number | string, data: QueryDeepPartialEntity<T>): Promise<T | null> {
     try {
       const oldEntity = await this.findById(id);
       if (!oldEntity) return null;
@@ -189,10 +199,10 @@ export class BaseService<T extends IBaseModel> {
       const user = this.getCurrentUser();
 
       if (this.hooks.beforeUpdate) {
-        await this.hooks.beforeUpdate(id, data);
+        await this.hooks.beforeUpdate(oldEntity.id, data);
       }
 
-      await this.repository.update(id, {
+      await this.repository.update(oldEntity.id, {
         ...data,
         updated_by_fk_user_id: user?.id,
       } as QueryDeepPartialEntity<T>);
