@@ -1,8 +1,10 @@
 import { env } from '@config/env.config';
 import { logger } from '@core/utils/logger';
 import { Audit } from '@modules/audits/audit.model';
+import { Client } from '@modules/clients/client.model';
 import { Company } from '@modules/companies/company.model';
 import { Notification } from '@modules/notifications/notification.model';
+import { ProjectItem } from '@modules/project_items/project-item.model';
 import { Project } from '@modules/projects/project.model';
 import { Role } from '@modules/roles/role.model';
 import { Situation } from '@modules/situations/situation.model';
@@ -25,7 +27,7 @@ const AppDataSource = new DataSource({
   //   }
   // },
   logging: false,
-  entities: [User, Audit, Company, Project, Role, Notification, Situation],
+  entities: [User, Audit, Company, Project, ProjectItem, Role, Notification, Situation, Client],
   migrations: ['src/migrations/*.ts'],
 });
 

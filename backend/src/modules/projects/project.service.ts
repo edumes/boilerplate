@@ -8,6 +8,9 @@ export class ProjectService extends BaseService<Project> {
 
     this.setHooks({
       beforeCreate: async data => {},
+      defineRelationFields: (defaultRelations) => {
+        return [...defaultRelations, 'project_items'];
+      }
     });
   }
 

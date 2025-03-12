@@ -2,6 +2,8 @@ import { FieldConfig, FormMetadata } from '@core/decorators/field-config.decorat
 import { FIELD_TYPE } from '@core/enums/field-type.enum';
 import { PriorityLevel } from '@core/enums/priority.enum';
 import { BaseModel } from '@modules/base/base.model';
+import { Client } from '@modules/clients/client.model';
+import { ProjectItem } from '@modules/project_items/project-item.model';
 import { Situation } from '@modules/situations/situation.model';
 import { User } from '@modules/users/user.model';
 import {
@@ -11,6 +13,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
@@ -59,19 +62,26 @@ export class Project extends BaseModel {
   })
   project_description: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
+  @Index('IDX_PROJECT_CLIENT')
   @FieldConfig({
-    label: 'Observações',
+    label: 'Cliente',
     canAdd: true,
     canRead: true,
     canBrowse: true,
     canEdit: true,
     order: 3,
-    width: 12,
-    type: FIELD_TYPE.RICHTEXT,
+    required: true,
+    width: 6,
+    type: FIELD_TYPE.SELECT,
+    select: { url: 'clients/select-options' },
     tabs: ['main'],
   })
-  project_obs: string;
+  project_fk_client_id: number;
+
+  @ManyToOne(() => Client)
+  @JoinColumn({ name: 'project_fk_client_id' })
+  client: Client;
 
   @Column({ nullable: true })
   @Index('IDX_PROJECT_STATUS')
@@ -94,6 +104,16 @@ export class Project extends BaseModel {
   @JoinColumn({ name: 'project_fk_situation_id' })
   situation: Situation;
 
+  @Column({ type: 'enum', enum: PriorityLevel, default: PriorityLevel.MEDIUM })
+  @FieldConfig({
+    label: 'Prioridade',
+    type: FIELD_TYPE.SELECT,
+    width: 2,
+    order: 5,
+    select: { url: '', options: PriorityLevel }
+  })
+  project_priority: PriorityLevel;
+
   @Column({ type: 'timestamp', nullable: true })
   @FieldConfig({
     label: 'Data de Início',
@@ -101,7 +121,7 @@ export class Project extends BaseModel {
     canRead: true,
     canBrowse: true,
     canEdit: true,
-    order: 5,
+    order: 6,
     // required: true,
     width: 4,
     type: FIELD_TYPE.DATE,
@@ -115,29 +135,49 @@ export class Project extends BaseModel {
     canRead: true,
     canBrowse: true,
     canEdit: true,
-    order: 6,
+    order: 7,
     width: 4,
     type: FIELD_TYPE.DATE,
     tabs: ['dates'],
   })
   project_final_date: Date;
 
+  @OneToMany(() => ProjectItem, projectItem => projectItem.project)
+  @FieldConfig({
+    label: 'Itens do Projeto',
+    canAdd: true,
+    canRead: true,
+    canBrowse: false,
+    canEdit: true,
+    order: 7,
+    width: 12,
+    type: FIELD_TYPE.GRID,
+    tabs: ['main'],
+  })
+  project_items: ProjectItem[];
+
+  @Column({ type: 'text', nullable: true })
+  @FieldConfig({
+    label: 'Observações',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 8,
+    width: 12,
+    type: FIELD_TYPE.TEXTAREA,
+    tabs: ['main'],
+  })
+  project_observation: string;
+
   @Column({ type: 'decimal', precision: 15, scale: 2, nullable: true })
   @FieldConfig({
     label: 'Orçamento',
     type: FIELD_TYPE.CURRENCY,
-    width: 4,
+    width: 9,
     tabs: ['financial']
   })
   project_budget: number;
-
-  @Column({ type: 'enum', enum: PriorityLevel, default: PriorityLevel.MEDIUM })
-  @FieldConfig({
-    label: 'Prioridade',
-    type: FIELD_TYPE.SELECT,
-    select: { url: '', options: PriorityLevel }
-  })
-  project_priority: PriorityLevel;
 
   @CreateDateColumn({ name: 'project_created_at' })
   created_at: Date;

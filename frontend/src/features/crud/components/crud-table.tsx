@@ -28,6 +28,7 @@ import { User } from '../data/schema';
 import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
+import { DataTableRowActions } from './data-table-row-actions';
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -46,65 +47,80 @@ export interface PaginationProps {
 
 interface DataTableProps {
   data: User[];
-  meta: PaginationProps;
+  meta?: PaginationProps;
   crud: string;
-  fields: ColumnDef<User>[];
-  onPageChange: (page: number) => void;
-  onLimitChange: (limit: number) => void;
+  fields: ColumnDef<any>[] | Record<string, FormField>;
+  onPageChange?: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
+  pagination?: boolean;
 }
 
-export function CrudTable({ data: initialData, meta, crud, fields, onPageChange, onLimitChange }: DataTableProps) {
+export function CrudTable({ 
+  data: initialData, 
+  meta, 
+  crud, 
+  fields, 
+  onPageChange, 
+  onLimitChange,
+  pagination = true 
+}: DataTableProps) {
   const [data, setData] = useState(initialData);
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  console.log({ fields });
-  console.log({ meta });
-
   const columns = Array.isArray(fields)
-    ? fields
-    : Object.keys(fields || {}).map((fieldKey: any) => {
-      const field: FormField = fields[fieldKey];
-      console.log({ field });
+    ? [...fields.filter((field: any) => field.canBrowse !== false), {
+      id: 'actions',
+      cell: ({ row }: { row: any }) => <DataTableRowActions row={row} />,
+      enableSorting: false,
+      enableHiding: false,
+    }]
+    : [...Object.keys(fields || {})
+      .filter((fieldKey: any) => fields[fieldKey].canBrowse !== false)
+      .map((fieldKey: any) => {
+        const field: FormField = fields[fieldKey];
 
-      if (field.type === 'date') {
+        if (field.type === 'date') {
+          return {
+            accessorKey: fieldKey,
+            header: ({ column }: any) => <DataTableColumnHeader column={column} title={field.label} />,
+            cell: ({ row }: any) => {
+              const date = row.getValue(fieldKey);
+              return <div>{date ? dayjs(date).format('DD/MM/YYYY') : '-'}</div>;
+            },
+          };
+        }
+
+        if (field.type === 'select') {
+          const fkMatch = fieldKey.match(/_fk_(.+)_id$/);
+          return {
+            accessorKey: fkMatch ? fkMatch[1] : fieldKey,
+            header: ({ column }: any) => <DataTableColumnHeader column={column} title={field.label} />,
+            cell: ({ row }: any) => {
+              if (fkMatch) {
+                const relationName = fkMatch[1];
+                const relationObject = row.original[relationName];
+                return <div>{relationObject?.[`${relationName}_name`] || '-'}</div>;
+              }
+              const value = row.getValue(fieldKey);
+              return <div>{value || '-'}</div>;
+            },
+          };
+        }
+
         return {
           accessorKey: fieldKey,
-          header: ({ column }: any) => <DataTableColumnHeader column={column} title={field.label} />,
-          cell: ({ row }: any) => {
-            const date = row.getValue(fieldKey);
-            return <div>{date ? dayjs(date).format('DD/MM/YYYY') : '-'}</div>;
-          },
+          header: ({ column }) => <DataTableColumnHeader column={column} title={field.label} />,
+          cell: ({ row }) => <div>{row.getValue(fieldKey)}</div>,
         };
-      }
-
-      if (field.type === 'select') {
-        const fkMatch = fieldKey.match(/_fk_(.+)_id$/);
-        return {
-          accessorKey: fkMatch ? fkMatch[1] : fieldKey,
-          header: ({ column }: any) => <DataTableColumnHeader column={column} title={field.label} />,
-          cell: ({ row }: any) => {
-            if (fkMatch) {
-              const relationName = fkMatch[1];
-              const relationObject = row.original[relationName];
-              return <div>{relationObject?.[`${relationName}_name`] || '-'}</div>;
-            }
-            const value = row.getValue(fieldKey);
-            return <div>{value || '-'}</div>;
-          },
-        };
-      }
-
-      return {
-        accessorKey: fieldKey,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={field.label} />,
-        cell: ({ row }) => <div>{row.getValue(fieldKey)}</div>,
-      };
-    });
-
-  console.log({ meta });
+      }), {
+      id: 'actions',
+      cell: ({ row }: { row: any }) => <DataTableRowActions row={row} />,
+      enableSorting: false,
+      enableHiding: false,
+    }];
 
   const table = useReactTable({
     data,
@@ -114,13 +130,15 @@ export function CrudTable({ data: initialData, meta, crud, fields, onPageChange,
       columnVisibility,
       rowSelection,
       columnFilters,
-      pagination: {
-        pageIndex: meta.page - 1,
-        pageSize: meta.limit,
-      },
+      ...(meta && {
+        pagination: {
+          pageIndex: meta.page - 1,
+          pageSize: meta.limit,
+        }
+      })
     },
-    pageCount: meta.totalPages,
-    manualPagination: true,
+    pageCount: meta?.totalPages,
+    manualPagination: pagination,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -136,11 +154,13 @@ export function CrudTable({ data: initialData, meta, crud, fields, onPageChange,
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar
-        crud={crud}
-        table={table}
-        onSearch={(searchResults) => setData(searchResults)}
-      />
+      {pagination && (
+        <DataTableToolbar
+          crud={crud}
+          table={table}
+          onSearch={(searchResults) => setData(searchResults)}
+        />
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -183,7 +203,14 @@ export function CrudTable({ data: initialData, meta, crud, fields, onPageChange,
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} meta={meta} onPageChange={onPageChange} onLimitChange={onLimitChange} />
+      {pagination && meta && onPageChange && onLimitChange && (
+        <DataTablePagination 
+          table={table} 
+          meta={meta} 
+          onPageChange={onPageChange} 
+          onLimitChange={onLimitChange} 
+        />
+      )}
     </div>
   );
 }

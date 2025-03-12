@@ -9,12 +9,14 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField as IFormField, UpdateFieldConfig } from '@/types/forms';
 import { CircleXIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Control } from 'react-hook-form';
 import { eventsRegistry } from '../events/eventsRegistry';
+import { CrudGrid } from './crud-grid';
 
 const widthClasses: { [key: number]: string } = {
     1: 'col-span-1',
@@ -86,59 +88,7 @@ export function CrudFormalize({ control, config, setValue }: CrudFormalizeProps)
 
                                 const renderInputComponent = () => {
                                     switch (field.type) {
-                                        case "select":
-                                            return (
-                                                <AsyncSelect<any>
-                                                    fetcher={field.select.url}
-                                                    renderOption={(option) => (
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="flex flex-col">
-                                                                <div className="font-medium">{option.label}</div>
-                                                                {/* <div className="text-xs text-muted-foreground">{option.value}</div> */}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                    getOptionValue={(option) => String(option.value)}
-                                                    getDisplayValue={(option) => (
-                                                        <div className="flex items-center gap-2 text-left">
-                                                            <div className="flex flex-col">
-                                                                <div className="font-medium">{option.label}</div>
-                                                                {/* <div className="text-xs text-muted-foreground">{option.value}</div> */}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                    notFound={<div className="py-6 text-center text-sm">No {field.label} found</div>}
-                                                    name={field.name}
-                                                    placeholder={`Search options...`}
-                                                    value={String(renderField.value)}
-                                                    disabled={field.disabled}
-                                                    width="auto"
-                                                    onChange={(value) => handleChange(Number(value))}
-                                                />
-                                            );
-                                        case "date":
-                                            return (
-                                                <Input
-                                                    type="date"
-                                                    autoComplete="off"
-                                                    value={renderField.value}
-                                                    onChange={(e) => handleChange(e.target.value)}
-                                                    disabled={field.disabled}
-                                                    readOnly={field.readonly}
-                                                />
-                                            );
-                                        case "richtext":
-                                            return (
-                                                <Textarea
-                                                    className="min-h-[100px]"
-                                                    autoComplete="off"
-                                                    value={renderField.value}
-                                                    onChange={(e) => handleChange(e.target.value)}
-                                                    disabled={field.disabled}
-                                                    readOnly={field.readonly}
-                                                />
-                                            );
-                                        default:
+                                        case "text":
                                             return (
                                                 <div className="relative">
                                                     <Input
@@ -162,6 +112,74 @@ export function CrudFormalize({ control, config, setValue }: CrudFormalizeProps)
                                                         </button>
                                                     )}
                                                 </div>
+                                            );
+                                        case "select":
+                                            return (
+                                                <AsyncSelect<any>
+                                                    fetcher={field.select.url}
+                                                    defaultOptions={field.select.options}
+                                                    renderOption={(option) => (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex flex-col">
+                                                                <div className="font-medium">{option.label}</div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    getOptionValue={(option) => {
+                                                        return option.value?.toString() || option.id?.toString();
+                                                    }}
+                                                    getDisplayValue={(option) => (
+                                                        <div className="flex items-center gap-2 text-left">
+                                                            <div className="flex flex-col">
+                                                                <div className="font-medium">{option.label}</div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    notFound={<div className="py-6 text-center text-sm">No {field.label} found</div>}
+                                                    name={field.name}
+                                                    placeholder={`Search options...`}
+                                                    value={renderField.value ? String(renderField.value) : ""}
+                                                    disabled={field.disabled}
+                                                    width="auto"
+                                                    onChange={(value) => {
+                                                        const finalValue = field.select.url ? Number(value) : value;
+                                                        handleChange(finalValue);
+                                                    }}
+                                                />
+                                            );
+                                        case "date":
+                                            return (
+                                                <Input
+                                                    type="date"
+                                                    autoComplete="off"
+                                                    value={renderField.value}
+                                                    onChange={(e) => handleChange(e.target.value)}
+                                                    disabled={field.disabled}
+                                                    readOnly={field.readonly}
+                                                />
+                                            );
+                                        case "textarea":
+                                            return (
+                                                <Textarea
+                                                    className="min-h-[100px]"
+                                                    autoComplete="off"
+                                                    value={renderField.value}
+                                                    onChange={(e) => handleChange(e.target.value)}
+                                                    disabled={field.disabled}
+                                                    readOnly={field.readonly}
+                                                />
+                                            );
+                                        case "grid":
+                                            return (
+                                                <CrudGrid
+                                                    crud={field.name}
+                                                    data={renderField.value || []}
+                                                    onChange={(newData) => handleChange(newData)}
+                                                />
+                                            );
+                                        default:
+                                            return (
+                                                <Skeleton className="h-10 w-100" />
                                             );
                                     }
                                 };

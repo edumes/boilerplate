@@ -14,4 +14,7 @@ export enum FIELD_TYPE {
     DATE_TIME = 'datetime',
     TIME = 'time',
     CURRENCY = 'currency',
+    TEXTAREA = 'textarea',
+    PHONE = 'phone',
+    GRID = 'grid'
 }
