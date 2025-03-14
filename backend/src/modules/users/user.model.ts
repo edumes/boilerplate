@@ -1,6 +1,7 @@
 import { BaseModel } from '@modules/base/base.model';
 import { Company } from '@modules/companies/company.model';
 import { Role } from '@modules/roles/role.model';
+import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import {
   Column,
@@ -30,6 +31,7 @@ export class User extends BaseModel {
   @Column({
     length: 60,
   })
+  @Exclude()
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
   user_password: string;

@@ -110,7 +110,7 @@ export class Project extends BaseModel {
     type: FIELD_TYPE.SELECT,
     width: 2,
     order: 5,
-    select: { url: '', options: PriorityLevel }
+    select: { options: PriorityLevel }
   })
   project_priority: PriorityLevel;
 

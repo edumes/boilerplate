@@ -1,17 +1,24 @@
 import { ReportOptions } from '@core/reports/report.service';
 import { ApiResponseBuilder, PaginationOptions } from '@core/utils/api-response.util';
 import { NotFoundError, ValidationError } from '@core/utils/errors.util';
+import {
+  filterNonAddableFields,
+  filterNonBrowsableFields,
+  filterNonEditableFields,
+  filterNonReadableFields
+} from '@core/utils/field-filter.util';
 import { logger } from '@core/utils/logger';
 import { IBaseModel } from '@modules/base/base.model';
 import { BaseService, SearchOptions, SelectPickerOptions } from '@modules/base/base.service';
 // import genericRoutes, { RouteSchema } from '@utils/route-schema.decorator';
+import { instanceToPlain } from 'class-transformer';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import i18next from 'i18next';
 import { DeepPartial } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 
 export class BaseController<T extends IBaseModel> {
-  constructor(protected service: BaseService<T>) {}
+  constructor(protected service: BaseService<T>) { }
 
   protected setServiceContext(request: FastifyRequest) {
     this.service.setContext({
@@ -20,14 +27,34 @@ export class BaseController<T extends IBaseModel> {
     });
   }
 
+  protected validateRequiredFields(data: DeepPartial<T>) {
+    const entityType = this.service.getEntityType();
+    const metadata = Reflect.getMetadata('fieldConfig', entityType.prototype) || {};
+
+    const missingFields: string[] = [];
+
+    for (const [fieldName, config] of Object.entries(metadata)) {
+      const fieldConfig = config as any;
+      if (fieldConfig.required && (!data || data[fieldName] === undefined || data[fieldName] === null || data[fieldName] === '')) {
+        missingFields.push(fieldConfig.label || fieldName);
+      }
+    }
+
+    if (missingFields.length > 0) {
+      throw new ValidationError(i18next.t('REQUIRED_FIELDS', { fields: missingFields.join(', ') }));
+    }
+  }
+
   // @RouteSchema(genericRoutes.findAll)
   async findAll(request: FastifyRequest<{ Querystring: PaginationOptions }>, reply: FastifyReply) {
     try {
       const options = request.query;
       const [items, total] = await this.service.findAll(options);
 
+      const filteredItems = filterNonBrowsableFields(items, this.service.getEntityType());
       const meta = ApiResponseBuilder.buildPaginationMeta(total, options);
-      return reply.send(ApiResponseBuilder.success(items, meta));
+
+      return reply.send(ApiResponseBuilder.success(filteredItems, meta));
     } catch (error) {
       return reply
         .status(500)
@@ -45,7 +72,7 @@ export class BaseController<T extends IBaseModel> {
     const id = request.params.id;
 
     if (!isUUID(id)) {
-      throw new ValidationError('The provided ID must be a valid UUID');
+      throw new ValidationError(i18next.t('INVALID_UUID'));
     }
 
     const item = await this.service.findById(id);
@@ -54,7 +81,8 @@ export class BaseController<T extends IBaseModel> {
       throw new NotFoundError(this.service.getModelName(), id);
     }
 
-    return reply.send(ApiResponseBuilder.success(item));
+    const filteredItem = filterNonReadableFields(item, this.service.getEntityType());
+    return reply.send(ApiResponseBuilder.success(filteredItem));
   }
 
   async create(
@@ -63,9 +91,21 @@ export class BaseController<T extends IBaseModel> {
   ) {
     try {
       this.setServiceContext(request);
-      const newItem = await this.service.create(request.body as DeepPartial<T>);
-      return reply.status(201).send(ApiResponseBuilder.success(newItem, undefined));
+      const filteredData = filterNonAddableFields(request.body as DeepPartial<T>, this.service.getEntityType());
+
+      this.validateRequiredFields(filteredData);
+
+      const newItem = await this.service.create(filteredData);
+      return reply.status(201).send(ApiResponseBuilder.success(instanceToPlain(newItem), undefined));
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return reply.status(400).send(
+          ApiResponseBuilder.error(
+            'VALIDATION_ERROR',
+            error.message,
+          ),
+        );
+      }
       return reply
         .status(500)
         .send(
@@ -88,10 +128,14 @@ export class BaseController<T extends IBaseModel> {
     try {
       const id = request.params.id;
       if (!isUUID(id)) {
-        throw new ValidationError('The provided ID must be a valid UUID');
+        throw new ValidationError(i18next.t('INVALID_UUID'));
       }
 
-      const updatedItem = await this.service.update(id, request.body as any);
+      const filteredData = filterNonEditableFields(request.body as DeepPartial<T>, this.service.getEntityType());
+
+      this.validateRequiredFields(filteredData);
+
+      const updatedItem = await this.service.update(id, filteredData as any);
 
       if (!updatedItem) {
         return reply
@@ -99,8 +143,16 @@ export class BaseController<T extends IBaseModel> {
           .send(ApiResponseBuilder.error('ITEM_NOT_FOUND', i18next.t('ITEM_NOT_FOUND', { id })));
       }
 
-      return reply.send(ApiResponseBuilder.success(updatedItem));
+      return reply.send(ApiResponseBuilder.success(instanceToPlain(updatedItem)));
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return reply.status(400).send(
+          ApiResponseBuilder.error(
+            'VALIDATION_ERROR',
+            error.message,
+          ),
+        );
+      }
       return reply
         .status(500)
         .send(
@@ -124,7 +176,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'DELETE_FAILED',
-            `Unable to delete item with ID ${request.params.id}.`,
+            i18next.t('UNABLE_TO_DELETE', { id: request.params.id }),
             error instanceof Error ? error.stack : undefined,
           ),
         );
@@ -151,7 +203,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'INTERNAL_SERVER_ERROR',
-            'Unable to fetch filtered items',
+            i18next.t('UNABLE_TO_FETCH_FILTERED'),
             error instanceof Error ? error.message : undefined,
           ),
         );
@@ -178,7 +230,7 @@ export class BaseController<T extends IBaseModel> {
       const [items, total] = await this.service.search(options);
       const meta = ApiResponseBuilder.buildPaginationMeta(total, options);
 
-      return reply.send(ApiResponseBuilder.success(items, meta));
+      return reply.send(ApiResponseBuilder.success(instanceToPlain(items), meta));
     } catch (error) {
       return reply
         .status(500)
@@ -209,7 +261,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'COUNT_FAILED',
-            'Unable to count items',
+            i18next.t('COUNT_FAILED'),
             error instanceof Error ? error.message : undefined,
           ),
         );
@@ -225,19 +277,24 @@ export class BaseController<T extends IBaseModel> {
   ) {
     try {
       this.setServiceContext(request);
-      const id = Number(request.params.id);
+
+      const id = request.params.id;
+      if (!isUUID(id)) {
+        throw new ValidationError(i18next.t('INVALID_UUID'));
+      }
+
       const overrideData = request.body as DeepPartial<T>;
 
       const clonedItem = await this.service.clone(id, overrideData);
 
-      return reply.status(201).send(ApiResponseBuilder.success(clonedItem));
+      return reply.status(201).send(ApiResponseBuilder.success(instanceToPlain(clonedItem)));
     } catch (error) {
       return reply
         .status(500)
         .send(
           ApiResponseBuilder.error(
             'CLONE_FAILED',
-            'Unable to clone the item',
+            i18next.t('CLONE_FAILED'),
             error instanceof Error ? error.stack : undefined,
           ),
         );
@@ -271,7 +328,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'SELECT_OPTIONS_FAILED',
-            'Unable to fetch select options',
+            i18next.t('SELECT_OPTIONS_FAILED'),
             error instanceof Error ? error.stack : undefined,
           ),
         );
@@ -288,7 +345,7 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'FIELDS_FETCH_FAILED',
-            'Unable to fetch entity fields',
+            i18next.t('FIELDS_FETCH_FAILED'),
             error instanceof Error ? error.stack : undefined,
           ),
         );
@@ -309,7 +366,10 @@ export class BaseController<T extends IBaseModel> {
       return reply
         .status(500)
         .send(
-          ApiResponseBuilder.error('REPORT_GENERATION_FAILED', 'Failed to generate project report'),
+          ApiResponseBuilder.error(
+            'REPORT_GENERATION_FAILED',
+            i18next.t('REPORT_GENERATION_FAILED', 'Failed to generate project report'),
+          ),
         );
     }
   }

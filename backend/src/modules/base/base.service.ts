@@ -10,6 +10,7 @@ import { AuditAction } from '@modules/audits/audit.model';
 import { auditService } from '@modules/audits/audit.service';
 import { IBaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
+import i18next from 'i18next';
 import { DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { validate as isUUID } from 'uuid';
@@ -54,7 +55,7 @@ export class BaseService<T extends IBaseModel> {
   constructor(
     protected repository: Repository<T>,
     protected modelName: string,
-  ) {}
+  ) { }
 
   public getModelName(): string {
     return this.modelName;
@@ -106,7 +107,7 @@ export class BaseService<T extends IBaseModel> {
             (prefix === ''
               ? column.propertyName.includes(relation.propertyName)
               : column.propertyName.includes(relation.propertyName) ||
-                column.propertyName.includes(prefix.split('.').pop() || '')),
+              column.propertyName.includes(prefix.split('.').pop() || '')),
         );
 
         if (hasForeignKey) {
@@ -145,7 +146,7 @@ export class BaseService<T extends IBaseModel> {
 
   async findById(id: number | string): Promise<T | null> {
     const relations = this.getRelationFields();
-  
+
     if (typeof id === 'string' && isUUID(id)) {
       return this.repository.findOne({
         where: { uuid: id } as any,
@@ -187,7 +188,7 @@ export class BaseService<T extends IBaseModel> {
 
       return savedEntity;
     } catch (error) {
-      throw new Error(`Create operation failed: ${error.message}`);
+      throw new Error(i18next.t('CREATE_OPERATION_FAILED', { message: error.message }));
     }
   }
 
@@ -223,7 +224,7 @@ export class BaseService<T extends IBaseModel> {
 
       return updatedEntity;
     } catch (error) {
-      throw new Error(`Update operation failed: ${error.message}`);
+      throw new Error(i18next.t('UPDATE_OPERATION_FAILED', { message: error.message }));
     }
   }
 
@@ -251,7 +252,7 @@ export class BaseService<T extends IBaseModel> {
         await this.hooks.afterDelete(entity);
       }
     } catch (error) {
-      throw new Error(`Delete operation failed: ${error.message}`);
+      throw new Error(i18next.t('DELETE_OPERATION_FAILED', { message: error.message }));
     }
   }
 
@@ -328,11 +329,11 @@ export class BaseService<T extends IBaseModel> {
     return this.repository.count({ where });
   }
 
-  async clone(id: number, overrideData?: DeepPartial<T>): Promise<T> {
+  async clone(id: number | string, overrideData?: DeepPartial<T>): Promise<T> {
     try {
       const originalEntity = await this.findById(id);
       if (!originalEntity) {
-        throw new Error(`Entity with ID ${id} not found`);
+        throw new Error(i18next.t('ITEM_NOT_FOUND', { id }));
       }
 
       const user = this.getCurrentUser();
@@ -340,6 +341,7 @@ export class BaseService<T extends IBaseModel> {
       const cloneData = {
         ...originalEntity,
         id: undefined,
+        uuid: undefined,
         created_at: undefined,
         updated_at: undefined,
         ...overrideData,
@@ -353,12 +355,12 @@ export class BaseService<T extends IBaseModel> {
         audit_action: AuditAction.CREATE,
         audit_new_values: cloneData,
         audit_fk_user_id: user?.id,
-        audit_observation: `Cloned from ${this.modelName} ID: ${id}`,
+        audit_observation: `Cloned from ${this.modelName} ID: ${id} (UUID: ${originalEntity.uuid})`,
       });
 
       return savedEntity;
     } catch (error) {
-      throw new Error(`Clone operation failed: ${error.message}`);
+      throw new Error(i18next.t('CLONE_FAILED'));
     }
   }
 
@@ -386,7 +388,7 @@ export class BaseService<T extends IBaseModel> {
       }
 
       if (!labelFields || labelFields.length === 0) {
-        throw new Error('No suitable fields found for label');
+        throw new Error(i18next.t('SELECT_OPTIONS_FAILED'));
       }
 
       let whereConditions = {};
@@ -411,7 +413,7 @@ export class BaseService<T extends IBaseModel> {
           .join(delimiter),
       }));
     } catch (error) {
-      throw new Error(`Failed to get select options: ${error.message}`);
+      throw new Error(i18next.t('SELECT_OPTIONS_FAILED'));
     }
   }
 
@@ -419,7 +421,11 @@ export class BaseService<T extends IBaseModel> {
     try {
       return ReportService.generateReport(this, options);
     } catch (error) {
-      throw new Error(`Failed to generate report: ${error.message}`);
+      throw new Error(i18next.t('REPORT_GENERATION_FAILED'));
     }
+  }
+
+  getEntityType(): any {
+    return this.repository.target;
   }
 }
