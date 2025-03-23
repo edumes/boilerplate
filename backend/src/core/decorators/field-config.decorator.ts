@@ -18,6 +18,7 @@ export interface FieldConfigOptions {
   canAdd?: boolean;
   label?: string;
   required?: boolean;
+  readonly?: boolean;
   tabs?: string[];
   date?: FieldDateConfig;
   currency?: FieldCurrencyConfig;

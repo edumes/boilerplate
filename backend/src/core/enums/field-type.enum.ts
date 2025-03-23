@@ -7,7 +7,6 @@ export enum FIELD_TYPE {
     EMAIL = 'email',
     URL = 'url',
     FILE = 'file',
-    BOOLEAN = 'boolean',
     SELECT = 'select',
     MULTISELECT = 'multiselect',
     COLOR = 'color',

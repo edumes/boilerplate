@@ -1,6 +1,8 @@
 import { BaseModel } from '@modules/base/base.model';
 import { Company } from '@modules/companies/company.model';
 import { Role } from '@modules/roles/role.model';
+import { FieldConfig, FormMetadata } from '@core/decorators/field-config.decorator';
+import { FIELD_TYPE } from '@core/enums/field-type.enum';
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import {
@@ -14,6 +16,14 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'users' })
+@FormMetadata({
+  prefix: 'user',
+  table: 'users',
+  singularName: 'User',
+  pluralName: 'Users',
+  icon: 'user',
+  version: '1.0.0',
+})
 export class User extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'user_id' })
   id: number;
@@ -21,11 +31,34 @@ export class User extends BaseModel {
   @Column({ length: 100 })
   @IsOptional()
   @IsString({ message: 'Name must be a string' })
+  @FieldConfig({
+    label: 'Nome',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 1,
+    width: 6,
+    type: FIELD_TYPE.TEXT,
+    tabs: ['main'],
+  })
   user_name: string;
 
   @Column({ unique: true })
   @IsEmail({}, { message: 'Invalid email format' })
   @IsNotEmpty({ message: 'Email is required' })
+  @FieldConfig({
+    label: 'Email',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 2,
+    required: true,
+    width: 6,
+    type: FIELD_TYPE.EMAIL,
+    tabs: ['main'],
+  })
   user_email: string;
 
   @Column({
@@ -34,12 +67,48 @@ export class User extends BaseModel {
   @Exclude()
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @FieldConfig({
+    label: 'Senha',
+    canAdd: true,
+    canRead: false,
+    canBrowse: false,
+    canEdit: true,
+    order: 3,
+    required: true,
+    width: 6,
+    type: FIELD_TYPE.TEXT,
+    tabs: ['main'],
+  })
   user_password: string;
 
   @Column({ length: 20, nullable: true })
+  @FieldConfig({
+    label: 'Telefone',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 4,
+    width: 4,
+    type: FIELD_TYPE.TEXT,
+    tabs: ['main'],
+  })
   user_telephone: string;
 
   @Column({ nullable: false })
+  @FieldConfig({
+    label: 'Empresa',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 5,
+    required: true,
+    width: 6,
+    type: FIELD_TYPE.SELECT,
+    select: { url: 'companies/select-options' },
+    tabs: ['main'],
+  })
   user_fk_company_id: number;
 
   @ManyToOne(() => Company)
@@ -47,12 +116,48 @@ export class User extends BaseModel {
   company: Company;
 
   @CreateDateColumn({ name: 'user_created_at' })
+  @FieldConfig({
+    label: 'Data de Criação',
+    canAdd: false,
+    canRead: true,
+    canBrowse: true,
+    canEdit: false,
+    readonly: true,
+    order: 6,
+    width: 4,
+    type: FIELD_TYPE.DATE,
+    tabs: ['dates'],
+  })
   created_at: Date;
 
   @UpdateDateColumn({ name: 'user_updated_at' })
+  @FieldConfig({
+    label: 'Data de Atualização',
+    canAdd: false,
+    canRead: true,
+    canBrowse: true,
+    canEdit: false,
+    readonly: true,
+    order: 7,
+    width: 4,
+    type: FIELD_TYPE.DATE,
+    tabs: ['dates'],
+  })
   updated_at: Date;
 
   @Column({ nullable: true })
+  @FieldConfig({
+    label: 'Função',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 8,
+    width: 6,
+    type: FIELD_TYPE.SELECT,
+    select: { url: 'roles/select-options' },
+    tabs: ['main'],
+  })
   user_fk_role_id: number;
 
   @ManyToOne(() => Role)
@@ -60,5 +165,16 @@ export class User extends BaseModel {
   role: Role;
 
   @Column({ default: true })
+  @FieldConfig({
+    label: 'Ativo',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 9,
+    width: 2,
+    type: FIELD_TYPE.CHECKBOX,
+    tabs: ['main'],
+  })
   user_is_active: boolean;
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { AsyncMultiSelect } from '@/components/ui/async-multiselect';
 import { AsyncSelect } from '@/components/ui/async-select';
 import {
     FormControl,
@@ -10,6 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField as IFormField, UpdateFieldConfig } from '@/types/forms';
 import { CircleXIcon } from 'lucide-react';
@@ -147,6 +149,39 @@ export function CrudFormalize({ control, config, setValue }: CrudFormalizeProps)
                                                     }}
                                                 />
                                             );
+                                        case "multiselect":
+                                            return (
+                                                <AsyncMultiSelect<any>
+                                                    fetcher={field.select.url}
+                                                    defaultOptions={field.select.options}
+                                                    renderOption={(option) => (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex flex-col">
+                                                                <div className="font-medium">{option.label}</div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    getOptionValue={(option) => {
+                                                        return Number(option.value || option.id);
+                                                    }}
+                                                    getDisplayValue={(option) => (
+                                                        <div className="flex items-center gap-2 text-left">
+                                                            <div className="flex flex-col">
+                                                                <div className="font-medium">{option.label}</div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    notFound={<div className="py-6 text-center text-sm">No {field.label} found</div>}
+                                                    name={field.name}
+                                                    placeholder={`Search options...`}
+                                                    value={Array.isArray(renderField.value) ? renderField.value : []}
+                                                    disabled={field.disabled}
+                                                    width="auto"
+                                                    onChange={(value) => {
+                                                        handleChange(value);
+                                                    }}
+                                                />
+                                            );
                                         case "date":
                                             return (
                                                 <Input
@@ -167,6 +202,14 @@ export function CrudFormalize({ control, config, setValue }: CrudFormalizeProps)
                                                     onChange={(e) => handleChange(e.target.value)}
                                                     disabled={field.disabled}
                                                     readOnly={field.readonly}
+                                                />
+                                            );
+                                        case "checkbox":
+                                            return (
+                                                <Switch
+                                                    checked={renderField.value}
+                                                    onCheckedChange={handleChange}
+                                                    disabled={field.disabled}
                                                 />
                                             );
                                         case "grid":

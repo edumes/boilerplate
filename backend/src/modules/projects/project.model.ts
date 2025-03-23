@@ -12,10 +12,12 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'projects' })
@@ -25,7 +27,7 @@ import {
   singularName: 'Project',
   pluralName: 'Projects',
   icon: 'project-management',
-  version: '1.0.0'
+  version: '1.0.0',
 })
 export class Project extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'project_id' })
@@ -110,9 +112,35 @@ export class Project extends BaseModel {
     type: FIELD_TYPE.SELECT,
     width: 2,
     order: 5,
-    select: { options: PriorityLevel }
+    select: { options: PriorityLevel },
   })
   project_priority: PriorityLevel;
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'project_users',
+    joinColumn: {
+      name: 'project_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+  })
+  @FieldConfig({
+    label: 'Usuários Envolvidos',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 6,
+    width: 6,
+    type: FIELD_TYPE.MULTISELECT,
+    select: { url: 'users/select-options' },
+    tabs: ['main'],
+  })
+  project_users: User[];
 
   @Column({ type: 'timestamp', nullable: true })
   @FieldConfig({
@@ -175,7 +203,7 @@ export class Project extends BaseModel {
     label: 'Orçamento',
     type: FIELD_TYPE.CURRENCY,
     width: 9,
-    tabs: ['financial']
+    tabs: ['financial'],
   })
   project_budget: number;
 
