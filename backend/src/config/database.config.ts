@@ -1,16 +1,21 @@
 import { env } from '@config/env.config';
 import { logger } from '@core/utils/logger';
-import { Audit } from '@modules/audits/audit.model';
-import { Client } from '@modules/clients/client.model';
-import { Company } from '@modules/companies/company.model';
-import { Notification } from '@modules/notifications/notification.model';
-import { ProjectItem } from '@modules/project_items/project-item.model';
-import { Project } from '@modules/projects/project.model';
-import { Role } from '@modules/roles/role.model';
-import { Situation } from '@modules/situations/situation.model';
-import { User } from '@modules/users/user.model';
+import glob from 'glob';
+import path from 'path';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+
+function loadEntities() {
+  const basePath = path.join(__dirname, '..');
+  const modelFiles = glob.sync(`${basePath}/modules/**/*.model.@(ts|js)`);
+
+  return modelFiles.map((file) => {
+    const normalizedFile = env.NODE_ENV === 'development' ? file : file.replace(/\.ts$/, '.js');
+    const module = require(normalizedFile);
+
+    return module.default || Object.values(module)[0];
+  });
+}
 
 const AppDataSource = new DataSource({
   type: 'postgres',
@@ -27,7 +32,7 @@ const AppDataSource = new DataSource({
   //   }
   // },
   logging: false,
-  entities: [User, Audit, Company, Project, ProjectItem, Role, Notification, Situation, Client],
+  entities: loadEntities(),
   migrations: ['src/migrations/*.ts'],
 });
 
@@ -52,3 +57,4 @@ async function connectWithRetry(retries = MAX_RETRIES): Promise<void> {
 }
 
 export { AppDataSource, connectWithRetry };
+
