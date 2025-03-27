@@ -4,6 +4,7 @@ import { PriorityLevel } from '@core/enums/priority.enum';
 import { BaseModel } from '@modules/base/base.model';
 import { Client } from '@modules/clients/client.model';
 import { ProjectItem } from '@modules/project_items/project-item.model';
+import { ProjectUser } from '@modules/project_users/project-user.model';
 import { Situation } from '@modules/situations/situation.model';
 import { User } from '@modules/users/user.model';
 import {
@@ -12,12 +13,10 @@ import {
   Entity,
   Index,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 @Entity({ name: 'projects' })
@@ -116,18 +115,7 @@ export class Project extends BaseModel {
   })
   project_priority: PriorityLevel;
 
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: 'project_users',
-    joinColumn: {
-      name: 'project_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @OneToMany(() => ProjectUser, projectUser => projectUser.project)
   @FieldConfig({
     label: 'Usuários Envolvidos',
     canAdd: true,
@@ -140,7 +128,7 @@ export class Project extends BaseModel {
     select: { url: 'users/select-options' },
     tabs: ['main'],
   })
-  project_users: User[];
+  project_users: ProjectUser[];
 
   @Column({ type: 'timestamp', nullable: true })
   @FieldConfig({

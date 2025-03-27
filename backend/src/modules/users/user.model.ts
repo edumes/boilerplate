@@ -1,8 +1,9 @@
-import { BaseModel } from '@modules/base/base.model';
-import { Company } from '@modules/companies/company.model';
-import { Role } from '@modules/roles/role.model';
 import { FieldConfig, FormMetadata } from '@core/decorators/field-config.decorator';
 import { FIELD_TYPE } from '@core/enums/field-type.enum';
+import { BaseModel } from '@modules/base/base.model';
+import { Company } from '@modules/companies/company.model';
+import { ProjectUser } from '@modules/project_users/project-user.model';
+import { Role } from '@modules/roles/role.model';
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import {
@@ -11,6 +12,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -177,4 +179,7 @@ export class User extends BaseModel {
     tabs: ['main'],
   })
   user_is_active: boolean;
+
+  @OneToMany(() => ProjectUser, projectUser => projectUser.user)
+  project_users: ProjectUser[];
 }
