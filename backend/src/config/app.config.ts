@@ -1,6 +1,36 @@
 import { env } from '@config/env.config';
 
-export const appConfig = {
+interface CurrencyFormat {
+  locale: string;
+  currency: string;
+}
+
+interface LocaleConfig {
+  timezone: string;
+  defaultLanguage: string;
+  supportedLanguages: string[];
+  dateFormat: string;
+  timeFormat: string;
+  dateTimeFormat: string;
+  currencyFormat: CurrencyFormat;
+}
+
+interface AppConfig {
+  app: {
+    name: string;
+    version: string;
+    environment: string;
+    port: number;
+  };
+  locale: LocaleConfig;
+  features: {
+    redis: {
+      enabled: boolean;
+    };
+  };
+}
+
+export const appConfig: AppConfig = {
   app: {
     name: 'Backend API',
     version: '1.0.0',
