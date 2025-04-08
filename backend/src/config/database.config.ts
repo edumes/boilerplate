@@ -26,11 +26,7 @@ const AppDataSource = new DataSource({
   database: env.DB_DATABASE,
   synchronize: env.NODE_ENV === 'development', // apenas em desenvolvimento
   // logging: env.NODE_ENV === 'development',
-  // extra: {
-  //   ssl: {
-  //     rejectUnauthorized: false
-  //   }
-  // },
+  ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   logging: false,
   entities: loadEntities(),
   migrations: ['src/migrations/*.ts'],

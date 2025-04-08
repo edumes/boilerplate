@@ -1,21 +1,22 @@
 import './config/alias.config'; // deixar esse import sempre no topo
+import { appConfig } from '@config/app.config';
 import { AppDataSource } from '@config/database.config';
 import { env } from '@config/env.config';
 import { setupI18n } from '@config/i18n.config';
-import Fastify from 'fastify';
-// import { redis } from '@config/redis.config';
+import { redis } from '@config/redis.config';
 import { registerRoutes } from '@config/routes.config';
 import { setupSwagger } from '@config/swagger.config';
+import { setupWebSocket } from '@config/websocket.config';
 import { fastifyErrorHandler, globalErrorHandler } from '@core/handlers/error.handler';
 import { httpLogger } from '@core/middlewares/http-logger.middleware';
 import { i18nMiddleware } from '@core/middlewares/i18n.middleware';
-// import { rateLimitMiddleware } from '@core/middlewares/rate-limit.middleware';
-import { setupWebSocket } from '@config/websocket.config';
+import { rateLimitMiddleware } from '@core/middlewares/rate-limit.middleware';
 import getSystemStatus from '@core/utils/health.util';
 import { logger } from '@core/utils/logger';
 import websocketRoutes from '@core/websocket/websocket.routes';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyStatic from '@fastify/static';
+import Fastify from 'fastify';
 import path from 'path';
 
 const server = Fastify({ logger: false });
@@ -40,7 +41,9 @@ const configureMiddlewares = () => {
 
   server.setErrorHandler(fastifyErrorHandler);
   server.addHook('onRequest', httpLogger);
-  // server.addHook('onRequest', rateLimitMiddleware);
+  if (appConfig.features.redis.enabled) {
+    server.addHook('onRequest', rateLimitMiddleware);
+  }
   server.addHook('preHandler', i18nMiddleware);
 };
 
@@ -60,8 +63,10 @@ const configureExternalServices = async () => {
   await AppDataSource.initialize();
   logger.info('Database connected successfully');
 
-  // await redis.ping();
-  // logger.info('Redis connected successfully');
+  if (appConfig.features.redis.enabled) {
+    await redis.ping();
+    logger.info('Redis connected successfully');
+  }
 };
 
 const initializeServer = async () => {
@@ -101,8 +106,10 @@ const closeConnections = async () => {
     logger.info('Database connection closed');
   }
 
-  // await redis.quit();
-  // logger.info('Redis connection closed');
+  if (appConfig.features.redis.enabled) {
+    await redis.quit();
+    logger.info('Redis connection closed');
+  }
 };
 
 const gracefulShutdown = async (signal: string) => {

@@ -2,6 +2,7 @@ import { env } from '@config/env.config';
 import { EncryptionService } from '@core/utils/encryption.util';
 import { verifyToken } from '@core/utils/jwt.util';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import i18next from 'i18next';
 
 const encryptionService = new EncryptionService(env.ENCRYPTION_KEY);
 
@@ -13,14 +14,14 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
         const decryptedData = encryptionService.decrypt(encryptedData, iv, authTag);
         request.body = JSON.parse(decryptedData);
       } catch (error) {
-        reply.code(400).send({ error: 'Invalid encrypted data' });
+        reply.code(400).send({ error: i18next.t('INVALID_ENCRYPTED_DATA') });
         return;
       }
     }
 
     const token = request.headers.authorization?.replace('Bearer ', '');
     if (!token) {
-      reply.code(401).send({ error: 'No token provided' });
+      reply.code(401).send({ error: i18next.t('NO_TOKEN_PROVIDED') });
       return;
     }
 
@@ -41,6 +42,6 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
       };
     }
   } catch (error) {
-    reply.code(401).send({ error: 'Invalid token' });
+    reply.code(401).send({ error: i18next.t('INVALID_TOKEN') });
   }
 }
