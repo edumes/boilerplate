@@ -2,6 +2,7 @@ import { BadRequestError } from '@core/utils/errors.util';
 import { plainToClass } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import i18next from 'i18next';
 
 export function validationMiddleware(type: any) {
   return async (request: FastifyRequest, reply: FastifyReply) => {
@@ -14,7 +15,7 @@ export function validationMiddleware(type: any) {
         return acc;
       }, {});
 
-      throw new BadRequestError('Validation failed', validationErrors);
+      throw new BadRequestError(i18next.t('VALIDATION_ERROR'), validationErrors);
     }
 
     request.body = input;

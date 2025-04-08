@@ -4,8 +4,7 @@ import { BaseModel } from '@modules/base/base.model';
 import { Company } from '@modules/companies/company.model';
 import { ProjectUser } from '@modules/project_users/project-user.model';
 import { Role } from '@modules/roles/role.model';
-import { Exclude } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, MinLength } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -31,8 +30,6 @@ export class User extends BaseModel {
   id: number;
 
   @Column({ length: 100 })
-  @IsOptional()
-  @IsString({ message: 'Name must be a string' })
   @FieldConfig({
     label: 'Nome',
     canAdd: true,
@@ -40,6 +37,7 @@ export class User extends BaseModel {
     canBrowse: true,
     canEdit: true,
     order: 1,
+    required: true,
     width: 6,
     type: FIELD_TYPE.TEXT,
     tabs: ['main'],
@@ -48,7 +46,6 @@ export class User extends BaseModel {
 
   @Column({ unique: true })
   @IsEmail({}, { message: 'Invalid email format' })
-  @IsNotEmpty({ message: 'Email is required' })
   @FieldConfig({
     label: 'Email',
     canAdd: true,
@@ -66,8 +63,6 @@ export class User extends BaseModel {
   @Column({
     length: 60,
   })
-  @Exclude()
-  @IsNotEmpty({ message: 'Password is required' })
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
   @FieldConfig({
     label: 'Senha',
@@ -97,7 +92,7 @@ export class User extends BaseModel {
   })
   user_telephone: string;
 
-  @Column({ nullable: false })
+  @Column()
   @FieldConfig({
     label: 'Empresa',
     canAdd: true,
@@ -116,6 +111,26 @@ export class User extends BaseModel {
   @ManyToOne(() => Company)
   @JoinColumn({ name: 'user_fk_company_id' })
   company: Company;
+
+  @Column()
+  @FieldConfig({
+    label: 'Função',
+    canAdd: true,
+    canRead: true,
+    canBrowse: true,
+    canEdit: true,
+    order: 8,
+    required: true,
+    width: 6,
+    type: FIELD_TYPE.SELECT,
+    select: { url: 'roles/select-options' },
+    tabs: ['main'],
+  })
+  user_fk_role_id: number;
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'user_fk_role_id' })
+  role: Role;
 
   @CreateDateColumn({ name: 'user_created_at' })
   @FieldConfig({
@@ -146,25 +161,6 @@ export class User extends BaseModel {
     tabs: ['dates'],
   })
   updated_at: Date;
-
-  @Column({ nullable: true })
-  @FieldConfig({
-    label: 'Função',
-    canAdd: true,
-    canRead: true,
-    canBrowse: true,
-    canEdit: true,
-    order: 8,
-    width: 6,
-    type: FIELD_TYPE.SELECT,
-    select: { url: 'roles/select-options' },
-    tabs: ['main'],
-  })
-  user_fk_role_id: number;
-
-  @ManyToOne(() => Role)
-  @JoinColumn({ name: 'user_fk_role_id' })
-  role: Role;
 
   @Column({ default: true })
   @FieldConfig({

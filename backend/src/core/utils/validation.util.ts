@@ -4,6 +4,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import i18next from 'i18next';
 import { ValidationError } from './errors.util';
 
 @ValidatorConstraint({ async: false })
@@ -14,7 +15,7 @@ class RegexConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Value does not match the required pattern';
+    return i18next.t('VALUE_DOES_NOT_MATCH_PATTERN');
   }
 }
 
@@ -87,7 +88,7 @@ class RangeConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Value is out of range';
+    return i18next.t('VALUE_IS_OUT_OF_RANGE');
   }
 }
 
@@ -119,7 +120,7 @@ class RequiredConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'This field is required';
+    return i18next.t('FIELD_IS_REQUIRED');
   }
 }
 
@@ -143,7 +144,7 @@ class IsDateConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Invalid date';
+    return i18next.t('INVALID_DATE');
   }
 }
 
@@ -167,7 +168,7 @@ class InListConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Value is not in the allowed list';
+    return i18next.t('VALUE_NOT_IN_ALLOWED_LIST');
   }
 }
 
@@ -191,7 +192,7 @@ class IsIntegerConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Value must be an integer';
+    return i18next.t('VALUE_MUST_BE_INTEGER');
   }
 }
 
@@ -214,7 +215,7 @@ class IsFloatConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Value must be a valid float';
+    return i18next.t('VALUE_MUST_BE_VALID_FLOAT');
   }
 }
 
@@ -246,7 +247,7 @@ class IPAddressConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Invalid IP address';
+    return i18next.t('INVALID_IP_ADDRESS');
   }
 }
 

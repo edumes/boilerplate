@@ -4,6 +4,7 @@ import { BaseController } from '@modules/base/base.controller';
 import { Company } from '@modules/companies/company.model';
 import { companyService } from '@modules/companies/company.service';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import i18next from 'i18next';
 
 export class CompanyController extends BaseController<Company> {
   constructor() {
@@ -15,7 +16,7 @@ export class CompanyController extends BaseController<Company> {
     const existingCompany = await companyService.findByCnpj(companyData.company_cnpj);
 
     if (existingCompany) {
-      throw new ValidationError('CNPJ already registered');
+      throw new ValidationError(i18next.t('CNPJ_ALREADY_REGISTERED'));
     }
 
     const newCompany = await super.create(request, reply);

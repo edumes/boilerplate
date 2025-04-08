@@ -4,6 +4,7 @@ import { BaseService } from '@modules/base/base.service';
 import { User } from '@modules/users/user.model';
 import { userRepository } from '@modules/users/user.repository';
 import bcrypt from 'bcrypt';
+import i18next from 'i18next';
 
 export class UserService extends BaseService<User> {
   constructor() {
@@ -14,7 +15,7 @@ export class UserService extends BaseService<User> {
         const currentUser = this.getCurrentUser();
 
         if (currentUser && data.user_fk_company_id != currentUser.user_fk_company_id) {
-          throw new ForbiddenError('You can only create users for your own company');
+          throw new ForbiddenError(i18next.t('CAN_ONLY_CREATE_USERS_FOR_OWN_COMPANY'));
         }
 
         if (data.user_password) {
@@ -31,35 +32,10 @@ export class UserService extends BaseService<User> {
             authConfig.passwordSaltRounds,
           );
         }
-      },
-      afterCreate: async entity => {
-        await this.sendWelcomeEmail(entity);
-      },
-      afterUpdate: async entity => {
-        await this.clearUserCache(entity.id);
-      },
-      beforeDelete: async id => {
-        await this.checkUserDeletionAllowed(id);
-      },
-      afterDelete: async entity => {
-        await this.cleanupUserData(entity.id);
-      },
-      // defineRelationFields: () => {
-      //   return ['relation1', 'relation2', 'relation3.relation6'];
-      // }
+      }
     });
   }
 
-  // Implementation of helper methods...
-  private async sendWelcomeEmail(user: User) {}
-
-  private async clearUserCache(userId: number) {}
-
-  private async checkUserDeletionAllowed(userId: number) {}
-
-  private async cleanupUserData(userId: number) {}
-
-  // Métodos específicos
   async findByEmail(email: string): Promise<User | null> {
     return userRepository.findByEmail(email);
   }

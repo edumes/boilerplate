@@ -5,27 +5,24 @@ import { companyService } from '@modules/companies/company.service';
 import { User } from '@modules/users/user.model';
 import { userService } from '@modules/users/user.service';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import i18next from 'i18next';
 
 export class UserController extends BaseController<User> {
   constructor() {
     super(userService);
   }
 
-  async create(request: FastifyRequest<{ Body: Partial<User> }>, reply: FastifyReply) {
+  async create(request: FastifyRequest<{ Body: Partial<User> & Record<string, unknown> }>, reply: FastifyReply) {
     const userData = request.body;
-
-    // if (!userData.user_fk_company_id) {
-    //   throw new ValidationError('Company ID is required');
-    // }
 
     const existingUser = await userService.findByEmail(userData.user_email);
     if (existingUser) {
-      throw new ValidationError('Email already in use');
+      throw new ValidationError(i18next.t('EMAIL_ALREADY_IN_USE'));
     }
 
     const company = await companyService.findById(userData.user_fk_company_id);
     if (!company) {
-      throw new ValidationError('Company not found');
+      throw new ValidationError(i18next.t('COMPANY_NOT_FOUND'));
     }
 
     const newUser = await super.create(request, reply);
