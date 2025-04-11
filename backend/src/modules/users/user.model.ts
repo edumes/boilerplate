@@ -5,6 +5,7 @@ import { Company } from '@modules/companies/company.model';
 import { ProjectUser } from '@modules/project_users/project-user.model';
 import { Role } from '@modules/roles/role.model';
 import { IsEmail, MinLength } from 'class-validator';
+import i18next from 'i18next';
 import {
   Column,
   CreateDateColumn,
@@ -63,7 +64,7 @@ export class User extends BaseModel {
   @Column({
     length: 60,
   })
-  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @MinLength(8, { message: i18next.t('PASSWORD_MIN_LENGTH', { characters: 8 }) })
   @FieldConfig({
     label: 'Senha',
     canAdd: true,

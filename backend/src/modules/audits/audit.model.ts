@@ -1,3 +1,4 @@
+import { AuditAction } from '@core/enums/audit-action.enum';
 import { BaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
 import {
@@ -8,12 +9,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-export enum AuditAction {
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
-}
 
 @Entity({ name: 'audits' })
 export class Audit extends BaseModel {
@@ -39,10 +34,10 @@ export class Audit extends BaseModel {
   audit_observation?: string;
 
   @Column({ nullable: true })
-  audit_fk_user_id: number;
+  created_by_fk_user_id: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'audit_fk_user_id' })
+  @JoinColumn({ name: 'created_by_fk_user_id' })
   user: User;
 
   @CreateDateColumn({ name: 'audit_created_at' })
