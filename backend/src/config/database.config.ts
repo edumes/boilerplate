@@ -13,6 +13,7 @@ function loadEntities() {
     const normalizedFile = env.NODE_ENV === 'development' ? file : file.replace(/\.ts$/, '.js');
     const module = require(normalizedFile);
 
+    // do not export other variables from inside the model, it can cause errors when loading all entities
     return module.default || Object.values(module)[0];
   });
 }

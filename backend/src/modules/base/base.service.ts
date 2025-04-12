@@ -4,9 +4,9 @@ import {
   getFieldConfigs,
   getFormConfig,
 } from '@core/decorators/field-config.decorator';
+import { AuditAction } from '@core/enums/audit-action.enum';
 import { ReportOptions, ReportService } from '@core/reports/report.service';
 import { PaginationOptions } from '@core/utils/api-response.util';
-import { AuditAction } from '@modules/audits/audit.model';
 import { auditService } from '@modules/audits/audit.service';
 import { IBaseModel } from '@modules/base/base.model';
 import { User } from '@modules/users/user.model';
@@ -179,7 +179,7 @@ export class BaseService<T extends IBaseModel> {
         audit_entity_name: this.modelName,
         audit_action: AuditAction.CREATE,
         audit_new_values: data,
-        audit_fk_user_id: user?.id,
+        created_by_fk_user_id: user.id
       });
 
       if (this.hooks.afterCreate) {
@@ -215,7 +215,7 @@ export class BaseService<T extends IBaseModel> {
         audit_action: AuditAction.UPDATE,
         audit_old_values: oldEntity,
         audit_new_values: data,
-        audit_fk_user_id: user?.id,
+        created_by_fk_user_id: user.id,
       });
 
       if (this.hooks.afterUpdate && updatedEntity) {
@@ -245,7 +245,7 @@ export class BaseService<T extends IBaseModel> {
         audit_entity_name: this.modelName,
         audit_action: AuditAction.DELETE,
         audit_old_values: entity,
-        audit_fk_user_id: user?.id,
+        created_by_fk_user_id: user.id,
       });
 
       if (this.hooks.afterDelete) {
@@ -354,7 +354,7 @@ export class BaseService<T extends IBaseModel> {
         audit_entity_name: this.modelName,
         audit_action: AuditAction.CREATE,
         audit_new_values: cloneData,
-        audit_fk_user_id: user?.id,
+        created_by_fk_user_id: user.id,
         audit_observation: `Cloned from ${this.modelName} ID: ${id} (UUID: ${originalEntity.uuid})`,
       });
 

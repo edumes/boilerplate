@@ -37,5 +37,6 @@
   "INVALID_IP_ADDRESS": "Endereço IP inválido",
   "NO_TOKEN_PROVIDED": "Token não fornecido",
   "INVALID_TOKEN": "Token inválido",
-  "INVALID_ENCRYPTED_DATA": "Dados criptografados inválidos"
+  "INVALID_ENCRYPTED_DATA": "Dados criptografados inválidos",
+  "PASSWORD_MIN_LENGTH": "A senha deve ter pelo menos {{minLength}} caracteres"
 }

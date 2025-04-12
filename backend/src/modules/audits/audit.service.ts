@@ -1,4 +1,5 @@
-import { Audit, AuditAction } from '@modules/audits/audit.model';
+import { AuditAction } from '@core/enums/audit-action.enum';
+import { Audit } from '@modules/audits/audit.model';
 import { auditRepository } from '@modules/audits/audit.repository';
 import { Repository } from 'typeorm';
 
@@ -13,7 +14,7 @@ export class AuditService {
     audit_action: AuditAction;
     audit_old_values?: Record<string, any>;
     audit_new_values?: Record<string, any>;
-    audit_fk_user_id?: number;
+    created_by_fk_user_id?: number;
     audit_observation?: string;
   }): Promise<Audit> {
     const audit = this.repository.create({

@@ -37,5 +37,6 @@
   "INVALID_IP_ADDRESS": "Invalid IP address",
   "NO_TOKEN_PROVIDED": "No token provided",
   "INVALID_TOKEN": "Invalid token",
-  "INVALID_ENCRYPTED_DATA": "Invalid encrypted data"
+  "INVALID_ENCRYPTED_DATA": "Invalid encrypted data",
+  "PASSWORD_MIN_LENGTH": "Password must be at least {{minLength}} characters long"
 }
