@@ -1,17 +1,41 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { Situation } from '@modules/situations/situation.model';
+import { In, MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateDefaultSituations implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-      INSERT INTO situations (uuid, situation_code, situation_name, situation_description)
-      VALUES 
-        ('2189801c-41c3-4b84-9013-2c8215258d87', '001', 'In Progress', 'The process is ongoing'),
-        ('55f1a4e6-009f-4719-818f-8e8fde0e62fb', '002', 'Pending', 'Awaiting further action'),
-        ('7bcd0bc6-93f6-4417-8613-6e3cbf3e915e', '003', 'Completed', 'The process is complete');
-    `);
+    const situationRepository = queryRunner.manager.getRepository(Situation);
+
+    const existingSituations = await situationRepository.find({
+      where: {
+        situation_code: In(['001', '002', '003'])
+      }
+    });
+
+    if (existingSituations.length === 0) {
+      const situations = situationRepository.create([
+        {
+          situation_code: '001',
+          situation_name: 'In Progress',
+          situation_description: 'The process is ongoing'
+        },
+        {
+          situation_code: '002',
+          situation_name: 'Pending',
+          situation_description: 'Awaiting further action'
+        },
+        {
+          situation_code: '003',
+          situation_name: 'Completed',
+          situation_description: 'The process is complete'
+        }
+      ]);
+
+      await situationRepository.save(situations);
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DELETE FROM situations`);
+    const situationRepository = queryRunner.manager.getRepository(Situation);
+    await situationRepository.delete({});
   }
 }

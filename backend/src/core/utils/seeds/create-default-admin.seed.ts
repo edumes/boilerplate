@@ -1,56 +1,54 @@
 import { authConfig } from '@config/auth.config';
+import { Company } from '@modules/companies/company.model';
+import { Role } from '@modules/roles/role.model';
+import { User } from '@modules/users/user.model';
 import * as bcrypt from 'bcrypt';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateDefaultAdmin implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const adminRole = await queryRunner.query(
-      `SELECT id FROM roles WHERE role_name = 'admin' LIMIT 1`,
-    );
+    const roleRepository = queryRunner.manager.getRepository(Role);
+    const companyRepository = queryRunner.manager.getRepository(Company);
+    const userRepository = queryRunner.manager.getRepository(User);
 
-    if (!adminRole || adminRole.length === 0) {
+    const adminRole = await roleRepository.findOne({
+      where: { role_name: 'admin' }
+    });
+
+    if (!adminRole) {
       throw new Error('Admin role not found. Please run the CreateDefaultRoles migration first.');
     }
 
-    const defaultCompany = await queryRunner.query(
-      `SELECT id FROM companies WHERE company_email = 'default@company.com' LIMIT 1`,
-    );
+    const defaultCompany = await companyRepository.findOne({
+      where: { company_email: 'default@company.com' }
+    });
 
-    if (!defaultCompany || defaultCompany.length === 0) {
-      throw new Error(
-        'Default company not found. Please run the CreateDefaultCompany migration first.',
-      );
+    if (!defaultCompany) {
+      throw new Error('Default company not found. Please run the CreateDefaultCompany migration first.');
     }
 
-    const hashedPassword = await bcrypt.hash('1234', authConfig.passwordSaltRounds);
+    const existingAdmin = await userRepository.findOne({
+      where: { user_email: 'admin@admin.com' }
+    });
 
-    await queryRunner.query(`
-      INSERT INTO users (
-        uuid,
-        user_name,
-        user_email,
-        user_password,
-        user_is_active,
-        user_fk_role_id,
-        user_fk_company_id
-      )
-      VALUES (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-        'ADMIN',
-        'admin@admin.com',
-        '${hashedPassword}',
-        true,
-        ${adminRole[0].id},
-        ${defaultCompany[0].id}
-      )
-      ON CONFLICT (user_email) DO NOTHING
-    `);
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash('1234', authConfig.passwordSaltRounds);
+
+      const adminUser = userRepository.create({
+        user_name: 'ADMIN',
+        user_email: 'admin@admin.com',
+        user_password: hashedPassword,
+        user_is_active: true,
+        role: adminRole,
+        company: defaultCompany
+      });
+
+      await userRepository.save(adminUser);
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-      DELETE FROM users 
-      WHERE user_email = 'admin@admin.com'
-    `);
+    const userRepository = queryRunner.manager.getRepository(User);
+    await userRepository.delete({ user_email: 'admin@admin.com' });
   }
 }

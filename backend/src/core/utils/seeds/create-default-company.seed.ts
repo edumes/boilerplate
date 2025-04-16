@@ -1,17 +1,27 @@
+import { Company } from '@modules/companies/company.model';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateDefaultCompany implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-      INSERT INTO companies (uuid, company_name, company_email, company_is_active)
-      VALUES ('67eb0091-f527-4097-967c-1bd5636fca9d', 'Default Company', 'default@company.com', true)
-    `);
+    const companyRepository = queryRunner.manager.getRepository(Company);
+
+    const existingCompany = await companyRepository.findOne({
+      where: { company_email: 'default@company.com' }
+    });
+
+    if (!existingCompany) {
+      const defaultCompany = companyRepository.create({
+        company_name: 'Default Company',
+        company_email: 'default@company.com',
+        company_is_active: true
+      });
+
+      await companyRepository.save(defaultCompany);
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-      DELETE FROM companies 
-      WHERE company_email = 'default@company.com'
-    `);
+    const companyRepository = queryRunner.manager.getRepository(Company);
+    await companyRepository.delete({ company_email: 'default@company.com' });
   }
 }
