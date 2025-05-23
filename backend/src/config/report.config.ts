@@ -3,7 +3,7 @@ import nunjucks from 'nunjucks';
 import path from 'path';
 
 const templatesPath = path.resolve(__dirname, '../core/utils/templates/report');
-const outputPath = path.resolve(__dirname, '../../temp/reports');
+const outputPath = path.resolve(__dirname, '../../public/reports');
 
 const defaultStyles = {
   fontFamily: 'Arial, sans-serif',

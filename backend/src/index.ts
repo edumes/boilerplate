@@ -35,8 +35,14 @@ const configureMiddlewares = () => {
   });
 
   server.register(fastifyStatic, {
-    root: path.join(__dirname, '../temp/reports'),
-    prefix: '/reports/',
+    root: path.join(__dirname, '../public'),
+    prefix: '/public/',
+    decorateReply: false
+  });
+
+  server.register(fastifyStatic, {
+    root: path.join(__dirname, '../../frontend/dist'),
+    prefix: '/'
   });
 
   server.setErrorHandler(fastifyErrorHandler);

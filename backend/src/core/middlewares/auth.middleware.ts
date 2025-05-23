@@ -1,5 +1,6 @@
 import { env } from '@config/env.config';
 import { EncryptionService } from '@core/utils/encryption.util';
+import { UnauthorizedError } from '@core/utils/errors.util';
 import { verifyToken } from '@core/utils/jwt.util';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import i18next from 'i18next';
@@ -42,6 +43,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
       };
     }
   } catch (error) {
-    reply.code(401).send({ error: i18next.t('INVALID_TOKEN') });
+    reply.code(401).send(new UnauthorizedError(i18next.t('INVALID_TOKEN')));
+    return;
   }
 }
