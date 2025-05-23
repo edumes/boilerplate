@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_authenticated/general/$crud/$id/')({
 
     return {
       uuid: params.id,
-      crud: params.crud,
+      crud: params.crud
     };
-  },
-}); 
+  }
+});

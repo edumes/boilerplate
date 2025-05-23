@@ -92,8 +92,8 @@ export function getFormConfig(entityClass: any): FormConfig {
   const fieldConfigs = getFieldConfigs(entityClass);
   const formMetadata = Reflect.getMetadata('formMetadata', entityClass) || {};
 
-  const tabs: TabConfig[] = Object.keys(fieldConfigs)
-    .reduce((tabs: TabConfig[], fieldName: string) => {
+  const tabs: TabConfig[] = Object.keys(fieldConfigs).reduce(
+    (tabs: TabConfig[], fieldName: string) => {
       const config = fieldConfigs[fieldName];
       if (config.tabs) {
         config.tabs.forEach(tabKey => {
@@ -103,7 +103,9 @@ export function getFormConfig(entityClass: any): FormConfig {
         });
       }
       return tabs;
-    }, []);
+    },
+    []
+  );
 
   return {
     prefix: formMetadata.prefix || entityClass.name.toLowerCase(),
@@ -112,6 +114,6 @@ export function getFormConfig(entityClass: any): FormConfig {
     pluralName: formMetadata.pluralName || pluralize(entityClass.name.toLowerCase()),
     icon: formMetadata.icon || entityClass.name.toLowerCase(),
     tabs,
-    version: formMetadata.version || '1.0.0',
+    version: formMetadata.version || '1.0.0'
   };
 }

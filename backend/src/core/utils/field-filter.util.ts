@@ -9,7 +9,10 @@ import { DeepPartial } from 'typeorm';
  * @param entityType Tipo da entidade para obter as configurações dos campos
  * @returns Lista de itens com campos filtrados
  */
-export function filterNonBrowsableFields<T extends IBaseModel>(items: T[], entityType: any): Partial<T>[] {
+export function filterNonBrowsableFields<T extends IBaseModel>(
+  items: T[],
+  entityType: any
+): Partial<T>[] {
   const fieldConfigs = getFieldConfigs(entityType);
 
   return items.map(item => {
@@ -33,7 +36,10 @@ export function filterNonBrowsableFields<T extends IBaseModel>(items: T[], entit
  * @param entityType Tipo da entidade para obter as configurações dos campos
  * @returns Objeto com campos filtrados
  */
-export function filterNonReadableFields<T extends IBaseModel>(item: T, entityType: any): Partial<T> {
+export function filterNonReadableFields<T extends IBaseModel>(
+  item: T,
+  entityType: any
+): Partial<T> {
   const fieldConfigs = getFieldConfigs(entityType);
   const plainItem = instanceToPlain(item) as any;
   const filteredItem: any = {};
@@ -54,7 +60,10 @@ export function filterNonReadableFields<T extends IBaseModel>(item: T, entityTyp
  * @param entityType Tipo da entidade para obter as configurações dos campos
  * @returns Objeto com campos filtrados
  */
-export function filterNonAddableFields<T extends IBaseModel>(data: DeepPartial<T>, entityType: any): DeepPartial<T> {
+export function filterNonAddableFields<T extends IBaseModel>(
+  data: DeepPartial<T>,
+  entityType: any
+): DeepPartial<T> {
   const fieldConfigs = getFieldConfigs(entityType);
   const filteredData: any = {};
 
@@ -74,7 +83,10 @@ export function filterNonAddableFields<T extends IBaseModel>(data: DeepPartial<T
  * @param entityType Tipo da entidade para obter as configurações dos campos
  * @returns Objeto com campos filtrados
  */
-export function filterNonEditableFields<T extends IBaseModel>(data: DeepPartial<T>, entityType: any): DeepPartial<T> {
+export function filterNonEditableFields<T extends IBaseModel>(
+  data: DeepPartial<T>,
+  entityType: any
+): DeepPartial<T> {
   const fieldConfigs = getFieldConfigs(entityType);
   const filteredData: any = {};
 
@@ -93,4 +105,4 @@ export default {
   filterNonReadableFields,
   filterNonAddableFields,
   filterNonEditableFields
-}; 
+};

@@ -1,8 +1,8 @@
-import { cn } from '@/lib/utils';
+import * as React from 'react';
 import { Slot, Slottable } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { LoaderCircle } from 'lucide-react';
-import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
@@ -14,17 +14,18 @@ const buttonVariants = cva(
         outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        link: 'text-primary underline-offset-4 hover:underline'
       },
       size: {
         default: 'h-9 px-4 py-2',
         sm: 'h-8 rounded-md px-3 text-xs',
         lg: 'h-10 rounded-md px-8',
-        icon: 'h-9 w-9',
+        icon: 'h-9 w-9'
       },
       effect: {
         expandIcon: 'group gap-0 relative',
-        ringHover: 'transition-all duration-300 hover:ring-2 hover:ring-primary/90 hover:ring-offset-2',
+        ringHover:
+          'transition-all duration-300 hover:ring-2 hover:ring-primary/90 hover:ring-offset-2',
         shine:
           'before:animate-shine relative overflow-hidden before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.5)_50%,transparent_75%,transparent_100%)] before:bg-[length:250%_250%,100%_100%] before:bg-no-repeat background-position_0s_ease',
         shineHover:
@@ -36,13 +37,13 @@ const buttonVariants = cva(
         underline:
           'relative !no-underline after:absolute after:bg-primary after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-left after:scale-x-100 hover:after:origin-bottom-right hover:after:scale-x-0 after:transition-transform after:ease-in-out after:duration-300',
         hoverUnderline:
-          'relative !no-underline after:absolute after:bg-primary after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-right after:scale-x-0 hover:after:origin-bottom-left hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300',
-      },
+          'relative !no-underline after:absolute after:bg-primary after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-right after:scale-x-0 hover:after:origin-bottom-left hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300'
+      }
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default',
-    },
+      size: 'default'
+    }
   }
 );
 
@@ -60,13 +61,26 @@ export type ButtonIconProps = IconProps | IconRefProps;
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof buttonVariants> {
+    VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps & ButtonIconProps>(
-  ({ className, variant, size, effect, icon: Icon, iconPlacement, asChild = false, loading = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      effect,
+      icon: Icon,
+      iconPlacement,
+      asChild = false,
+      loading = false,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
@@ -78,7 +92,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & ButtonIconProps
         {Icon &&
           iconPlacement === 'left' &&
           (effect === 'expandIcon' ? (
-            <div className="w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-100 group-hover:pr-2 group-hover:opacity-100">
+            <div className='w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-100 group-hover:pr-2 group-hover:opacity-100'>
               <Icon />
             </div>
           ) : (
@@ -87,10 +101,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & ButtonIconProps
         {loading && (
           <>
             <LoaderCircle
-              className="-ms-1 me-2 animate-spin"
+              className='-ms-1 me-2 animate-spin'
               size={16}
               strokeWidth={2}
-              aria-hidden="true"
+              aria-hidden='true'
             />
           </>
         )}
@@ -98,7 +112,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & ButtonIconProps
         {Icon &&
           iconPlacement === 'right' &&
           (effect === 'expandIcon' ? (
-            <div className="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100">
+            <div className='w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100'>
               <Icon />
             </div>
           ) : (
@@ -111,4 +125,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & ButtonIconProps
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
-

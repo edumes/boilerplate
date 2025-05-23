@@ -6,7 +6,7 @@ import { Situation } from './situation.model';
 
 export default async function situationRoutes(
   server: FastifyInstance,
-  options: FastifyPluginOptions,
+  options: FastifyPluginOptions
 ) {
   server.addHook('onRequest', authMiddleware);
   registerGenericRoutes(server, situationController, Situation);

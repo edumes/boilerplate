@@ -70,7 +70,7 @@ export async function registerRoutes(server: FastifyInstance) {
 
     logger.info(`registered route ${sanitizedPrefix}`);
     server.register(routeModule.default, {
-      prefix: `/api/v1/${sanitizedPrefix}`,
+      prefix: `/api/v1/${sanitizedPrefix}`
     });
   }
 }
@@ -79,7 +79,7 @@ export function registerGenericRoutes(
   server: FastifyInstance,
   controller: GenericController,
   entityType: EntityTarget<any>,
-  additionalRoutes?: RouteDefinition[],
+  additionalRoutes?: RouteDefinition[]
 ) {
   const baseRoutes: RouteDefinition[] = [
     { method: 'get', url: '/', handler: controller.findAll },
@@ -89,13 +89,13 @@ export function registerGenericRoutes(
       method: 'post',
       url: '/',
       handler: controller.create,
-      preHandler: validationMiddleware(entityType),
+      preHandler: validationMiddleware(entityType)
     },
     {
       method: 'put',
       url: '/:id',
       handler: controller.update,
-      preHandler: validationMiddleware(entityType),
+      preHandler: validationMiddleware(entityType)
     },
     { method: 'delete', url: '/:id', handler: controller.delete },
     { method: 'get', url: '/search', handler: controller.search },
@@ -103,7 +103,7 @@ export function registerGenericRoutes(
     { method: 'post', url: '/:id/clone', handler: controller.clone },
     { method: 'get', url: '/select-options', handler: controller.getSelectOptions },
     { method: 'get', url: '/fields', handler: controller.getFields },
-    { method: 'get', url: '/report', handler: controller.generateReport },
+    { method: 'get', url: '/report', handler: controller.generateReport }
   ];
 
   const routes = additionalRoutes ? [...baseRoutes, ...additionalRoutes] : baseRoutes;

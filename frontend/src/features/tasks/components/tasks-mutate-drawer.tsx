@@ -9,7 +9,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -20,7 +20,7 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetTitle,
+  SheetTitle
 } from '@/components/ui/sheet';
 import { SelectDropdown } from '@/components/select-dropdown';
 import { Task } from '../data/schema';
@@ -35,7 +35,7 @@ const formSchema = z.object({
   title: z.string().min(1, 'Title is required.'),
   status: z.string().min(1, 'Please select a status.'),
   label: z.string().min(1, 'Please select a label.'),
-  priority: z.string().min(1, 'Please choose a priority.'),
+  priority: z.string().min(1, 'Please choose a priority.')
 });
 type TasksForm = z.infer<typeof formSchema>;
 
@@ -48,8 +48,8 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
       title: '',
       status: '',
       label: '',
-      priority: '',
-    },
+      priority: ''
+    }
   });
 
   const onSubmit = (data: TasksForm) => {
@@ -62,14 +62,14 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
         </pre>
-      ),
+      )
     });
   };
 
   return (
     <Sheet
       open={open}
-      onOpenChange={(v) => {
+      onOpenChange={v => {
         onOpenChange(v);
         form.reset();
       }}
@@ -85,11 +85,7 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
-          <form
-            id='tasks-form'
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-5 flex-1'
-          >
+          <form id='tasks-form' onSubmit={form.handleSubmit(onSubmit)} className='space-y-5 flex-1'>
             <FormField
               control={form.control}
               name='title'
@@ -118,7 +114,7 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
                       { label: 'Backlog', value: 'backlog' },
                       { label: 'Todo', value: 'todo' },
                       { label: 'Canceled', value: 'canceled' },
-                      { label: 'Done', value: 'done' },
+                      { label: 'Done', value: 'done' }
                     ]}
                   />
                   <FormMessage />
@@ -141,9 +137,7 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
                         <FormControl>
                           <RadioGroupItem value='documentation' />
                         </FormControl>
-                        <FormLabel className='font-normal'>
-                          Documentation
-                        </FormLabel>
+                        <FormLabel className='font-normal'>Documentation</FormLabel>
                       </FormItem>
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>

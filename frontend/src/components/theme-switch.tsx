@@ -7,7 +7,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
 export function ThemeSwitch() {
@@ -32,25 +32,15 @@ export function ThemeSwitch() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         <DropdownMenuItem onClick={() => setTheme('light')}>
-          Light{' '}
-          <IconCheck
-            size={14}
-            className={cn('ml-auto', theme !== 'light' && 'hidden')}
-          />
+          Light <IconCheck size={14} className={cn('ml-auto', theme !== 'light' && 'hidden')} />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
           Dark
-          <IconCheck
-            size={14}
-            className={cn('ml-auto', theme !== 'dark' && 'hidden')}
-          />
+          <IconCheck size={14} className={cn('ml-auto', theme !== 'dark' && 'hidden')} />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
           System
-          <IconCheck
-            size={14}
-            className={cn('ml-auto', theme !== 'system' && 'hidden')}
-          />
+          <IconCheck size={14} className={cn('ml-auto', theme !== 'system' && 'hidden')} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

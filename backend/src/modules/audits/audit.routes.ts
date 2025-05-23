@@ -7,6 +7,6 @@ export default async function auditRoutes(server: FastifyInstance, options: Fast
 
   server.get(
     '/users/:userId/roles/:roleId',
-    auditController.getEntityHistory.bind(auditController),
+    auditController.getEntityHistory.bind(auditController)
   );
 }

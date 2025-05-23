@@ -17,7 +17,7 @@ export abstract class BaseModel implements IBaseModel {
   @Column({
     type: 'uuid',
     unique: true,
-    nullable: false,
+    nullable: false
   })
   uuid: string;
 

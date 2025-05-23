@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { ArrowLeftIcon, CirclePlusIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export function CrudPrimaryButtons(config: any) {
   const params = useParams({ strict: false });
@@ -12,18 +12,18 @@ export function CrudPrimaryButtons(config: any) {
   return (
     <div className='flex gap-2'>
       <Button
-        effect="gooeyLeft"
+        effect='gooeyLeft'
         icon={ArrowLeftIcon}
-        iconPlacement="left"
+        iconPlacement='left'
         onClick={() => navigate({ to: `/general/${crud}` })}
       >
         Back
       </Button>
-      {!window.location.href.includes("/add") && (
+      {!window.location.href.includes('/add') && (
         <Button
-          effect="gooeyRight"
+          effect='gooeyRight'
           icon={CirclePlusIcon}
-          iconPlacement="right"
+          iconPlacement='right'
           onClick={() => navigate({ to: `/general/${crud}/add` })}
         >
           <span className='capitalize'>Add {config.singularName}</span>

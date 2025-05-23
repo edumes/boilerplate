@@ -33,9 +33,9 @@ export class AuthService {
       user: {
         ...user,
         user_password: undefined,
-        company,
+        company
       },
-      token: this.generateToken(user),
+      token: this.generateToken(user)
     };
   }
 
@@ -43,7 +43,7 @@ export class AuthService {
     return generateToken({
       id: user.id,
       user_email: user.user_email,
-      user_fk_company_id: user.user_fk_company_id,
+      user_fk_company_id: user.user_fk_company_id
     });
   }
 
@@ -70,7 +70,7 @@ export class AuthService {
       return {
         ...user,
         user_password: undefined,
-        company,
+        company
       } as User;
     } catch (error) {
       return null;

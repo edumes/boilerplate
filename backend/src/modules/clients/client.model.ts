@@ -37,7 +37,7 @@ export class Client extends BaseModel {
     required: true,
     width: 8,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main'],
+    tabs: ['main']
   })
   client_name: string;
 
@@ -51,7 +51,7 @@ export class Client extends BaseModel {
     order: 3,
     width: 6,
     type: FIELD_TYPE.EMAIL,
-    tabs: ['contact'],
+    tabs: ['contact']
   })
   client_email: string;
 
@@ -65,7 +65,7 @@ export class Client extends BaseModel {
     order: 4,
     width: 6,
     type: FIELD_TYPE.PHONE,
-    tabs: ['contact'],
+    tabs: ['contact']
   })
   client_phone: string;
 
@@ -79,7 +79,7 @@ export class Client extends BaseModel {
     order: 5,
     width: 12,
     type: FIELD_TYPE.TEXTAREA,
-    tabs: ['main'],
+    tabs: ['main']
   })
   client_observation: string;
 
@@ -102,4 +102,4 @@ export class Client extends BaseModel {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by_fk_user_id' })
   updated_by: User;
-} 
+}

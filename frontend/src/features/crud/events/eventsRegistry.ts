@@ -1,10 +1,10 @@
-import { Event } from "./Event";
-import { ProjectCodeEvents } from "./ProjectCodeEvents";
+import { Event } from './Event';
+import { ProjectCodeEvents } from './ProjectCodeEvents';
 
 interface EventsRegistry {
-    [fieldName: string]: Event;
+  [fieldName: string]: Event;
 }
 
 export const eventsRegistry: EventsRegistry = {
-    project_code: new ProjectCodeEvents(),
+  project_code: new ProjectCodeEvents()
 };

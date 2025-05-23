@@ -1,5 +1,5 @@
-import { Event } from "./Event";
-import { UpdateFieldConfig } from "@/types/forms";
+import { UpdateFieldConfig } from '@/types/forms';
+import { Event } from './Event';
 
 interface FieldRenderProps {
   onChange: (value: any) => void;
@@ -12,11 +12,11 @@ export class ProjectCodeEvents extends Event {
     updateFieldConfig: UpdateFieldConfig,
     setFieldValue: (fieldName: string, value: any) => void
   ): void => {
-    console.log("Project Code custom onChange:", value);
+    console.log('Project Code custom onChange:', value);
 
-    if (value === "123") {
-      updateFieldConfig("project_description", { disable: true });
-      setFieldValue("project_description", "valor fixo");
+    if (value === '123') {
+      updateFieldConfig('project_description', { disable: true });
+      setFieldValue('project_description', 'valor fixo');
     }
   };
 }

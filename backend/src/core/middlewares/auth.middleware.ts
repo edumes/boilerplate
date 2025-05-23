@@ -36,7 +36,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
           const stringifiedData = JSON.stringify(payload);
           const encryptedResponse = encryptionService.encrypt(stringifiedData);
           return originalSend.call(this, {
-            ...encryptedResponse,
+            ...encryptedResponse
           });
         }
         return originalSend.call(this, payload);

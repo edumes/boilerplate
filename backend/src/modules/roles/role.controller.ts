@@ -13,7 +13,7 @@ export class RoleController extends BaseController<Role> {
     request: FastifyRequest<{
       Params: { userId: string; roleId: string };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const { userId, roleId } = request.params;
@@ -26,8 +26,8 @@ export class RoleController extends BaseController<Role> {
           ApiResponseBuilder.error(
             'ASSIGN_ROLE_FAILED',
             'Unable to assign role',
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -36,7 +36,7 @@ export class RoleController extends BaseController<Role> {
     request: FastifyRequest<{
       Params: { userId: string; roleId: string };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const { userId, roleId } = request.params;
@@ -49,8 +49,8 @@ export class RoleController extends BaseController<Role> {
           ApiResponseBuilder.error(
             'REMOVE_ROLE_FAILED',
             'Unable to remove role',
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -59,7 +59,7 @@ export class RoleController extends BaseController<Role> {
     request: FastifyRequest<{
       Params: { userId: string };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const { userId } = request.params;
@@ -72,8 +72,8 @@ export class RoleController extends BaseController<Role> {
           ApiResponseBuilder.error(
             'GET_USER_ROLES_FAILED',
             'Unable to get user roles',
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }

@@ -33,7 +33,7 @@ export class ApiResponseBuilder {
       success: true,
       timestamp: new Date().toISOString(),
       data,
-      meta,
+      meta
     };
 
     logger.info('API Success Response', { response });
@@ -47,8 +47,8 @@ export class ApiResponseBuilder {
       error: {
         code,
         message,
-        details,
-      },
+        details
+      }
     };
 
     logger.error('API Error Response', { response });
@@ -66,7 +66,7 @@ export class ApiResponseBuilder {
       totalItems,
       totalPages,
       hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1,
+      hasPreviousPage: page > 1
     };
   }
 }

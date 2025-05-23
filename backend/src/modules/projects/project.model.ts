@@ -26,7 +26,7 @@ import {
   singularName: 'Project',
   pluralName: 'Projects',
   icon: 'project-management',
-  version: '1.0.0',
+  version: '1.0.0'
 })
 export class Project extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'project_id' })
@@ -44,7 +44,7 @@ export class Project extends BaseModel {
     required: true,
     width: 4,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_code: string;
 
@@ -59,7 +59,7 @@ export class Project extends BaseModel {
     required: true,
     width: 8,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_description: string;
 
@@ -76,7 +76,7 @@ export class Project extends BaseModel {
     width: 6,
     type: FIELD_TYPE.SELECT,
     select: { url: 'clients/select-options' },
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_fk_client_id: number;
 
@@ -97,7 +97,7 @@ export class Project extends BaseModel {
     width: 4,
     type: FIELD_TYPE.SELECT,
     select: { url: 'situations/select-options' },
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_fk_situation_id: number;
 
@@ -111,7 +111,7 @@ export class Project extends BaseModel {
     type: FIELD_TYPE.SELECT,
     width: 2,
     order: 5,
-    select: { options: PriorityLevel },
+    select: { options: PriorityLevel }
   })
   project_priority: PriorityLevel;
 
@@ -126,7 +126,7 @@ export class Project extends BaseModel {
     width: 6,
     type: FIELD_TYPE.MULTISELECT,
     select: { url: 'users/select-options' },
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_users: ProjectUser[];
 
@@ -141,7 +141,7 @@ export class Project extends BaseModel {
     // required: true,
     width: 4,
     type: FIELD_TYPE.DATE,
-    tabs: ['dates'],
+    tabs: ['dates']
   })
   project_inital_date: Date;
 
@@ -154,7 +154,7 @@ export class Project extends BaseModel {
     order: 7,
     width: 4,
     type: FIELD_TYPE.DATE,
-    tabs: ['dates'],
+    tabs: ['dates']
   })
   project_final_date: Date;
 
@@ -168,7 +168,7 @@ export class Project extends BaseModel {
     order: 7,
     width: 12,
     type: FIELD_TYPE.GRID,
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_items: ProjectItem[];
 
@@ -182,7 +182,7 @@ export class Project extends BaseModel {
     order: 8,
     width: 12,
     type: FIELD_TYPE.TEXTAREA,
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_observation: string;
 
@@ -191,7 +191,7 @@ export class Project extends BaseModel {
     label: 'Orçamento',
     type: FIELD_TYPE.CURRENCY,
     width: 9,
-    tabs: ['financial'],
+    tabs: ['financial']
   })
   project_budget: number;
 

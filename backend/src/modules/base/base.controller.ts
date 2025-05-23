@@ -18,12 +18,12 @@ import { DeepPartial } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 
 export class BaseController<T extends IBaseModel> {
-  constructor(protected service: BaseService<T>) { }
+  constructor(protected service: BaseService<T>) {}
 
   protected setServiceContext(request: FastifyRequest) {
     this.service.setContext({
       user: request.user,
-      token: request.token,
+      token: request.token
     });
   }
 
@@ -35,7 +35,13 @@ export class BaseController<T extends IBaseModel> {
 
     for (const [fieldName, config] of Object.entries(metadata)) {
       const fieldConfig = config as any;
-      if (fieldConfig.required && (!data || data[fieldName] === undefined || data[fieldName] === null || data[fieldName] === '')) {
+      if (
+        fieldConfig.required &&
+        (!data ||
+          data[fieldName] === undefined ||
+          data[fieldName] === null ||
+          data[fieldName] === '')
+      ) {
         missingFields.push(fieldConfig.label || fieldName);
       }
     }
@@ -62,8 +68,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'FIND_ALL_ERROR',
             i18next.t('FIND_ALL_ERROR'),
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -87,24 +93,24 @@ export class BaseController<T extends IBaseModel> {
 
   async create(
     request: FastifyRequest<{ Body: Partial<T> & Record<string, unknown> }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       this.setServiceContext(request);
-      const filteredData = filterNonAddableFields(request.body as DeepPartial<T>, this.service.getEntityType());
+      const filteredData = filterNonAddableFields(
+        request.body as DeepPartial<T>,
+        this.service.getEntityType()
+      );
 
       this.validateRequiredFields(filteredData);
 
       const newItem = await this.service.create(filteredData);
-      return reply.status(201).send(ApiResponseBuilder.success(instanceToPlain(newItem), undefined));
+      return reply
+        .status(201)
+        .send(ApiResponseBuilder.success(instanceToPlain(newItem), undefined));
     } catch (error) {
       if (error instanceof ValidationError) {
-        return reply.status(400).send(
-          ApiResponseBuilder.error(
-            'VALIDATION_ERROR',
-            error.message,
-          ),
-        );
+        return reply.status(400).send(ApiResponseBuilder.error('VALIDATION_ERROR', error.message));
       }
       return reply
         .status(500)
@@ -112,8 +118,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'CREATE_FAILED',
             i18next.t('CREATE_FAILED'),
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -123,7 +129,7 @@ export class BaseController<T extends IBaseModel> {
       Params: { id: string };
       Body: Partial<T> & Record<string, unknown>;
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const id = request.params.id;
@@ -131,7 +137,10 @@ export class BaseController<T extends IBaseModel> {
         throw new ValidationError(i18next.t('INVALID_UUID'));
       }
 
-      const filteredData = filterNonEditableFields(request.body as DeepPartial<T>, this.service.getEntityType());
+      const filteredData = filterNonEditableFields(
+        request.body as DeepPartial<T>,
+        this.service.getEntityType()
+      );
 
       this.validateRequiredFields(filteredData);
 
@@ -146,12 +155,7 @@ export class BaseController<T extends IBaseModel> {
       return reply.send(ApiResponseBuilder.success(instanceToPlain(updatedItem)));
     } catch (error) {
       if (error instanceof ValidationError) {
-        return reply.status(400).send(
-          ApiResponseBuilder.error(
-            'VALIDATION_ERROR',
-            error.message,
-          ),
-        );
+        return reply.status(400).send(ApiResponseBuilder.error('VALIDATION_ERROR', error.message));
       }
       return reply
         .status(500)
@@ -159,8 +163,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'UPDATE_FAILED',
             i18next.t('UPDATE_FAILED'),
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -177,8 +181,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'DELETE_FAILED',
             i18next.t('UNABLE_TO_DELETE', { id: request.params.id }),
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -187,7 +191,7 @@ export class BaseController<T extends IBaseModel> {
     request: FastifyRequest<{
       Querystring: PaginationOptions & Record<string, any>;
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const { page, limit, order, ...whereConditions } = request.query;
@@ -204,8 +208,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'INTERNAL_SERVER_ERROR',
             i18next.t('UNABLE_TO_FETCH_FILTERED'),
-            error instanceof Error ? error.message : undefined,
-          ),
+            error instanceof Error ? error.message : undefined
+          )
         );
     }
   }
@@ -214,7 +218,7 @@ export class BaseController<T extends IBaseModel> {
     request: FastifyRequest<{
       Querystring: SearchOptions & { searchFields?: string };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const { searchFields, searchTerm, ...paginationOptions } = request.query;
@@ -224,7 +228,7 @@ export class BaseController<T extends IBaseModel> {
       const options: SearchOptions = {
         ...paginationOptions,
         searchFields: searchFieldsArray,
-        searchTerm,
+        searchTerm
       };
 
       const [items, total] = await this.service.search(options);
@@ -238,8 +242,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'SEARCH_FAILED',
             i18next.t('SEARCH_FAILED'),
-            error instanceof Error ? error.message : undefined,
-          ),
+            error instanceof Error ? error.message : undefined
+          )
         );
     }
   }
@@ -248,7 +252,7 @@ export class BaseController<T extends IBaseModel> {
     request: FastifyRequest<{
       Querystring: Record<string, any>;
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const whereConditions = request.query;
@@ -262,8 +266,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'COUNT_FAILED',
             i18next.t('COUNT_FAILED'),
-            error instanceof Error ? error.message : undefined,
-          ),
+            error instanceof Error ? error.message : undefined
+          )
         );
     }
   }
@@ -273,7 +277,7 @@ export class BaseController<T extends IBaseModel> {
       Params: { id: string };
       Body: DeepPartial<T>;
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       this.setServiceContext(request);
@@ -295,8 +299,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'CLONE_FAILED',
             i18next.t('CLONE_FAILED'),
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -309,7 +313,7 @@ export class BaseController<T extends IBaseModel> {
         search?: string;
       };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const { labelFields, delimiter, search } = request.query;
@@ -317,7 +321,7 @@ export class BaseController<T extends IBaseModel> {
       const options: SelectPickerOptions = {
         labelFields: labelFields?.split(','),
         delimiter,
-        searchTerm: search,
+        searchTerm: search
       };
 
       const selectOptions = await this.service.getSelectOptions(options);
@@ -329,8 +333,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'SELECT_OPTIONS_FAILED',
             i18next.t('SELECT_OPTIONS_FAILED'),
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -346,8 +350,8 @@ export class BaseController<T extends IBaseModel> {
           ApiResponseBuilder.error(
             'FIELDS_FETCH_FAILED',
             i18next.t('FIELDS_FETCH_FAILED'),
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }
@@ -356,7 +360,7 @@ export class BaseController<T extends IBaseModel> {
     request: FastifyRequest<{
       Querystring: ReportOptions;
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ): Promise<string> {
     try {
       const pdfPath = await this.service.generateReport(request.query);
@@ -368,8 +372,8 @@ export class BaseController<T extends IBaseModel> {
         .send(
           ApiResponseBuilder.error(
             'REPORT_GENERATION_FAILED',
-            i18next.t('REPORT_GENERATION_FAILED', 'Failed to generate project report'),
-          ),
+            i18next.t('REPORT_GENERATION_FAILED', 'Failed to generate project report')
+          )
         );
     }
   }

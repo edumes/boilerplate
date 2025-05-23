@@ -9,13 +9,13 @@ export async function setupSwagger(server: FastifyInstance) {
       info: {
         title: 'API Documentation',
         description: 'Automatically generated API documentation',
-        version: '1.0.0',
+        version: '1.0.0'
       },
       host: 'localhost:3333',
       schemes: ['http', 'https'],
       consumes: ['application/json'],
-      produces: ['application/json'],
-    },
+      produces: ['application/json']
+    }
   });
 
   await server.register(swaggerUi, {
@@ -23,10 +23,10 @@ export async function setupSwagger(server: FastifyInstance) {
     uiConfig: {
       docExpansion: 'list',
       deepLinking: false,
-      persistAuthorization: true,
+      persistAuthorization: true
     },
     staticCSP: true,
-    transformStaticCSP: header => header,
+    transformStaticCSP: header => header
   });
 
   logger.info(`Documentation available at /docs`);

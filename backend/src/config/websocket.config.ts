@@ -8,8 +8,8 @@ export async function setupWebSocket(server: FastifyInstance) {
       clientTracking: true,
       maxPayload: 1048576,
       pingInterval: 25000,
-      pongTimeout: 10000,
-    },
+      pongTimeout: 10000
+    }
   });
 
   logger.info('WebSocket server initialized');

@@ -1,4 +1,15 @@
-import { PasswordInput } from '@/components/password-input';
+import { HTMLAttributes } from 'react';
+import { z } from 'zod';
+import { AxiosError } from 'axios';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react';
+import { authService } from '@/services/auth.service';
+import { useAuthStore } from '@/stores/authStore';
+import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -6,21 +17,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
-import { authService } from '@/services/auth.service';
-import { useAuthStore } from '@/stores/authStore';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { AxiosError } from 'axios';
-import { HTMLAttributes } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { PasswordInput } from '@/components/password-input';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -32,11 +32,11 @@ const formSchema = z.object({
   password: z
     .string()
     .min(1, {
-      message: 'Please enter your password',
+      message: 'Please enter your password'
     })
     .min(4, {
-      message: 'Password must be at least 4 characters long',
-    }),
+      message: 'Password must be at least 4 characters long'
+    })
 });
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
@@ -47,15 +47,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: 'admin@admin.com',
-      password: '1234',
-    },
+      password: '1234'
+    }
   });
 
   const { mutate: login, isPending } = useMutation({
-    mutationFn: (data: z.infer<typeof formSchema>) =>
-      authService.login(data.email, data.password),
-    onSuccess: (response) => {
-      console.log(response)
+    mutationFn: (data: z.infer<typeof formSchema>) => authService.login(data.email, data.password),
+    onSuccess: response => {
+      console.log(response);
       setAccessToken(response.token);
       setUser(response.user);
       navigate({ to: '/' });
@@ -65,7 +64,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       toast({
         variant: 'destructive',
         title: 'Error: ' + error.code,
-        description: error.message,
+        description: error.message
       });
     }
   });
@@ -122,27 +121,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 <span className='w-full border-t' />
               </div>
               <div className='relative flex justify-center text-xs uppercase'>
-                <span className='bg-background px-2 text-muted-foreground'>
-                  Or continue with
-                </span>
+                <span className='bg-background px-2 text-muted-foreground'>Or continue with</span>
               </div>
             </div>
 
             <div className='flex items-center gap-2'>
-              <Button
-                variant='outline'
-                className='w-full'
-                type='button'
-                disabled={isPending}
-              >
+              <Button variant='outline' className='w-full' type='button' disabled={isPending}>
                 <IconBrandGithub className='h-4 w-4' /> GitHub
               </Button>
-              <Button
-                variant='outline'
-                className='w-full'
-                type='button'
-                disabled={isPending}
-              >
+              <Button variant='outline' className='w-full' type='button' disabled={isPending}>
                 <IconBrandFacebook className='h-4 w-4' /> Facebook
               </Button>
             </div>

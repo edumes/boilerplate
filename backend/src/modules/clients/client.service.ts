@@ -7,7 +7,7 @@ export class ClientService extends BaseService<Client> {
     super(clientRepository, 'Client');
 
     this.setHooks({
-      beforeCreate: async data => {},
+      beforeCreate: async data => {}
     });
   }
 }

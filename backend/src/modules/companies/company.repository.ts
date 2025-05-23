@@ -9,7 +9,7 @@ export class CompanyRepository extends BaseRepository<Company> {
 
   async findByCnpj(cnpj: string): Promise<Company | null> {
     return this.findOne({
-      where: { company_cnpj: cnpj },
+      where: { company_cnpj: cnpj }
     });
   }
 }

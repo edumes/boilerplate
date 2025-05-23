@@ -9,7 +9,7 @@ export class SituationRepository extends BaseRepository<Situation> {
 
   async findByCode(code: string): Promise<Situation | null> {
     return this.findOne({
-      where: { situation_code: code },
+      where: { situation_code: code }
     });
   }
 }

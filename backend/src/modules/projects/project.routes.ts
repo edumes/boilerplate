@@ -6,7 +6,7 @@ import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 export default async function projectRoutes(
   server: FastifyInstance,
-  options: FastifyPluginOptions,
+  options: FastifyPluginOptions
 ) {
   server.addHook('onRequest', authMiddleware);
   registerGenericRoutes(server, projectController, Project);

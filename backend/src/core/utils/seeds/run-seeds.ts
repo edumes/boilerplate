@@ -10,7 +10,12 @@ async function runSeeds() {
     await AppDataSource.initialize();
     logger.info('Database connection initialized');
 
-    const seeds = [new CreateDefaultRoles(), new CreateDefaultCompany(), new CreateDefaultAdmin(), new CreateDefaultSituations()];
+    const seeds = [
+      new CreateDefaultRoles(),
+      new CreateDefaultCompany(),
+      new CreateDefaultAdmin(),
+      new CreateDefaultSituations()
+    ];
 
     for (const seed of seeds) {
       logger.info(`Running seed: ${seed.constructor.name}`);

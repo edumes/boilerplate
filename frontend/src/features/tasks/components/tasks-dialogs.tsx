@@ -53,19 +53,16 @@ export function TasksDialogs() {
                 title: 'The following task has been deleted:',
                 description: (
                   <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-                    <code className='text-white'>
-                      {JSON.stringify(currentRow, null, 2)}
-                    </code>
+                    <code className='text-white'>{JSON.stringify(currentRow, null, 2)}</code>
                   </pre>
-                ),
+                )
               });
             }}
             className='max-w-md'
             title={`Delete this task: ${currentRow.id} ?`}
             desc={
               <>
-                You are about to delete a task with the ID{' '}
-                <strong>{currentRow.id}</strong>. <br />
+                You are about to delete a task with the ID <strong>{currentRow.id}</strong>. <br />
                 This action cannot be undone.
               </>
             }

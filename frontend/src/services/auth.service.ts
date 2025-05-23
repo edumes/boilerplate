@@ -38,13 +38,10 @@ interface ApiResponse<T> {
 class AuthService {
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
-      const response = await api.post<ApiResponse<LoginResponse>>(
-        '/auth/login',
-        {
-          user_email: email,
-          user_password: password,
-        }
-      );
+      const response = await api.post<ApiResponse<LoginResponse>>('/auth/login', {
+        user_email: email,
+        user_password: password
+      });
 
       if (response.data.success) {
         return response.data.data;

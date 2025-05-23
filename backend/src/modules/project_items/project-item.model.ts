@@ -12,7 +12,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 @Entity({ name: 'project_items' })
@@ -22,7 +22,7 @@ import {
   singularName: 'Project Item',
   pluralName: 'Project Items',
   icon: 'project-management',
-  version: '1.0.0',
+  version: '1.0.0'
 })
 export class ProjectItem extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'project_item_id' })
@@ -60,7 +60,7 @@ export class ProjectItem extends BaseModel {
     required: true,
     width: 4,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_item_description: string;
 
@@ -77,7 +77,7 @@ export class ProjectItem extends BaseModel {
     width: 4,
     type: FIELD_TYPE.SELECT,
     select: { url: 'situations/select-options' },
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_item_fk_situation_id: number;
 
@@ -95,7 +95,7 @@ export class ProjectItem extends BaseModel {
     order: 8,
     width: 12,
     type: FIELD_TYPE.TEXTAREA,
-    tabs: ['main'],
+    tabs: ['main']
   })
   project_item_observation: string;
 
@@ -104,7 +104,7 @@ export class ProjectItem extends BaseModel {
     label: 'Orçamento',
     type: FIELD_TYPE.CURRENCY,
     width: 9,
-    tabs: ['financial'],
+    tabs: ['financial']
   })
   project_item_budget: number;
 

@@ -35,7 +35,7 @@ export const appConfig: AppConfig = {
     name: 'Backend API',
     version: '1.0.0',
     environment: env.NODE_ENV,
-    port: env.PORT,
+    port: env.PORT
   },
 
   locale: {
@@ -47,13 +47,13 @@ export const appConfig: AppConfig = {
     dateTimeFormat: 'YYYY-MM-DD HH:mm:ss',
     currencyFormat: {
       locale: 'pt-BR',
-      currency: 'BRL',
-    },
+      currency: 'BRL'
+    }
   },
 
   features: {
     redis: {
-      enabled: false,
-    },
-  },
+      enabled: false
+    }
+  }
 };

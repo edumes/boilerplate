@@ -1,18 +1,19 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { useNavigate, useRouter } from '@tanstack/react-router';
+import { cn } from '@/lib/utils';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 
 interface GeneralErrorProps extends React.HTMLAttributes<HTMLDivElement> {
   minimal?: boolean;
   error?: unknown;
 }
 
-export default function GeneralError({
-  className,
-  minimal = false,
-  error
-}: GeneralErrorProps) {
+export default function GeneralError({ className, minimal = false, error }: GeneralErrorProps) {
   const navigate = useNavigate();
   const { history } = useRouter();
 
@@ -32,8 +33,8 @@ export default function GeneralError({
         </div>
 
         {!minimal && errorStack && (
-          <Accordion type="single" collapsible className="w-full max-w-lg mt-4">
-            <AccordionItem value="error-details">
+          <Accordion type='single' collapsible className='w-full max-w-lg mt-4'>
+            <AccordionItem value='error-details'>
               <AccordionTrigger>Show Error Details</AccordionTrigger>
               <AccordionContent>
                 <pre className='p-4 bg-gray-800 text-white rounded-md overflow-auto max-h-60 text-sm shadow-inner'>

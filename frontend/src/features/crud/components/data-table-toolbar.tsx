@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useDebounce } from '@/hooks/use-debounce';
-import { api } from '@/lib/api';
+import { useState } from 'react';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { useQuery } from '@tanstack/react-query';
 import { Table } from '@tanstack/react-table';
-import { useState } from 'react';
+import { api } from '@/lib/api';
+import { useDebounce } from '@/hooks/use-debounce';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { userTypes } from '../data/data';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import { DataTableViewOptions } from './data-table-view-options';
@@ -16,11 +16,7 @@ interface DataTableToolbarProps<TData> {
   onSearch?: (data: TData[]) => void;
 }
 
-export function DataTableToolbar<TData>({
-  crud,
-  table,
-  onSearch,
-}: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({ crud, table, onSearch }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [searchInput, setSearchInput] = useState('');
   const searchTerm = useDebounce(searchInput, 500);
@@ -39,7 +35,7 @@ export function DataTableToolbar<TData>({
       onSearch?.(data);
       return data;
     },
-    enabled: searchTerm.length > 2 || searchTerm === '',
+    enabled: searchTerm.length > 2 || searchTerm === ''
   });
 
   console.log({ searchResults });
@@ -49,7 +45,7 @@ export function DataTableToolbar<TData>({
       <div className='flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2'>
         <Input
           placeholder='Search...'
-          onChange={(event) => setSearchInput(event.target.value)}
+          onChange={event => setSearchInput(event.target.value)}
           className='h-8 w-[150px] lg:w-[350px]'
         />
         <div className='flex gap-x-2'>
@@ -61,7 +57,7 @@ export function DataTableToolbar<TData>({
                 { label: 'Active', value: 'active' },
                 { label: 'Inactive', value: 'inactive' },
                 { label: 'Invited', value: 'invited' },
-                { label: 'Suspended', value: 'suspended' },
+                { label: 'Suspended', value: 'suspended' }
               ]}
             />
           )}
@@ -69,7 +65,7 @@ export function DataTableToolbar<TData>({
             <DataTableFacetedFilter
               column={table.getColumn('role')}
               title='Role'
-              options={userTypes.map((t) => ({ ...t }))}
+              options={userTypes.map(t => ({ ...t }))}
             />
           )}
         </div>

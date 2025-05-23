@@ -40,14 +40,14 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => {
+    set => {
       const cookieState = Cookies.get(ACCESS_TOKEN);
       const initToken = cookieState ? JSON.parse(cookieState) : '';
       return {
         user: null,
         accessToken: initToken,
-        setUser: (user) => set({ user }),
-        setAccessToken: (accessToken) => {
+        setUser: user => set({ user }),
+        setAccessToken: accessToken => {
           Cookies.set(ACCESS_TOKEN, JSON.stringify(accessToken));
           set({ accessToken });
         },
@@ -58,17 +58,17 @@ export const useAuthStore = create<AuthState>()(
         reset: () => {
           Cookies.remove(ACCESS_TOKEN);
           set({ user: null, accessToken: '' });
-        },
+        }
       };
     },
     {
       name: 'auth-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         user: state.user,
-        accessToken: state.accessToken,
-      }),
+        accessToken: state.accessToken
+      })
     }
   )
 );
 
-export const useAuth = () => useAuthStore((state) => state);
+export const useAuth = () => useAuthStore(state => state);

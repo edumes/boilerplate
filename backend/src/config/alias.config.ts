@@ -5,5 +5,5 @@ addAliases({
   '@core': resolve(__dirname, '../core'),
   '@config': resolve(__dirname, '../config'),
   '@modules': resolve(__dirname, '../modules'),
-  '@tests': resolve(__dirname, '../tests'),
+  '@tests': resolve(__dirname, '../tests')
 });

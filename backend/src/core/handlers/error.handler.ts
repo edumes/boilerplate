@@ -7,29 +7,29 @@ export function globalErrorHandler(error: Error, context: string) {
       name: error.name,
       message: error.message,
       stack: error.stack,
-      context,
-    },
+      context
+    }
   });
 }
 
 export async function fastifyErrorHandler(
   error: FastifyError,
   request: FastifyRequest,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) {
   logger.error('Request error', {
     error: {
       name: error.name,
       message: error.message,
-      stack: error.stack,
+      stack: error.stack
     },
     request: {
       method: request.method,
       url: request.url,
       params: request.params,
       query: request.query,
-      body: request.body,
-    },
+      body: request.body
+    }
   });
 
   if (error.name === 'BadRequestError' && 'validationErrors' in error) {
@@ -37,7 +37,7 @@ export async function fastifyErrorHandler(
       success: false,
       timestamp: new Date().toISOString(),
       message: 'VALIDATION_ERROR',
-      errors: (error as any).validationErrors,
+      errors: (error as any).validationErrors
     });
   }
 
@@ -47,6 +47,6 @@ export async function fastifyErrorHandler(
   return reply.status(error.statusCode || 500).send({
     error: true,
     message: errorMessage,
-    code: error.code || 'INTERNAL_ERROR',
+    code: error.code || 'INTERNAL_ERROR'
   });
 }

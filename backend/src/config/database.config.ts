@@ -9,7 +9,7 @@ function loadEntities() {
   const basePath = path.join(__dirname, '..');
   const modelFiles = glob.sync(`${basePath}/modules/**/*.model.@(ts|js)`);
 
-  return modelFiles.map((file) => {
+  return modelFiles.map(file => {
     const normalizedFile = env.NODE_ENV === 'development' ? file : file.replace(/\.ts$/, '.js');
     const module = require(normalizedFile);
 
@@ -30,7 +30,7 @@ const AppDataSource = new DataSource({
   ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   logging: false,
   entities: loadEntities(),
-  migrations: ['src/migrations/*.ts'],
+  migrations: ['src/migrations/*.ts']
 });
 
 const MAX_RETRIES = 5;
@@ -54,4 +54,3 @@ async function connectWithRetry(retries = MAX_RETRIES): Promise<void> {
 }
 
 export { AppDataSource, connectWithRetry };
-

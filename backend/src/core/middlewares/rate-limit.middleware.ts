@@ -16,7 +16,7 @@ export async function rateLimitMiddleware(request: FastifyRequest, reply: Fastif
   if (current > limit) {
     return reply.status(429).send({
       error: 'Too many requests',
-      waitFor: await redis.ttl(key),
+      waitFor: await redis.ttl(key)
     });
   }
 }

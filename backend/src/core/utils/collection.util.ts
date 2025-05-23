@@ -6,7 +6,7 @@ export const groupBy = <T>(array: T[], key: keyof T): { [key: string]: T[] } => 
       result[groupKey].push(item);
       return result;
     },
-    {} as { [key: string]: T[] },
+    {} as { [key: string]: T[] }
   );
 };
 
@@ -46,7 +46,7 @@ export const pick = <T extends object, K extends keyof T>(obj: T, keys: K[]): Pi
       }
       return result;
     },
-    {} as Pick<T, K>,
+    {} as Pick<T, K>
   );
 };
 
@@ -58,7 +58,7 @@ export const omit = <T extends object, K extends keyof T>(obj: T, keys: K[]): Om
       }
       return result;
     },
-    {} as Omit<T, K>,
+    {} as Omit<T, K>
   );
 };
 
@@ -88,7 +88,7 @@ export const shuffle = <T>(array: T[]): T[] => {
 
 export const countBy = <T>(
   array: T[],
-  iteratee: (item: T) => string,
+  iteratee: (item: T) => string
 ): { [key: string]: number } => {
   return array.reduce(
     (result, item) => {
@@ -96,7 +96,7 @@ export const countBy = <T>(
       result[key] = (result[key] || 0) + 1;
       return result;
     },
-    {} as { [key: string]: number },
+    {} as { [key: string]: number }
   );
 };
 
@@ -120,7 +120,7 @@ export const unzip = <T, U>(array: [T, U][]): [T[], U[]] => {
       arr2.push(item2);
       return [arr1, arr2];
     },
-    [[], []] as [T[], U[]],
+    [[], []] as [T[], U[]]
   );
 };
 
@@ -137,7 +137,7 @@ export const partition = <T>(array: T[], predicate: (item: T) => boolean): [T[],
     ([pass, fail], item) => {
       return predicate(item) ? [[...pass, item], fail] : [pass, [...fail, item]];
     },
-    [[], []] as [T[], T[]],
+    [[], []] as [T[], T[]]
   );
 };
 
@@ -152,7 +152,7 @@ export const range = (start: number, end: number, step: number = 1): number[] =>
 export const sortByMultiple = <T>(
   array: T[],
   keys: (keyof T)[],
-  orders: ('asc' | 'desc')[] = [],
+  orders: ('asc' | 'desc')[] = []
 ): T[] => {
   return [...array].sort((a, b) => {
     for (let i = 0; i < keys.length; i++) {
@@ -220,7 +220,7 @@ export const keyBy = <T>(array: T[], key: keyof T): { [key: string]: T } => {
       result[keyValue] = item;
       return result;
     },
-    {} as { [key: string]: T },
+    {} as { [key: string]: T }
   );
 };
 

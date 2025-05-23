@@ -7,7 +7,7 @@ const levels = {
   warn: 1,
   info: 2,
   http: 3,
-  debug: 4,
+  debug: 4
 };
 
 const colors = {
@@ -15,7 +15,7 @@ const colors = {
   warn: 'yellow',
   info: 'green',
   http: 'magenta',
-  debug: 'blue',
+  debug: 'blue'
 };
 
 winston.addColors(colors);
@@ -30,7 +30,7 @@ const format = winston.format.combine(
     }
     return info;
   })(),
-  winston.format.json(),
+  winston.format.json()
 );
 
 const transports = [
@@ -38,28 +38,28 @@ const transports = [
     format: winston.format.combine(
       winston.format.colorize({ all: true }),
       winston.format.printf(
-        info => `[\x1b[34m${info.timestamp}\x1b[0m] \x1b[107m${info.level}\x1b[0m ${info.message}`,
-      ),
-    ),
+        info => `[\x1b[34m${info.timestamp}\x1b[0m] \x1b[107m${info.level}\x1b[0m ${info.message}`
+      )
+    )
   }),
   new DailyRotateFile({
     filename: 'logs/error-%DATE%.log',
     datePattern: 'YYYY-MM-DD',
     level: 'error',
     maxSize: '20m',
-    maxFiles: '14d',
+    maxFiles: '14d'
   }),
   new DailyRotateFile({
     filename: 'logs/combined-%DATE%.log',
     datePattern: 'YYYY-MM-DD',
     maxSize: '20m',
-    maxFiles: '14d',
-  }),
+    maxFiles: '14d'
+  })
 ];
 
 export const logger = winston.createLogger({
   level: env.NODE_ENV === 'development' ? 'debug' : 'info',
   levels,
   format,
-  transports,
+  transports
 });

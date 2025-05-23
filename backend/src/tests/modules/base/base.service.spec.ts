@@ -72,13 +72,13 @@ describe('BaseService', () => {
   describe('search', () => {
     it('should search entities by term', async () => {
       const company1 = await service.create(
-        FakeDataHelper.company({ company_name: 'Test Company ABC' }),
+        FakeDataHelper.company({ company_name: 'Test Company ABC' })
       );
       await service.create(FakeDataHelper.company({ company_name: 'Another Company XYZ' }));
 
       const [results, total] = await service.search({
         searchFields: ['company_name'],
-        searchTerm: 'ABC',
+        searchTerm: 'ABC'
       });
 
       expect(results.length).toBe(1);

@@ -6,66 +6,66 @@ import {
   IconCircleCheck,
   IconCircleX,
   IconExclamationCircle,
-  IconStopwatch,
+  IconStopwatch
 } from '@tabler/icons-react';
 
 export const labels = [
   {
     value: 'bug',
-    label: 'Bug',
+    label: 'Bug'
   },
   {
     value: 'feature',
-    label: 'Feature',
+    label: 'Feature'
   },
   {
     value: 'documentation',
-    label: 'Documentation',
-  },
+    label: 'Documentation'
+  }
 ];
 
 export const statuses = [
   {
     value: 'backlog',
     label: 'Backlog',
-    icon: IconExclamationCircle,
+    icon: IconExclamationCircle
   },
   {
     value: 'todo',
     label: 'Todo',
-    icon: IconCircle,
+    icon: IconCircle
   },
   {
     value: 'in progress',
     label: 'In Progress',
-    icon: IconStopwatch,
+    icon: IconStopwatch
   },
   {
     value: 'done',
     label: 'Done',
-    icon: IconCircleCheck,
+    icon: IconCircleCheck
   },
   {
     value: 'canceled',
     label: 'Canceled',
-    icon: IconCircleX,
-  },
+    icon: IconCircleX
+  }
 ];
 
 export const priorities = [
   {
     label: 'Low',
     value: 'low',
-    icon: IconArrowDown,
+    icon: IconArrowDown
   },
   {
     label: 'Medium',
     value: 'medium',
-    icon: IconArrowRight,
+    icon: IconArrowRight
   },
   {
     label: 'High',
     value: 'high',
-    icon: IconArrowUp,
-  },
+    icon: IconArrowUp
+  }
 ];

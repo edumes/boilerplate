@@ -21,9 +21,7 @@ export default function TasksProvider({ children }: Props) {
   const [open, setOpen] = useDialogState<TasksDialogType>(null);
   const [currentRow, setCurrentRow] = useState<Task | null>(null);
   return (
-    <TasksContext value={{ open, setOpen, currentRow, setCurrentRow }}>
-      {children}
-    </TasksContext>
+    <TasksContext value={{ open, setOpen, currentRow, setCurrentRow }}>{children}</TasksContext>
   );
 }
 

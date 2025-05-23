@@ -9,16 +9,16 @@ export const emailConfig = {
     secure: env.SMTP_SECURE === 'true',
     auth: {
       user: env.SMTP_USER,
-      pass: env.SMTP_PASSWORD,
-    },
+      pass: env.SMTP_PASSWORD
+    }
   },
   defaults: {
     from: {
       name: env.MAIL_FROM_NAME,
-      address: env.MAIL_FROM_ADDRESS,
-    },
+      address: env.MAIL_FROM_ADDRESS
+    }
   },
-  templateDir: '../templates/email',
+  templateDir: '../templates/email'
 };
 
 export const transporter = nodemailer.createTransport(emailConfig.smtp);

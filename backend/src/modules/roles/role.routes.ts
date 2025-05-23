@@ -10,7 +10,7 @@ export default async function roleRoutes(server: FastifyInstance, options: Fasti
   const additionalRoutes: RouteDefinition[] = [
     { method: 'post', url: '/users/:userId/roles/:roleId', handler: roleController.assignRole },
     { method: 'delete', url: '/users/:userId/roles/:roleId', handler: roleController.removeRole },
-    { method: 'get', url: '/users/:userId/roles', handler: roleController.getUserRoles },
+    { method: 'get', url: '/users/:userId/roles', handler: roleController.getUserRoles }
   ];
 
   registerGenericRoutes(server, roleController, Role, additionalRoutes);

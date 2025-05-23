@@ -29,7 +29,7 @@ export async function httpLogger(request: FastifyRequest, reply: FastifyReply) {
       status: reply.statusCode,
       duration: `${duration}ms`,
       userAgent: request.headers['user-agent'],
-      ip: request.ip,
+      ip: request.ip
     });
   });
 }

@@ -34,5 +34,5 @@ export const env = {
   MAIL_FROM_ADDRESS: process.env.MAIL_FROM_ADDRESS || 'noreply@yourapp.com',
 
   ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || EncryptionService.generateEncryptionKey(),
-  ENCRYPTION_ENABLED: process.env.ENCRYPTION_ENABLED === 'true',
+  ENCRYPTION_ENABLED: process.env.ENCRYPTION_ENABLED === 'true'
 };

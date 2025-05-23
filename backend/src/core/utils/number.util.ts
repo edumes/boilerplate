@@ -3,23 +3,23 @@ import { appConfig } from '@config/app.config';
 export const formatCurrency = (
   value: number,
   currency: string = appConfig.locale.currencyFormat.currency,
-  locale: string = appConfig.locale.currencyFormat.locale,
+  locale: string = appConfig.locale.currencyFormat.locale
 ): string => {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: currency,
+    currency: currency
   }).format(value);
 };
 
 export const formatPercentage = (
   value: number,
   decimals: number = 2,
-  locale: string = appConfig.locale.defaultLanguage,
+  locale: string = appConfig.locale.defaultLanguage
 ): string => {
   return new Intl.NumberFormat(locale, {
     style: 'percent',
     minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+    maximumFractionDigits: decimals
   }).format(value / 100);
 };
 
@@ -40,7 +40,7 @@ export const formatFileSize = (bytes: number): string => {
 
 export const parseCurrency = (
   value: string,
-  currency: string = appConfig.locale.currencyFormat.currency,
+  currency: string = appConfig.locale.currencyFormat.currency
 ): number => {
   return parseFloat(value.replace(/[^\d.-]/g, ''));
 };
@@ -87,7 +87,7 @@ export const convertCurrency = (
   amount: number,
   fromCurrency: string,
   toCurrency: string,
-  exchangeRate: number,
+  exchangeRate: number
 ): number => {
   if (fromCurrency === toCurrency) return amount;
   return amount * exchangeRate;
@@ -97,7 +97,7 @@ export const formatDate = (date: Date, format: string = appConfig.locale.dateFor
   return new Intl.DateTimeFormat(appConfig.locale.defaultLanguage, {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit',
+    day: '2-digit'
   }).format(date);
 };
 
@@ -105,13 +105,13 @@ export const formatTime = (date: Date, format: string = appConfig.locale.timeFor
   return new Intl.DateTimeFormat(appConfig.locale.defaultLanguage, {
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit',
+    second: '2-digit'
   }).format(date);
 };
 
 export const formatDateTime = (
   date: Date,
-  format: string = appConfig.locale.dateTimeFormat,
+  format: string = appConfig.locale.dateTimeFormat
 ): string => {
   return new Intl.DateTimeFormat(appConfig.locale.defaultLanguage, {
     year: 'numeric',
@@ -119,7 +119,7 @@ export const formatDateTime = (
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit',
+    second: '2-digit'
   }).format(date);
 };
 

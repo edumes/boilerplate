@@ -7,7 +7,7 @@ export class SituationService extends BaseService<Situation> {
     super(situationRepository, 'Situation');
 
     this.setHooks({
-      beforeCreate: async data => {},
+      beforeCreate: async data => {}
     });
   }
 

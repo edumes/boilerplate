@@ -11,7 +11,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -19,7 +19,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,7 +32,7 @@ const formSchema = z.object({
     .min(1, { message: 'Email is required.' })
     .email({ message: 'Email is invalid.' }),
   role: z.string().min(1, { message: 'Role is required.' }),
-  desc: z.string().optional(),
+  desc: z.string().optional()
 });
 type UserInviteForm = z.infer<typeof formSchema>;
 
@@ -44,7 +44,7 @@ interface Props {
 export function UsersInviteDialog({ open, onOpenChange }: Props) {
   const form = useForm<UserInviteForm>({
     resolver: zodResolver(formSchema),
-    defaultValues: { email: '', role: '', desc: '' },
+    defaultValues: { email: '', role: '', desc: '' }
   });
 
   const onSubmit = (values: UserInviteForm) => {
@@ -55,7 +55,7 @@ export function UsersInviteDialog({ open, onOpenChange }: Props) {
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
         </pre>
-      ),
+      )
     });
     onOpenChange(false);
   };
@@ -63,7 +63,7 @@ export function UsersInviteDialog({ open, onOpenChange }: Props) {
   return (
     <Dialog
       open={open}
-      onOpenChange={(state) => {
+      onOpenChange={state => {
         form.reset();
         onOpenChange(state);
       }}
@@ -74,16 +74,12 @@ export function UsersInviteDialog({ open, onOpenChange }: Props) {
             <IconMailPlus /> Invite User
           </DialogTitle>
           <DialogDescription>
-            Invite new user to join your team by sending them an email
-            invitation. Assign a role to define their access level.
+            Invite new user to join your team by sending them an email invitation. Assign a role to
+            define their access level.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form
-            id='user-invite-form'
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-4'
-          >
+          <form id='user-invite-form' onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
               name='email'
@@ -91,11 +87,7 @@ export function UsersInviteDialog({ open, onOpenChange }: Props) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type='email'
-                      placeholder='eg: john.doe@gmail.com'
-                      {...field}
-                    />
+                    <Input type='email' placeholder='eg: john.doe@gmail.com' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,7 +105,7 @@ export function UsersInviteDialog({ open, onOpenChange }: Props) {
                     placeholder='Select a role'
                     items={userTypes.map(({ label, value }) => ({
                       label,
-                      value,
+                      value
                     }))}
                   />
                   <FormMessage />

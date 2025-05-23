@@ -6,7 +6,7 @@ export enum Permission {
   CREATE = 'create',
   READ = 'read',
   UPDATE = 'update',
-  DELETE = 'delete',
+  DELETE = 'delete'
 }
 
 export function checkPermission(resource: string, permission: Permission) {
@@ -23,7 +23,9 @@ export function checkPermission(resource: string, permission: Permission) {
 
     const hasPermission = userRole.role_permissions[resource]?.[permission];
     if (!hasPermission) {
-      throw new UnauthorizedError(i18next.t('USER_DOESNT_HAVE_PERMISSION', { permission, resource }));
+      throw new UnauthorizedError(
+        i18next.t('USER_DOESNT_HAVE_PERMISSION', { permission, resource })
+      );
     }
   };
 }

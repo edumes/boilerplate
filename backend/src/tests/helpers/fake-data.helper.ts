@@ -11,7 +11,7 @@ export class FakeDataHelper {
       company_address: faker.location.streetAddress(),
       company_telephone: faker.phone.number(),
       company_email: faker.internet.email(),
-      ...override,
+      ...override
     };
   }
 
@@ -20,7 +20,7 @@ export class FakeDataHelper {
       user_name: faker.person.fullName(),
       user_email: faker.internet.email(),
       user_password: faker.internet.password(),
-      ...override,
+      ...override
     };
   }
 }

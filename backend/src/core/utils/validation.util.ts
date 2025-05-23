@@ -2,7 +2,7 @@ import {
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface,
+  ValidatorConstraintInterface
 } from 'class-validator';
 import i18next from 'i18next';
 import { ValidationError } from './errors.util';
@@ -22,7 +22,7 @@ class RegexConstraint implements ValidatorConstraintInterface {
 function CreateRegexValidator(
   regex: RegExp,
   message: string,
-  validationOptions?: ValidationOptions,
+  validationOptions?: ValidationOptions
 ) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
@@ -31,7 +31,7 @@ function CreateRegexValidator(
       propertyName: propertyName,
       options: validationOptions,
       validator: RegexConstraint,
-      constraints: [regex],
+      constraints: [regex]
     });
   };
 }
@@ -66,7 +66,7 @@ export function IsAlphanumeric(validationOptions?: ValidationOptions) {
   return CreateRegexValidator(
     alphanumericRegex,
     'Only alphanumeric characters allowed',
-    validationOptions,
+    validationOptions
   );
 }
 
@@ -100,7 +100,7 @@ function CreateRangeValidator(min: number, max: number, validationOptions?: Vali
       propertyName: propertyName,
       options: validationOptions,
       validator: RangeConstraint,
-      constraints: [min, max],
+      constraints: [min, max]
     });
   };
 }
@@ -132,7 +132,7 @@ export function ValidateRequired(fieldName: string, validationOptions?: Validati
       propertyName: propertyName,
       options: validationOptions,
       validator: RequiredConstraint,
-      constraints: [fieldName],
+      constraints: [fieldName]
     });
   };
 }
@@ -155,7 +155,7 @@ export function IsValidDate(validationOptions?: ValidationOptions) {
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      validator: IsDateConstraint,
+      validator: IsDateConstraint
     });
   };
 }
@@ -180,7 +180,7 @@ export function IsInList(list: any[], validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: InListConstraint,
-      constraints: [list],
+      constraints: [list]
     });
   };
 }
@@ -203,7 +203,7 @@ export function IsValidInteger(validationOptions?: ValidationOptions) {
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      validator: IsIntegerConstraint,
+      validator: IsIntegerConstraint
     });
   };
 }
@@ -226,7 +226,7 @@ export function IsValidFloat(validationOptions?: ValidationOptions) {
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      validator: IsFloatConstraint,
+      validator: IsFloatConstraint
     });
   };
 }
@@ -259,7 +259,7 @@ export function IsValidIP(ipVersion: 'IPv4' | 'IPv6', validationOptions?: Valida
       propertyName: propertyName,
       options: validationOptions,
       validator: IPAddressConstraint,
-      constraints: [ipVersion],
+      constraints: [ipVersion]
     });
   };
 }

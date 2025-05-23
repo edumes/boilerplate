@@ -9,8 +9,8 @@ const emailQueue = new Queue('email-queue', {
   redis: {
     host: process.env.REDIS_HOST,
     port: Number(process.env.REDIS_PORT),
-    password: process.env.REDIS_PASSWORD,
-  },
+    password: process.env.REDIS_PASSWORD
+  }
 });
 
 interface EmailOptions {
@@ -46,7 +46,7 @@ class EmailService {
         subject,
         html,
         attachments,
-        ...emailConfig.defaults,
+        ...emailConfig.defaults
       });
 
       logger.info('Email queued successfully', { to, subject });
@@ -62,7 +62,7 @@ emailQueue.process(async job => {
     await transporter.sendMail(job.data);
     logger.info('Email sent successfully', {
       to: job.data.to,
-      subject: job.data.subject,
+      subject: job.data.subject
     });
   } catch (error) {
     logger.error('Error sending email', { error, data: job.data });

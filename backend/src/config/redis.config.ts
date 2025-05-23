@@ -17,7 +17,7 @@ if (appConfig.features.redis.enabled) {
     },
     onError(error: Error) {
       logger.error('Redis Client Error', { error });
-    },
+    }
   };
 
   redis = new Redis(redisConfig);

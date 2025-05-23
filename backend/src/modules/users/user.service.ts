@@ -21,7 +21,7 @@ export class UserService extends BaseService<User> {
         if (data.user_password) {
           data.user_password = await bcrypt.hash(
             String(data.user_password),
-            authConfig.passwordSaltRounds,
+            authConfig.passwordSaltRounds
           );
         }
       },
@@ -29,7 +29,7 @@ export class UserService extends BaseService<User> {
         if (data.user_password) {
           data.user_password = await bcrypt.hash(
             String(data.user_password),
-            authConfig.passwordSaltRounds,
+            authConfig.passwordSaltRounds
           );
         }
       }

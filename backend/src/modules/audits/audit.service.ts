@@ -19,7 +19,7 @@ export class AuditService {
   }): Promise<Audit> {
     const audit = this.repository.create({
       ...params,
-      created_at: new Date(),
+      created_at: new Date()
     });
 
     return this.repository.save(audit);
@@ -28,7 +28,7 @@ export class AuditService {
   async getEntityHistory(entityName: string): Promise<Audit[]> {
     return this.repository.find({
       where: { audit_entity_name: entityName },
-      order: { created_at: 'DESC' },
+      order: { created_at: 'DESC' }
     });
   }
 }

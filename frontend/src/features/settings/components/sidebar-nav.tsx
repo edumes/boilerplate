@@ -9,7 +9,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
@@ -20,11 +20,7 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   }[];
 }
 
-export default function SidebarNav({
-  className,
-  items,
-  ...props
-}: SidebarNavProps) {
+export default function SidebarNav({ className, items, ...props }: SidebarNavProps) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [val, setVal] = useState(pathname ?? '/settings');
@@ -42,7 +38,7 @@ export default function SidebarNav({
             <SelectValue placeholder='Theme' />
           </SelectTrigger>
           <SelectContent>
-            {items.map((item) => (
+            {items.map(item => (
               <SelectItem key={item.href} value={item.href}>
                 <div className='flex gap-x-4 px-2 py-1'>
                   <span className='scale-125'>{item.icon}</span>
@@ -60,13 +56,10 @@ export default function SidebarNav({
         className='hidden w-full bg-background px-1 py-2 md:block min-w-40'
       >
         <nav
-          className={cn(
-            'flex py-1 space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1',
-            className
-          )}
+          className={cn('flex py-1 space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1', className)}
           {...props}
         >
-          {items.map((item) => (
+          {items.map(item => (
             <Link
               key={item.href}
               to={item.href}

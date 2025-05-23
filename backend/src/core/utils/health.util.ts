@@ -12,8 +12,8 @@ const getMemoryUsage = () => {
       heapUsed: formatMemory(memoryUsage.heapUsed),
       rss: formatMemory(memoryUsage.rss),
       heapTotal: formatMemory(memoryUsage.heapTotal),
-      external: formatMemory(memoryUsage.external),
-    },
+      external: formatMemory(memoryUsage.external)
+    }
   };
 };
 
@@ -23,7 +23,7 @@ const getSystemInfo = () => ({
   cpus: os.cpus().length,
   loadAvg: os.loadavg(),
   totalMemory: formatMemory(os.totalmem()),
-  freeMemory: formatMemory(os.freemem()),
+  freeMemory: formatMemory(os.freemem())
 });
 
 const getSystemStatus = () => ({
@@ -32,10 +32,10 @@ const getSystemStatus = () => ({
   database: AppDataSource.isInitialized ? 'connected' : 'disconnected',
   uptime: {
     seconds: process.uptime(),
-    formatted: formatUptime(new Date(process.uptime() * 1000)),
+    formatted: formatUptime(new Date(process.uptime() * 1000))
   },
   memory: getMemoryUsage(),
-  system: getSystemInfo(),
+  system: getSystemInfo()
 });
 
 export default getSystemStatus;

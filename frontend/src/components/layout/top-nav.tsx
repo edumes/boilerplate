@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
 interface TopNavProps extends React.HTMLAttributes<HTMLElement> {
@@ -45,10 +45,7 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
       </div>
 
       <nav
-        className={cn(
-          'hidden items-center space-x-4 md:flex lg:space-x-6',
-          className
-        )}
+        className={cn('hidden items-center space-x-4 md:flex lg:space-x-6', className)}
         {...props}
       >
         {links.map(({ title, href, isActive, disabled }) => (

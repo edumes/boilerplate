@@ -25,7 +25,7 @@ export async function encryptionMiddleware(request: FastifyRequest, reply: Fasti
       const encryptedResponse = encryptionService.encrypt(stringifiedData);
       return originalSend.call(this, {
         encrypted: true,
-        ...encryptedResponse,
+        ...encryptedResponse
       });
     }
     return originalSend.call(this, payload);

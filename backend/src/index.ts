@@ -29,9 +29,9 @@ const configureMiddlewares = () => {
         styleSrc: ["'self'", 'https:'],
         scriptSrc: ["'self'", 'https:'],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'https:'],
-      },
-    },
+        connectSrc: ["'self'", 'https:']
+      }
+    }
   });
 
   server.register(fastifyStatic, {

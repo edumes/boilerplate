@@ -1,18 +1,18 @@
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon
+} from '@radix-ui/react-icons';
+import { Table } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
-} from '@radix-ui/react-icons';
-import { Table } from '@tanstack/react-table';
 import { PaginationProps } from './crud-table';
 
 interface DataTablePaginationProps<TData> {
@@ -26,22 +26,21 @@ export function DataTablePagination<TData>({
   table,
   meta,
   onPageChange,
-  onLimitChange,
+  onLimitChange
 }: DataTablePaginationProps<TData>) {
   // console.log({ meta });
 
   return (
     <div className='flex items-center justify-between overflow-auto px-2'>
       <div className='hidden flex-1 text-sm text-muted-foreground sm:block'>
-        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-        {meta.totalItems} row(s) selected.
+        {table.getFilteredSelectedRowModel().rows.length} of {meta.totalItems} row(s) selected.
       </div>
       <div className='flex items-center sm:space-x-6 lg:space-x-8'>
         <div className='flex items-center space-x-2'>
           <p className='hidden text-sm font-medium sm:block'>Rows per page</p>
           <Select
             value={`${meta.limit}`}
-            onValueChange={(value) => {
+            onValueChange={value => {
               const newLimit = Number(value);
               onLimitChange(newLimit);
             }}
@@ -50,7 +49,7 @@ export function DataTablePagination<TData>({
               <SelectValue placeholder={meta.limit} />
             </SelectTrigger>
             <SelectContent side='top'>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[10, 20, 30, 40, 50].map(pageSize => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

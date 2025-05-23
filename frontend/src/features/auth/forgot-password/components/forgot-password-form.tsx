@@ -10,7 +10,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
@@ -20,7 +20,7 @@ const formSchema = z.object({
   email: z
     .string()
     .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
+    .email({ message: 'Invalid email address' })
 });
 
 export function ForgotForm({ className, ...props }: ForgotFormProps) {
@@ -28,7 +28,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { email: '' },
+    defaultValues: { email: '' }
   });
 
   function onSubmit(data: z.infer<typeof formSchema>) {

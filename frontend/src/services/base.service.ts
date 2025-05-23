@@ -17,11 +17,11 @@ class BaseService<T> {
   async getFields(): Promise<T[]> {
     try {
       const response = await api.get<ApiResponse<T[]>>(`${this.endpoint}/fields`);
-      
+
       if (response.data.success) {
         return response.data.data;
       }
-      
+
       throw new Error('Falha ao buscar campos.');
     } catch (error) {
       console.error('Erro ao buscar campos:', error);
@@ -32,17 +32,17 @@ class BaseService<T> {
   async list(options?: PaginationOptions): Promise<T[]> {
     try {
       const params = new URLSearchParams();
-      
+
       if (options?.page !== undefined) {
         params.append('page', String(options.page + 1));
       }
-      
+
       if (options?.limit !== undefined) {
         params.append('limit', String(options.limit));
       }
 
       const response = await api.get<ApiResponse<T[]>>(`${this.endpoint}?${params.toString()}`);
-      
+
       if (response.data.success) {
         return response.data.data;
       }
@@ -57,7 +57,7 @@ class BaseService<T> {
   async getById(id: string | number): Promise<T> {
     try {
       const response = await api.get<ApiResponse<T>>(`${this.endpoint}/${id}`);
-      
+
       if (response.data.success) {
         return response.data.data;
       }
@@ -76,8 +76,10 @@ class BaseService<T> {
         params.append('search', search);
       }
 
-      const response = await api.get<ApiResponse<T[]>>(`${this.endpoint}/select-options?${params.toString()}`);
-      
+      const response = await api.get<ApiResponse<T[]>>(
+        `${this.endpoint}/select-options?${params.toString()}`
+      );
+
       if (response.data.success) {
         return response.data.data;
       }
@@ -92,7 +94,7 @@ class BaseService<T> {
   async create(data: T): Promise<T> {
     try {
       const response = await api.post<ApiResponse<T>>(this.endpoint, data);
-      
+
       if (response.data.success) {
         return response.data.data;
       }
@@ -107,7 +109,7 @@ class BaseService<T> {
   async update(id: string | number, data: Partial<T>): Promise<T> {
     try {
       const response = await api.put<ApiResponse<T>>(`${this.endpoint}/${id}`, data);
-      
+
       if (response.data.success) {
         return response.data.data;
       }
@@ -131,7 +133,7 @@ class BaseService<T> {
   async filter(queryString: string): Promise<T[]> {
     try {
       const response = await api.get<ApiResponse<T[]>>(`${this.endpoint}/filter?${queryString}`);
-      
+
       if (response.data.success) {
         return response.data.data;
       }
@@ -144,4 +146,4 @@ class BaseService<T> {
   }
 }
 
-export const createBaseService = <T>(endpoint: string) => new BaseService<T>(endpoint); 
+export const createBaseService = <T>(endpoint: string) => new BaseService<T>(endpoint);

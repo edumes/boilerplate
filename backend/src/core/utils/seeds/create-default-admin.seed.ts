@@ -5,7 +5,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class CreateDefaultAdmin implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const adminRole = await queryRunner.query(
-      `SELECT id FROM roles WHERE role_name = 'admin' LIMIT 1`,
+      `SELECT id FROM roles WHERE role_name = 'admin' LIMIT 1`
     );
 
     if (!adminRole || adminRole.length === 0) {
@@ -13,12 +13,12 @@ export class CreateDefaultAdmin implements MigrationInterface {
     }
 
     const defaultCompany = await queryRunner.query(
-      `SELECT id FROM companies WHERE company_email = 'default@company.com' LIMIT 1`,
+      `SELECT id FROM companies WHERE company_email = 'default@company.com' LIMIT 1`
     );
 
     if (!defaultCompany || defaultCompany.length === 0) {
       throw new Error(
-        'Default company not found. Please run the CreateDefaultCompany migration first.',
+        'Default company not found. Please run the CreateDefaultCompany migration first.'
       );
     }
 

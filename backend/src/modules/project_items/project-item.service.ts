@@ -7,7 +7,7 @@ export class ProjectItemsService extends BaseService<ProjectItem> {
     super(projectItemsRepository, 'ProjectItems');
 
     this.setHooks({
-      beforeCreate: async data => {},
+      beforeCreate: async data => {}
     });
   }
 }

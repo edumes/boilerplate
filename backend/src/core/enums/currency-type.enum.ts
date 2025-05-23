@@ -1,5 +1,5 @@
 export enum CURRENCY_TYPE {
-    USD = 'USD',
-    EUR = 'EUR',
-    BRL = 'BRL',
+  USD = 'USD',
+  EUR = 'EUR',
+  BRL = 'BRL'
 }

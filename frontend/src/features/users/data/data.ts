@@ -1,9 +1,4 @@
-import {
-  IconCash,
-  IconShield,
-  IconUsersGroup,
-  IconUserShield,
-} from '@tabler/icons-react';
+import { IconCash, IconShield, IconUsersGroup, IconUserShield } from '@tabler/icons-react';
 import { UserStatus } from './schema';
 
 export const callTypes = new Map<UserStatus, string>([
@@ -12,29 +7,29 @@ export const callTypes = new Map<UserStatus, string>([
   ['invited', 'bg-sky-200/40 text-sky-900 dark:text-sky-100 border-sky-300'],
   [
     'suspended',
-    'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10',
-  ],
+    'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10'
+  ]
 ]);
 
 export const userTypes = [
   {
     label: 'Superadmin',
     value: 'superadmin',
-    icon: IconShield,
+    icon: IconShield
   },
   {
     label: 'Admin',
     value: 'admin',
-    icon: IconUserShield,
+    icon: IconUserShield
   },
   {
     label: 'Manager',
     value: 'manager',
-    icon: IconUsersGroup,
+    icon: IconUsersGroup
   },
   {
     label: 'Cashier',
     value: 'cashier',
-    icon: IconCash,
-  },
+    icon: IconCash
+  }
 ] as const;

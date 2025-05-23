@@ -12,7 +12,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList,
+  CommandList
 } from '@/components/ui/command';
 import {
   Form,
@@ -21,14 +21,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const languages = [
   { label: 'English', value: 'en' },
@@ -39,37 +35,37 @@ const languages = [
   { label: 'Russian', value: 'ru' },
   { label: 'Japanese', value: 'ja' },
   { label: 'Korean', value: 'ko' },
-  { label: 'Chinese', value: 'zh' },
+  { label: 'Chinese', value: 'zh' }
 ] as const;
 
 const accountFormSchema = z.object({
   name: z
     .string()
     .min(2, {
-      message: 'Name must be at least 2 characters.',
+      message: 'Name must be at least 2 characters.'
     })
     .max(30, {
-      message: 'Name must not be longer than 30 characters.',
+      message: 'Name must not be longer than 30 characters.'
     }),
   dob: z.date({
-    required_error: 'A date of birth is required.',
+    required_error: 'A date of birth is required.'
   }),
   language: z.string({
-    required_error: 'Please select a language.',
-  }),
+    required_error: 'Please select a language.'
+  })
 });
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<AccountFormValues> = {
-  name: '',
+  name: ''
 };
 
 export function AccountForm() {
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
-    defaultValues,
+    defaultValues
   });
 
   function onSubmit(data: AccountFormValues) {
@@ -79,7 +75,7 @@ export function AccountForm() {
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
         </pre>
-      ),
+      )
     });
   }
 
@@ -96,8 +92,7 @@ export function AccountForm() {
                 <Input placeholder='Your name' {...field} />
               </FormControl>
               <FormDescription>
-                This is the name that will be displayed on your profile and in
-                emails.
+                This is the name that will be displayed on your profile and in emails.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -139,9 +134,7 @@ export function AccountForm() {
                   /> */}
                 </PopoverContent>
               </Popover>
-              <FormDescription>
-                Your date of birth is used to calculate your age.
-              </FormDescription>
+              <FormDescription>Your date of birth is used to calculate your age.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -164,9 +157,7 @@ export function AccountForm() {
                       )}
                     >
                       {field.value
-                        ? languages.find(
-                            (language) => language.value === field.value
-                          )?.label
+                        ? languages.find(language => language.value === field.value)?.label
                         : 'Select language'}
                       <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                     </Button>
@@ -178,7 +169,7 @@ export function AccountForm() {
                     <CommandEmpty>No language found.</CommandEmpty>
                     <CommandGroup>
                       <CommandList>
-                        {languages.map((language) => (
+                        {languages.map(language => (
                           <CommandItem
                             value={language.label}
                             key={language.value}
@@ -189,9 +180,7 @@ export function AccountForm() {
                             <CheckIcon
                               className={cn(
                                 'mr-2 h-4 w-4',
-                                language.value === field.value
-                                  ? 'opacity-100'
-                                  : 'opacity-0'
+                                language.value === field.value ? 'opacity-100' : 'opacity-0'
                               )}
                             />
                             {language.label}

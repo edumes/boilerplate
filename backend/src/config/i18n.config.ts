@@ -5,7 +5,7 @@ import { join } from 'path';
 export async function setupI18n() {
   await i18next.use(i18nextBackend).init({
     backend: {
-      loadPath: join(__dirname, '../config/locales/{{lng}}/{{ns}}.json'),
+      loadPath: join(__dirname, '../config/locales/{{lng}}/{{ns}}.json')
     },
     fallbackLng: 'en',
     supportedLngs: ['en', 'pt'],
@@ -17,11 +17,11 @@ export async function setupI18n() {
       lookupHeader: 'accept-language',
       lookupQuerystring: 'lang',
       lookupCookie: 'lang',
-      caches: ['cookie'],
+      caches: ['cookie']
     },
     interpolation: {
-      escapeValue: false,
-    },
+      escapeValue: false
+    }
   });
 
   return i18next;

@@ -7,7 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 
 @Entity({ name: 'audits' })
@@ -20,7 +20,7 @@ export class Audit extends BaseModel {
 
   @Column({
     type: 'enum',
-    enum: AuditAction,
+    enum: AuditAction
   })
   audit_action: AuditAction;
 

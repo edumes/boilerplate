@@ -53,7 +53,7 @@ export const formatUptime = (startDate: Date, endDate: Date = new Date()): strin
 
 export const parseDate = (
   dateString: string,
-  format: string = appConfig.locale.dateFormat,
+  format: string = appConfig.locale.dateFormat
 ): Date => {
   const parts = dateString.match(/(\d+)/g) || [];
   const formatParts = format.match(/(YYYY|MM|DD|HH|mm|ss)/g) || [];
@@ -69,7 +69,7 @@ export const parseDate = (
     values['DD'] || 1,
     values['HH'] || 0,
     values['mm'] || 0,
-    values['ss'] || 0,
+    values['ss'] || 0
   );
 };
 
@@ -77,8 +77,8 @@ export const toLocalTimezone = (date: Date): Date => {
   const targetTimezone = appConfig.locale.timezone;
   return new Date(
     date.toLocaleString('en-US', {
-      timeZone: targetTimezone,
-    }),
+      timeZone: targetTimezone
+    })
   );
 };
 

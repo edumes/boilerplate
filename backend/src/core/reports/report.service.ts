@@ -47,12 +47,12 @@ export class ReportService {
 
   static async generateReport<T extends IBaseModel>(
     service: BaseService<T>,
-    options: ReportOptions = {},
+    options: ReportOptions = {}
   ): Promise<string> {
     try {
       const [items, total] = await service.findAll({
         ...options.filters,
-        limit: 1000,
+        limit: 1000
       });
 
       if (options.format === 'excel') {
@@ -65,7 +65,7 @@ export class ReportService {
         items,
         total,
         fields: service.getFields(),
-        ...options.customData,
+        ...options.customData
       };
 
       const templateName = options.template || 'default-report.njk';
@@ -78,7 +78,7 @@ export class ReportService {
         margin: reportConfig.pageSettings.margin,
         landscape: options.orientation === 'landscape',
         printBackground: true,
-        preferCSSPageSize: true,
+        preferCSSPageSize: true
       };
 
       const buffer = await htmlPdf.generatePdf({ content: html }, pdfOptions);
@@ -100,7 +100,7 @@ export class ReportService {
   private static async generateExcel<T>(
     data: T[],
     modelName: string,
-    fields: Record<string, any>,
+    fields: Record<string, any>
   ): Promise<string> {
     try {
       const formattedData = data.map(item => {
@@ -122,7 +122,7 @@ export class ReportService {
         }
       });
       worksheet['!cols'] = Object.keys(formattedData[0] || {}).map((_, index) => ({
-        wch: colWidths[XLSX.utils.encode_col(index)] || 10,
+        wch: colWidths[XLSX.utils.encode_col(index)] || 10
       }));
 
       const workbook = XLSX.utils.book_new();
@@ -154,7 +154,7 @@ export class ReportService {
         headerTemplate: options.header?.contents,
         footerTemplate: options.footer?.contents,
         displayHeaderFooter: !!(options.header || options.footer),
-        printBackground: true,
+        printBackground: true
       };
 
       const buffer = await htmlPdf.generatePdf({ content: html }, pdfOptions);
@@ -175,19 +175,19 @@ export class ReportService {
     const templatePath = `${options.template}.njk`;
     const baseTemplate = await fs.readFile(
       path.join(reportConfig.templatesPath, 'base.njk'),
-      'utf-8',
+      'utf-8'
     );
 
     const content = this.nunjucksEnv.render(templatePath, {
       ...options.data,
       watermark: options.watermark,
-      styles: reportConfig.defaultStyles,
+      styles: reportConfig.defaultStyles
     });
 
     return this.nunjucksEnv.renderString(baseTemplate, {
       content,
       header: options.header,
-      footer: options.footer,
+      footer: options.footer
     });
   }
 }

@@ -7,7 +7,7 @@ export const filters = {
   currency: (value: number) =>
     new Intl.NumberFormat(currencyFormat.locale, {
       style: 'currency',
-      currency: currencyFormat.currency,
+      currency: currencyFormat.currency
     }).format(value),
 
   date: (value: string | Date) => dayjs(value).format(dateFormat),
@@ -28,7 +28,7 @@ export const filters = {
 
   number: (value: number) =>
     new Intl.NumberFormat(defaultLanguage, {
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(value),
 
   abs: (value: number) => Math.abs(value),
@@ -49,5 +49,5 @@ export const filters = {
 
   entries: (obj: object) => Object.entries(obj),
 
-  JSON: (obj: object) => JSON.stringify(obj),
+  JSON: (obj: object) => JSON.stringify(obj)
 };

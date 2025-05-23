@@ -25,13 +25,13 @@ export const sidebarData: SidebarData = {
     {
       name: 'Projects',
       logo: Command,
-      plan: 'Vite + ShadcnUI',
+      plan: 'Vite + ShadcnUI'
     },
     {
       name: 'Registers',
       logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
+      plan: 'Enterprise'
+    }
   ],
   navGroups: [
     {
@@ -40,7 +40,7 @@ export const sidebarData: SidebarData = {
         {
           title: 'Dashboard',
           url: '/',
-          icon: IconLayoutDashboard,
+          icon: IconLayoutDashboard
         },
         // {
         //   title: 'Tasks',
@@ -61,34 +61,34 @@ export const sidebarData: SidebarData = {
         {
           title: 'My Company',
           url: '/my-company',
-          icon: IconUsers,
+          icon: IconUsers
         },
         {
           title: 'Users',
           url: '/general/users',
-          icon: IconUsers,
+          icon: IconUsers
         },
         {
           title: 'Clients',
           url: '/general/clients',
-          icon: IconUserDollar,
+          icon: IconUserDollar
         },
         {
           title: 'Roles',
           url: '/general/roles',
-          icon: IconUsers,
+          icon: IconUsers
         },
         {
           title: 'Projects',
           url: '/general/projects',
-          icon: IconChecklist,
+          icon: IconChecklist
         },
         {
           title: 'Situations',
           url: '/general/situations',
-          icon: IconSubtask,
-        },
-      ],
+          icon: IconSubtask
+        }
+      ]
     },
     // {
     //   title: 'Pages',
@@ -162,36 +162,36 @@ export const sidebarData: SidebarData = {
             {
               title: 'Profile',
               url: '/settings',
-              icon: IconUserCog,
+              icon: IconUserCog
             },
             {
               title: 'Account',
               url: '/settings/account',
-              icon: IconTool,
+              icon: IconTool
             },
             {
               title: 'Appearance',
               url: '/settings/appearance',
-              icon: IconPalette,
+              icon: IconPalette
             },
             {
               title: 'Notifications',
               url: '/settings/notifications',
-              icon: IconNotification,
+              icon: IconNotification
             },
             {
               title: 'Display',
               url: '/settings/display',
-              icon: IconBrowserCheck,
-            },
-          ],
+              icon: IconBrowserCheck
+            }
+          ]
         },
         {
           title: 'Help Center',
           url: '/help-center',
-          icon: IconHelp,
-        },
-      ],
-    },
-  ],
+          icon: IconHelp
+        }
+      ]
+    }
+  ]
 };

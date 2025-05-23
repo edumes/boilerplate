@@ -1,27 +1,14 @@
 'use client';
-import { cn } from '@/lib/utils';
+
 import { motion, Transition } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 export type GlowEffectProps = {
   className?: string;
   style?: React.CSSProperties;
   colors?: string[];
-  mode?:
-  | 'rotate'
-  | 'pulse'
-  | 'breathe'
-  | 'colorShift'
-  | 'flowHorizontal'
-  | 'static';
-  blur?:
-  | number
-  | 'softest'
-  | 'soft'
-  | 'medium'
-  | 'strong'
-  | 'stronger'
-  | 'strongest'
-  | 'none';
+  mode?: 'rotate' | 'pulse' | 'breathe' | 'colorShift' | 'flowHorizontal' | 'static';
+  blur?: number | 'softest' | 'soft' | 'medium' | 'strong' | 'stronger' | 'strongest' | 'none';
   transition?: Transition;
   scale?: number;
   duration?: number;
@@ -35,52 +22,48 @@ export function GlowEffect({
   blur = 'medium',
   transition,
   scale = 1,
-  duration = 5,
+  duration = 5
 }: GlowEffectProps) {
   const BASE_TRANSITION = {
     repeat: Infinity,
     duration: duration,
-    ease: 'linear',
+    ease: 'linear'
   };
 
   const animations = {
     rotate: {
       background: [
         `conic-gradient(from 0deg at 50% 50%, ${colors.join(', ')})`,
-        `conic-gradient(from 360deg at 50% 50%, ${colors.join(', ')})`,
+        `conic-gradient(from 360deg at 50% 50%, ${colors.join(', ')})`
       ],
       transition: {
-        ...(transition ?? BASE_TRANSITION),
-      },
+        ...(transition ?? BASE_TRANSITION)
+      }
     },
     pulse: {
       background: colors.map(
-        (color) =>
-          `radial-gradient(circle at 50% 50%, ${color} 0%, transparent 100%)`
+        color => `radial-gradient(circle at 50% 50%, ${color} 0%, transparent 100%)`
       ),
       scale: [1 * scale, 1.1 * scale, 1 * scale],
       opacity: [0.5, 0.8, 0.5],
       transition: {
         ...(transition ?? {
           ...BASE_TRANSITION,
-          repeatType: 'mirror',
-        }),
-      },
+          repeatType: 'mirror'
+        })
+      }
     },
     breathe: {
       background: [
-        ...colors.map(
-          (color) =>
-            `radial-gradient(circle at 50% 50%, ${color} 0%, transparent 100%)`
-        ),
+        ...colors.map(color => `radial-gradient(circle at 50% 50%, ${color} 0%, transparent 100%)`)
       ],
       scale: [1 * scale, 1.05 * scale, 1 * scale],
       transition: {
         ...(transition ?? {
           ...BASE_TRANSITION,
-          repeatType: 'mirror',
-        }),
-      },
+          repeatType: 'mirror'
+        })
+      }
     },
     colorShift: {
       background: colors.map((color, index) => {
@@ -90,25 +73,25 @@ export function GlowEffect({
       transition: {
         ...(transition ?? {
           ...BASE_TRANSITION,
-          repeatType: 'mirror',
-        }),
-      },
+          repeatType: 'mirror'
+        })
+      }
     },
     flowHorizontal: {
-      background: colors.map((color) => {
+      background: colors.map(color => {
         const nextColor = colors[(colors.indexOf(color) + 1) % colors.length];
         return `linear-gradient(to right, ${color}, ${nextColor})`;
       }),
       transition: {
         ...(transition ?? {
           ...BASE_TRANSITION,
-          repeatType: 'mirror',
-        }),
-      },
+          repeatType: 'mirror'
+        })
+      }
     },
     static: {
-      background: `linear-gradient(to right, ${colors.join(', ')})`,
-    },
+      background: `linear-gradient(to right, ${colors.join(', ')})`
+    }
   };
 
   const getBlurClass = (blur: GlowEffectProps['blur']) => {
@@ -123,7 +106,7 @@ export function GlowEffect({
       strong: 'blur-lg',
       stronger: 'blur-xl',
       strongest: 'blur-xl',
-      none: 'blur-none',
+      none: 'blur-none'
     };
 
     return presets[blur as keyof typeof presets];
@@ -135,8 +118,8 @@ export function GlowEffect({
         {
           ...style,
           '--scale': scale,
-          willChange: 'transform',
-          backfaceVisibility: 'hidden',
+          'willChange': 'transform',
+          'backfaceVisibility': 'hidden'
         } as React.CSSProperties
       }
       animate={animations[mode]}

@@ -11,7 +11,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -19,7 +19,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -38,10 +38,10 @@ const formSchema = z
       .string()
       .min(1, { message: 'Email is required.' })
       .email({ message: 'Email is invalid.' }),
-    password: z.string().transform((pwd) => pwd.trim()),
+    password: z.string().transform(pwd => pwd.trim()),
     role: z.string().min(1, { message: 'Role is required.' }),
-    confirmPassword: z.string().transform((pwd) => pwd.trim()),
-    isEdit: z.boolean(),
+    confirmPassword: z.string().transform(pwd => pwd.trim()),
+    isEdit: z.boolean()
   })
   .superRefine(({ isEdit, password, confirmPassword }, ctx) => {
     if (!isEdit || (isEdit && password !== '')) {
@@ -49,7 +49,7 @@ const formSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Password is required.',
-          path: ['password'],
+          path: ['password']
         });
       }
 
@@ -57,7 +57,7 @@ const formSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Password must be at least 8 characters long.',
-          path: ['password'],
+          path: ['password']
         });
       }
 
@@ -65,7 +65,7 @@ const formSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Password must contain at least one lowercase letter.',
-          path: ['password'],
+          path: ['password']
         });
       }
 
@@ -73,7 +73,7 @@ const formSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Password must contain at least one number.',
-          path: ['password'],
+          path: ['password']
         });
       }
 
@@ -81,7 +81,7 @@ const formSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Passwords don't match.",
-          path: ['confirmPassword'],
+          path: ['confirmPassword']
         });
       }
     }
@@ -103,7 +103,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
           ...currentRow,
           password: '',
           confirmPassword: '',
-          isEdit,
+          isEdit
         }
       : {
           firstName: '',
@@ -114,8 +114,8 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
           phoneNumber: '',
           password: '',
           confirmPassword: '',
-          isEdit,
-        },
+          isEdit
+        }
   });
 
   const onSubmit = (values: UserForm) => {
@@ -126,7 +126,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
         </pre>
-      ),
+      )
     });
     onOpenChange(false);
   };
@@ -136,7 +136,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
   return (
     <Dialog
       open={open}
-      onOpenChange={(state) => {
+      onOpenChange={state => {
         form.reset();
         onOpenChange(state);
       }}
@@ -151,11 +151,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
         </DialogHeader>
         <ScrollArea className='h-[26.25rem] w-full pr-4 -mr-4 py-1'>
           <Form {...form}>
-            <form
-              id='user-form'
-              onSubmit={form.handleSubmit(onSubmit)}
-              className='space-y-4 p-0.5'
-            >
+            <form id='user-form' onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 p-0.5'>
               <FormField
                 control={form.control}
                 name='firstName'
@@ -177,11 +173,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                     <FormItem className='flex flex-col space-y-1.5'>
                       <FormLabel>Last Name</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder='Doe'
-                          autoComplete='off'
-                          {...field}
-                        />
+                        <Input placeholder='Doe' autoComplete='off' {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -206,15 +198,9 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                 name='email'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Email
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-right'>Email</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder='john.doe@gmail.com'
-                        className='col-span-4'
-                        {...field}
-                      />
+                      <Input placeholder='john.doe@gmail.com' className='col-span-4' {...field} />
                     </FormControl>
                     <FormMessage className='col-span-4 col-start-3' />
                   </FormItem>
@@ -225,15 +211,9 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                 name='phoneNumber'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Phone Number
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-right'>Phone Number</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder='+123456789'
-                        className='col-span-4'
-                        {...field}
-                      />
+                      <Input placeholder='+123456789' className='col-span-4' {...field} />
                     </FormControl>
                     <FormMessage className='col-span-4 col-start-3' />
                   </FormItem>
@@ -244,9 +224,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                 name='role'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Role
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-right'>Role</FormLabel>
                     <SelectDropdown
                       defaultValue={field.value}
                       onValueChange={field.onChange}
@@ -254,7 +232,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                       className='col-span-4'
                       items={userTypes.map(({ label, value }) => ({
                         label,
-                        value,
+                        value
                       }))}
                     />
                     <FormMessage className='col-span-4 col-start-3' />
@@ -266,9 +244,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                 name='password'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Password
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-right'>Password</FormLabel>
                     <FormControl>
                       <PasswordInput
                         placeholder='e.g., S3cur3P@ssw0rd'
@@ -285,9 +261,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                 name='confirmPassword'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Confirm Password
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-right'>Confirm Password</FormLabel>
                     <FormControl>
                       <PasswordInput
                         disabled={!isPasswordTouched}

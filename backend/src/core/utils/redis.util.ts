@@ -11,7 +11,7 @@ export class RedisHelper {
   static async cache<T>(
     key: string,
     fetchData: () => Promise<T>,
-    ttl: number = env.REDIS_TTL,
+    ttl: number = env.REDIS_TTL
   ): Promise<T> {
     if (!this.isEnabled()) {
       return await fetchData();

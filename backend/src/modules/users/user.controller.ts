@@ -12,7 +12,10 @@ export class UserController extends BaseController<User> {
     super(userService);
   }
 
-  async create(request: FastifyRequest<{ Body: Partial<User> & Record<string, unknown> }>, reply: FastifyReply) {
+  async create(
+    request: FastifyRequest<{ Body: Partial<User> & Record<string, unknown> }>,
+    reply: FastifyReply
+  ) {
     const userData = request.body;
 
     const existingUser = await userService.findByEmail(userData.user_email);

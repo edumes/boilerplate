@@ -10,7 +10,7 @@ export class AuthController {
     request: FastifyRequest<{
       Body: { user_email: string; user_password: string };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     const { user_email, user_password } = request.body;
     const result = await authService.login(user_email, user_password);

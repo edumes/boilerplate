@@ -1,18 +1,14 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import {
-  DialogFooter
-} from '@/components/ui/dialog';
-import DraggableWrapper from '@/components/ui/draggable-wrapper';
-import {
-  Form
-} from '@/components/ui/form';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { toast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { DialogFooter } from '@/components/ui/dialog';
+import DraggableWrapper from '@/components/ui/draggable-wrapper';
+import { Form } from '@/components/ui/form';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { CrudFormalize } from './crud-formalize';
 import { createValidationSchema } from './formValidationSchema';
 
@@ -29,7 +25,7 @@ export function CrudActionDialog({ currentRow, open, onOpenChange, config }: Pro
   const formSchema = createValidationSchema(config.fields ?? {});
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema)
   });
 
   const { control } = form;
@@ -45,16 +41,18 @@ export function CrudActionDialog({ currentRow, open, onOpenChange, config }: Pro
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
         </pre>
-      ),
+      )
     });
     onOpenChange(false);
   };
 
   return (
     <DraggableWrapper
-      title={isEdit ? `Edit ${config.config.singularName}` : `Add New ${config.config.singularName}`}
-      width="min-w-96"
-      height="auto"
+      title={
+        isEdit ? `Edit ${config.config.singularName}` : `Add New ${config.config.singularName}`
+      }
+      width='min-w-96'
+      height='auto'
       className={cn(
         'transition-all duration-300 ease-in-out transform',
         !open ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
@@ -65,13 +63,9 @@ export function CrudActionDialog({ currentRow, open, onOpenChange, config }: Pro
       }}
       maximizeButton={null}
     >
-      <ScrollArea className="h-[36.25rem] pr-4 -mr-4 py-1">
+      <ScrollArea className='h-[36.25rem] pr-4 -mr-4 py-1'>
         <Form {...form}>
-          <form
-            id='crud-form'
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-4 p-0.5'
-          >
+          <form id='crud-form' onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 p-0.5'>
             {/* <CrudFormalize control={form.control} config={config} /> */}
           </form>
         </Form>

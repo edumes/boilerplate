@@ -10,9 +10,7 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function DataTableToolbar<TData>({
-  table,
-}: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -20,12 +18,8 @@ export function DataTableToolbar<TData>({
       <div className='flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2'>
         <Input
           placeholder='Filter users...'
-          value={
-            (table.getColumn('username')?.getFilterValue() as string) ?? ''
-          }
-          onChange={(event) =>
-            table.getColumn('username')?.setFilterValue(event.target.value)
-          }
+          value={(table.getColumn('username')?.getFilterValue() as string) ?? ''}
+          onChange={event => table.getColumn('username')?.setFilterValue(event.target.value)}
           className='h-8 w-[150px] lg:w-[250px]'
         />
         <div className='flex gap-x-2'>
@@ -37,7 +31,7 @@ export function DataTableToolbar<TData>({
                 { label: 'Active', value: 'active' },
                 { label: 'Inactive', value: 'inactive' },
                 { label: 'Invited', value: 'invited' },
-                { label: 'Suspended', value: 'suspended' },
+                { label: 'Suspended', value: 'suspended' }
               ]}
             />
           )}
@@ -45,7 +39,7 @@ export function DataTableToolbar<TData>({
             <DataTableFacetedFilter
               column={table.getColumn('role')}
               title='Role'
-              options={userTypes.map((t) => ({ ...t }))}
+              options={userTypes.map(t => ({ ...t }))}
             />
           )}
         </div>

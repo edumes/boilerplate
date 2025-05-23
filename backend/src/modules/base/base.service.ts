@@ -2,7 +2,7 @@ import {
   FieldConfigOptions,
   FormConfig,
   getFieldConfigs,
-  getFormConfig,
+  getFormConfig
 } from '@core/decorators/field-config.decorator';
 import { AuditAction } from '@core/enums/audit-action.enum';
 import { ReportOptions, ReportService } from '@core/reports/report.service';
@@ -54,8 +54,8 @@ export class BaseService<T extends IBaseModel> {
 
   constructor(
     protected repository: Repository<T>,
-    protected modelName: string,
-  ) { }
+    protected modelName: string
+  ) {}
 
   public getModelName(): string {
     return this.modelName;
@@ -69,7 +69,7 @@ export class BaseService<T extends IBaseModel> {
 
     return {
       config: formConfig,
-      fields: fieldConfigs,
+      fields: fieldConfigs
     };
   }
 
@@ -107,7 +107,7 @@ export class BaseService<T extends IBaseModel> {
             (prefix === ''
               ? column.propertyName.includes(relation.propertyName)
               : column.propertyName.includes(relation.propertyName) ||
-              column.propertyName.includes(prefix.split('.').pop() || '')),
+                column.propertyName.includes(prefix.split('.').pop() || ''))
         );
 
         if (hasForeignKey) {
@@ -131,7 +131,7 @@ export class BaseService<T extends IBaseModel> {
     const limit = options.limit || 10;
     const skip = (page - 1) * limit;
     const order = (options.order || {
-      created_at: 'DESC',
+      created_at: 'DESC'
     }) as FindOptionsOrder<T>;
 
     const relations = this.getRelationFields();
@@ -140,7 +140,7 @@ export class BaseService<T extends IBaseModel> {
       skip,
       take: limit,
       order,
-      relations,
+      relations
     });
   }
 
@@ -150,12 +150,12 @@ export class BaseService<T extends IBaseModel> {
     if (typeof id === 'string' && isUUID(id)) {
       return this.repository.findOne({
         where: { uuid: id } as any,
-        relations,
+        relations
       });
     } else {
       return this.repository.findOne({
         where: { id } as any,
-        relations,
+        relations
       });
     }
   }
@@ -170,7 +170,7 @@ export class BaseService<T extends IBaseModel> {
 
       const entity = this.repository.create({
         ...data,
-        created_by_fk_user_id: user?.id,
+        created_by_fk_user_id: user?.id
       } as DeepPartial<T>);
 
       const savedEntity = await this.repository.save(entity);
@@ -205,7 +205,7 @@ export class BaseService<T extends IBaseModel> {
 
       await this.repository.update(oldEntity.id, {
         ...data,
-        updated_by_fk_user_id: user?.id,
+        updated_by_fk_user_id: user?.id
       } as QueryDeepPartialEntity<T>);
 
       const updatedEntity = await this.findById(id);
@@ -215,7 +215,7 @@ export class BaseService<T extends IBaseModel> {
         audit_action: AuditAction.UPDATE,
         audit_old_values: oldEntity,
         audit_new_values: data,
-        created_by_fk_user_id: user.id,
+        created_by_fk_user_id: user.id
       });
 
       if (this.hooks.afterUpdate && updatedEntity) {
@@ -245,7 +245,7 @@ export class BaseService<T extends IBaseModel> {
         audit_entity_name: this.modelName,
         audit_action: AuditAction.DELETE,
         audit_old_values: entity,
-        created_by_fk_user_id: user.id,
+        created_by_fk_user_id: user.id
       });
 
       if (this.hooks.afterDelete) {
@@ -258,13 +258,13 @@ export class BaseService<T extends IBaseModel> {
 
   async findByConditions(
     where: WhereConditions<T>,
-    options: PaginationOptions = {},
+    options: PaginationOptions = {}
   ): Promise<[T[], number]> {
     const page = options.page || 1;
     const limit = options.limit || 10;
     const skip = (page - 1) * limit;
     const order = (options.order || {
-      created_at: 'DESC',
+      created_at: 'DESC'
     }) as FindOptionsOrder<T>;
 
     const relations = this.getRelationFields();
@@ -274,7 +274,7 @@ export class BaseService<T extends IBaseModel> {
       skip,
       take: limit,
       order,
-      relations,
+      relations
     });
   }
 
@@ -284,7 +284,7 @@ export class BaseService<T extends IBaseModel> {
       limit = 10,
       searchFields = [],
       searchTerm = '',
-      order = { created_at: 'DESC' as const },
+      order = { created_at: 'DESC' as const }
     } = options;
 
     const skip = (page - 1) * limit;
@@ -313,7 +313,7 @@ export class BaseService<T extends IBaseModel> {
     }
 
     const whereConditions = fieldsToSearch.map(field => ({
-      [field]: ILike(`%${searchTerm}%`),
+      [field]: ILike(`%${searchTerm}%`)
     })) as FindOptionsWhere<T>[];
 
     return this.repository.findAndCount({
@@ -321,7 +321,7 @@ export class BaseService<T extends IBaseModel> {
       skip,
       take: limit,
       order: order as FindOptionsOrder<T>,
-      relations,
+      relations
     });
   }
 
@@ -344,7 +344,7 @@ export class BaseService<T extends IBaseModel> {
         uuid: undefined,
         created_at: undefined,
         updated_at: undefined,
-        ...overrideData,
+        ...overrideData
       };
 
       const entity = this.repository.create(cloneData);
@@ -355,7 +355,7 @@ export class BaseService<T extends IBaseModel> {
         audit_action: AuditAction.CREATE,
         audit_new_values: cloneData,
         created_by_fk_user_id: user.id,
-        audit_observation: `Cloned from ${this.modelName} ID: ${id} (UUID: ${originalEntity.uuid})`,
+        audit_observation: `Cloned from ${this.modelName} ID: ${id} (UUID: ${originalEntity.uuid})`
       });
 
       return savedEntity;
@@ -371,14 +371,14 @@ export class BaseService<T extends IBaseModel> {
       let labelFields = options.labelFields;
       if (!labelFields) {
         const nameField = metadata.columns.find(column =>
-          column.propertyName.endsWith('_name'),
+          column.propertyName.endsWith('_name')
         )?.propertyName;
 
         if (nameField) {
           labelFields = [nameField];
         } else {
           const firstField = metadata.columns.find(
-            column => column.propertyName !== 'id',
+            column => column.propertyName !== 'id'
           )?.propertyName;
 
           if (firstField) {
@@ -394,13 +394,13 @@ export class BaseService<T extends IBaseModel> {
       let whereConditions = {};
       if (options.searchTerm) {
         whereConditions = labelFields.map(field => ({
-          [field]: ILike(`%${options.searchTerm}%`),
+          [field]: ILike(`%${options.searchTerm}%`)
         }));
       }
 
       const entities = await this.repository.find({
         where: options.searchTerm ? whereConditions : undefined,
-        take: 100,
+        take: 100
       });
 
       const delimiter = options.delimiter || ' - ';
@@ -410,7 +410,7 @@ export class BaseService<T extends IBaseModel> {
         label: labelFields
           .map(field => entity[field])
           .filter(Boolean)
-          .join(delimiter),
+          .join(delimiter)
       }));
     } catch (error) {
       throw new Error(i18next.t('SELECT_OPTIONS_FAILED'));

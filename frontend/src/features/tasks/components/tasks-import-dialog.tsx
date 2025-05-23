@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -18,20 +18,17 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
 const formSchema = z.object({
   file: z
     .instanceof(FileList)
-    .refine((files) => files.length > 0, {
-      message: 'Please upload a file',
+    .refine(files => files.length > 0, {
+      message: 'Please upload a file'
     })
-    .refine(
-      (files) => ['text/csv'].includes(files?.[0]?.type),
-      'Please upload csv format.'
-    ),
+    .refine(files => ['text/csv'].includes(files?.[0]?.type), 'Please upload csv format.')
 });
 
 interface Props {
@@ -42,7 +39,7 @@ interface Props {
 export function TasksImportDialog({ open, onOpenChange }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { file: undefined },
+    defaultValues: { file: undefined }
   });
 
   const fileRef = form.register('file');
@@ -54,17 +51,15 @@ export function TasksImportDialog({ open, onOpenChange }: Props) {
       const fileDetails = {
         name: file[0].name,
         size: file[0].size,
-        type: file[0].type,
+        type: file[0].type
       };
       toast({
         title: 'You have imported the following file:',
         description: (
           <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-            <code className='text-white'>
-              {JSON.stringify(fileDetails, null, 2)}
-            </code>
+            <code className='text-white'>{JSON.stringify(fileDetails, null, 2)}</code>
           </pre>
-        ),
+        )
       });
     }
     onOpenChange(false);
@@ -73,7 +68,7 @@ export function TasksImportDialog({ open, onOpenChange }: Props) {
   return (
     <Dialog
       open={open}
-      onOpenChange={(val) => {
+      onOpenChange={val => {
         onOpenChange(val);
         form.reset();
       }}
@@ -81,9 +76,7 @@ export function TasksImportDialog({ open, onOpenChange }: Props) {
       <DialogContent className='sm:max-w-sm gap-2'>
         <DialogHeader className='text-left'>
           <DialogTitle>Import Tasks</DialogTitle>
-          <DialogDescription>
-            Import tasks quickly from a CSV file.
-          </DialogDescription>
+          <DialogDescription>Import tasks quickly from a CSV file.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form id='task-import-form' onSubmit={form.handleSubmit(onSubmit)}>

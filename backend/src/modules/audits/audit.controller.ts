@@ -13,7 +13,7 @@ export class AuditController {
       Params: { entityName: string; entityId: string };
       Querystring: { page?: number; limit?: number };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     try {
       const { entityName, entityId } = request.params;
@@ -27,8 +27,8 @@ export class AuditController {
           ApiResponseBuilder.error(
             'FETCH_HISTORY_FAILED',
             'Unable to fetch entity history',
-            error instanceof Error ? error.stack : undefined,
-          ),
+            error instanceof Error ? error.stack : undefined
+          )
         );
     }
   }

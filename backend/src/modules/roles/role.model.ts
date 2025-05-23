@@ -9,7 +9,7 @@ export class Role extends BaseModel {
   @FieldConfig({
     type: FIELD_TYPE.NUMBER,
     canEdit: false,
-    canAdd: false,
+    canAdd: false
   })
   id: number;
 
@@ -17,14 +17,14 @@ export class Role extends BaseModel {
   @FieldConfig({
     type: FIELD_TYPE.TEXT,
     required: true,
-    label: 'Role Name',
+    label: 'Role Name'
   })
   role_name: string;
 
   @Column({ type: 'jsonb', default: {} })
   @FieldConfig({
     type: FIELD_TYPE.TEXT,
-    label: 'Permissions',
+    label: 'Permissions'
   })
   role_permissions: {
     [resource: string]: {

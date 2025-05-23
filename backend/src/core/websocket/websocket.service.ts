@@ -43,7 +43,7 @@ class WebSocketService {
       id: clientId,
       userId: request.user?.id,
       ws: connection,
-      subscriptions: new Set(),
+      subscriptions: new Set()
     };
 
     this.clients.set(clientId, client);
@@ -64,7 +64,7 @@ class WebSocketService {
 
     this.sendToClient(client, {
       type: 'connection',
-      data: { clientId },
+      data: { clientId }
     });
   }
 
@@ -97,7 +97,7 @@ class WebSocketService {
 
     this.sendToClient(client, {
       type: 'subscribed',
-      data: { channels },
+      data: { channels }
     });
   }
 
@@ -108,7 +108,7 @@ class WebSocketService {
 
     this.sendToClient(client, {
       type: 'unsubscribed',
-      data: { channels },
+      data: { channels }
     });
   }
 

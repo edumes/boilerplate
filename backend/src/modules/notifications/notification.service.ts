@@ -7,7 +7,7 @@ export class NotificationService extends BaseService<Notification> {
     super(notificationRepository, 'Notification');
 
     this.setHooks({
-      beforeCreate: async data => {},
+      beforeCreate: async data => {}
     });
   }
 }

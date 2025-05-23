@@ -11,7 +11,7 @@ import {
   IconPlus,
   IconSearch,
   IconSend,
-  IconVideo,
+  IconVideo
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -32,31 +32,26 @@ type Convo = ChatUser['messages'][number];
 export default function Chats() {
   const [search, setSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState<ChatUser>(conversations[0]);
-  const [mobileSelectedUser, setMobileSelectedUser] = useState<ChatUser | null>(
-    null
-  );
+  const [mobileSelectedUser, setMobileSelectedUser] = useState<ChatUser | null>(null);
 
   // Filtered data based on the search query
   const filteredChatList = conversations.filter(({ fullName }) =>
     fullName.toLowerCase().includes(search.trim().toLowerCase())
   );
 
-  const currentMessage = selectedUser.messages.reduce(
-    (acc: Record<string, Convo[]>, obj) => {
-      const key = obj.timestamp;
+  const currentMessage = selectedUser.messages.reduce((acc: Record<string, Convo[]>, obj) => {
+    const key = obj.timestamp;
 
-      // Create an array for the category if it doesn't exist
-      if (!acc[key]) {
-        acc[key] = [];
-      }
+    // Create an array for the category if it doesn't exist
+    if (!acc[key]) {
+      acc[key] = [];
+    }
 
-      // Push the current object to the array
-      acc[key].push(obj);
+    // Push the current object to the array
+    acc[key].push(obj);
 
-      return acc;
-    },
-    {}
-  );
+    return acc;
+  }, {});
 
   return (
     <>
@@ -93,19 +88,17 @@ export default function Chats() {
                   className='w-full flex-1 bg-inherit text-sm focus-visible:outline-none'
                   placeholder='Search chat...'
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={e => setSearch(e.target.value)}
                 />
               </label>
             </div>
 
             <ScrollArea className='-mx-3 h-full p-3'>
-              {filteredChatList.map((chatUsr) => {
+              {filteredChatList.map(chatUsr => {
                 const { id, profile, username, messages, fullName } = chatUsr;
                 const lastConvo = messages[0];
                 const lastMsg =
-                  lastConvo.sender === 'You'
-                    ? `You: ${lastConvo.message}`
-                    : lastConvo.message;
+                  lastConvo.sender === 'You' ? `You: ${lastConvo.message}` : lastConvo.message;
                 return (
                   <Fragment key={id}>
                     <button
@@ -125,9 +118,7 @@ export default function Chats() {
                           <AvatarFallback>{username}</AvatarFallback>
                         </Avatar>
                         <div>
-                          <span className='col-start-2 row-span-2 font-medium'>
-                            {fullName}
-                          </span>
+                          <span className='col-start-2 row-span-2 font-medium'>{fullName}</span>
                           <span className='col-start-2 row-span-2 row-start-2 line-clamp-2 text-ellipsis text-muted-foreground'>
                             {lastMsg}
                           </span>
@@ -162,10 +153,7 @@ export default function Chats() {
                 </Button>
                 <div className='flex items-center gap-2 lg:gap-4'>
                   <Avatar className='size-9 lg:size-11'>
-                    <AvatarImage
-                      src={selectedUser.profile}
-                      alt={selectedUser.username}
-                    />
+                    <AvatarImage src={selectedUser.profile} alt={selectedUser.username} />
                     <AvatarFallback>{selectedUser.username}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -211,7 +199,7 @@ export default function Chats() {
                 <div className='chat-text-container relative -mr-4 flex flex-1 flex-col overflow-y-hidden'>
                   <div className='chat-flex flex h-40 w-full flex-grow flex-col-reverse justify-start gap-4 overflow-y-auto py-2 pb-4 pr-4'>
                     {currentMessage &&
-                      Object.keys(currentMessage).map((key) => (
+                      Object.keys(currentMessage).map(key => (
                         <Fragment key={key}>
                           {currentMessage[key].map((msg, index) => (
                             <div
@@ -243,12 +231,7 @@ export default function Chats() {
               <form className='flex w-full flex-none gap-2'>
                 <div className='flex flex-1 items-center gap-2 rounded-md border border-input px-2 py-1 focus-within:outline-none focus-within:ring-1 focus-within:ring-ring lg:gap-4'>
                   <div className='space-x-1'>
-                    <Button
-                      size='icon'
-                      type='button'
-                      variant='ghost'
-                      className='h-8 rounded-md'
-                    >
+                    <Button size='icon' type='button' variant='ghost' className='h-8 rounded-md'>
                       <IconPlus size={20} className='stroke-muted-foreground' />
                     </Button>
                     <Button
@@ -257,10 +240,7 @@ export default function Chats() {
                       variant='ghost'
                       className='hidden h-8 rounded-md lg:inline-flex'
                     >
-                      <IconPhotoPlus
-                        size={20}
-                        className='stroke-muted-foreground'
-                      />
+                      <IconPhotoPlus size={20} className='stroke-muted-foreground' />
                     </Button>
                     <Button
                       size='icon'
@@ -268,10 +248,7 @@ export default function Chats() {
                       variant='ghost'
                       className='hidden h-8 rounded-md lg:inline-flex'
                     >
-                      <IconPaperclip
-                        size={20}
-                        className='stroke-muted-foreground'
-                      />
+                      <IconPaperclip size={20} className='stroke-muted-foreground' />
                     </Button>
                   </div>
                   <label className='flex-1'>
@@ -282,11 +259,7 @@ export default function Chats() {
                       className='h-8 w-full bg-inherit focus-visible:outline-none'
                     />
                   </label>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='hidden sm:inline-flex'
-                  >
+                  <Button variant='ghost' size='icon' className='hidden sm:inline-flex'>
                     <IconSend size={20} />
                   </Button>
                 </div>

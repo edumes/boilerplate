@@ -19,7 +19,7 @@ export class EncryptionService {
     return {
       encryptedData: encrypted,
       iv: this.iv.toString('hex'),
-      authTag: (cipher as any).getAuthTag().toString('hex'),
+      authTag: (cipher as any).getAuthTag().toString('hex')
     };
   }
 

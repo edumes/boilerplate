@@ -14,7 +14,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 @Entity({ name: 'users' })
@@ -24,7 +24,7 @@ import {
   singularName: 'User',
   pluralName: 'Users',
   icon: 'user',
-  version: '1.0.0',
+  version: '1.0.0'
 })
 export class User extends BaseModel {
   @PrimaryGeneratedColumn({ name: 'user_id' })
@@ -41,7 +41,7 @@ export class User extends BaseModel {
     required: true,
     width: 6,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main'],
+    tabs: ['main']
   })
   user_name: string;
 
@@ -57,12 +57,12 @@ export class User extends BaseModel {
     required: true,
     width: 6,
     type: FIELD_TYPE.EMAIL,
-    tabs: ['main'],
+    tabs: ['main']
   })
   user_email: string;
 
   @Column({
-    length: 60,
+    length: 60
   })
   @MinLength(8, { message: i18next.t('PASSWORD_MIN_LENGTH', { characters: 8 }) })
   @FieldConfig({
@@ -75,7 +75,7 @@ export class User extends BaseModel {
     required: true,
     width: 6,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main'],
+    tabs: ['main']
   })
   user_password: string;
 
@@ -89,7 +89,7 @@ export class User extends BaseModel {
     order: 4,
     width: 4,
     type: FIELD_TYPE.TEXT,
-    tabs: ['main'],
+    tabs: ['main']
   })
   user_telephone: string;
 
@@ -105,7 +105,7 @@ export class User extends BaseModel {
     width: 6,
     type: FIELD_TYPE.SELECT,
     select: { url: 'companies/select-options' },
-    tabs: ['main'],
+    tabs: ['main']
   })
   user_fk_company_id: number;
 
@@ -125,7 +125,7 @@ export class User extends BaseModel {
     width: 6,
     type: FIELD_TYPE.SELECT,
     select: { url: 'roles/select-options' },
-    tabs: ['main'],
+    tabs: ['main']
   })
   user_fk_role_id: number;
 
@@ -144,7 +144,7 @@ export class User extends BaseModel {
     order: 6,
     width: 4,
     type: FIELD_TYPE.DATE,
-    tabs: ['dates'],
+    tabs: ['dates']
   })
   created_at: Date;
 
@@ -159,7 +159,7 @@ export class User extends BaseModel {
     order: 7,
     width: 4,
     type: FIELD_TYPE.DATE,
-    tabs: ['dates'],
+    tabs: ['dates']
   })
   updated_at: Date;
 
@@ -173,7 +173,7 @@ export class User extends BaseModel {
     order: 9,
     width: 2,
     type: FIELD_TYPE.CHECKBOX,
-    tabs: ['main'],
+    tabs: ['main']
   })
   user_is_active: boolean;
 

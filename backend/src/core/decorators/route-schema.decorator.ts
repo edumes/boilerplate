@@ -11,7 +11,7 @@ export function RouteSchema(schema: FastifySchema) {
           method: request.method,
           url: request.url,
           schema: schema,
-          handler: originalMethod.bind(this, ...args),
+          handler: originalMethod.bind(this, ...args)
         });
       }
       return originalMethod.apply(this, args);
@@ -30,8 +30,8 @@ const genericRoutes = {
       required: ['user_email', 'user_password'],
       properties: {
         user_email: { type: 'string', format: 'email' },
-        user_password: { type: 'string', minLength: 8 },
-      },
+        user_password: { type: 'string', minLength: 8 }
+      }
     },
     response: {
       200: {
@@ -47,15 +47,15 @@ const genericRoutes = {
                 properties: {
                   id: { type: 'number' },
                   user_email: { type: 'string' },
-                  user_password: { type: 'string' },
-                },
+                  user_password: { type: 'string' }
+                }
               },
-              token: { type: 'string' },
-            },
-          },
-        },
-      },
-    },
+              token: { type: 'string' }
+            }
+          }
+        }
+      }
+    }
   },
   findAll: {
     description: 'Get all items with pagination',
@@ -65,8 +65,8 @@ const genericRoutes = {
       properties: {
         page: { type: 'number', minimum: 1 },
         limit: { type: 'number', minimum: 1 },
-        order: { type: 'object', additionalProperties: true },
-      },
+        order: { type: 'object', additionalProperties: true }
+      }
     },
     response: {
       200: {
@@ -79,13 +79,13 @@ const genericRoutes = {
             properties: {
               total: { type: 'number' },
               page: { type: 'number' },
-              lastPage: { type: 'number' },
-            },
-          },
-        },
-      },
-    },
-  },
+              lastPage: { type: 'number' }
+            }
+          }
+        }
+      }
+    }
+  }
 };
 
 export default genericRoutes;
