@@ -1,6 +1,12 @@
 import { logger } from '@core/utils/logger';
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
+/**
+ * Global error handler for uncaught exceptions
+ * Logs error details including name, message, stack trace and context
+ * @param error - The error that was thrown
+ * @param context - The context where the error occurred
+ */
 export function globalErrorHandler(error: Error, context: string) {
   logger.error('Uncaught exception', {
     error: {
@@ -12,6 +18,14 @@ export function globalErrorHandler(error: Error, context: string) {
   });
 }
 
+/**
+ * Fastify error handler for request errors
+ * Handles different types of errors and returns appropriate responses
+ * @param error - The Fastify error object
+ * @param request - The Fastify request object
+ * @param reply - The Fastify reply object
+ * @returns Promise with the error response
+ */
 export async function fastifyErrorHandler(
   error: FastifyError,
   request: FastifyRequest,

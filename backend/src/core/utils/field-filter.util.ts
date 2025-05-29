@@ -4,10 +4,11 @@ import { instanceToPlain } from 'class-transformer';
 import { DeepPartial } from 'typeorm';
 
 /**
- * Filtra campos não navegáveis (canBrowse: false) de uma lista de entidades
- * @param items Lista de itens para filtrar
- * @param entityType Tipo da entidade para obter as configurações dos campos
- * @returns Lista de itens com campos filtrados
+ * Filters out non-browsable fields (canBrowse: false) from a list of entities
+ * @template T - Type extending IBaseModel
+ * @param items - List of items to filter
+ * @param entityType - Entity type to get field configurations
+ * @returns List of items with filtered fields
  */
 export function filterNonBrowsableFields<T extends IBaseModel>(
   items: T[],
@@ -31,10 +32,11 @@ export function filterNonBrowsableFields<T extends IBaseModel>(
 }
 
 /**
- * Filtra campos não legíveis (canRead: false) de um objeto
- * @param item Item a ser filtrado
- * @param entityType Tipo da entidade para obter as configurações dos campos
- * @returns Objeto com campos filtrados
+ * Filters out non-readable fields (canRead: false) from an object
+ * @template T - Type extending IBaseModel
+ * @param item - Item to filter
+ * @param entityType - Entity type to get field configurations
+ * @returns Object with filtered fields
  */
 export function filterNonReadableFields<T extends IBaseModel>(
   item: T,
@@ -55,10 +57,11 @@ export function filterNonReadableFields<T extends IBaseModel>(
 }
 
 /**
- * Filtra campos não adicionáveis (canAdd: false) de um objeto
- * @param data Dados a serem filtrados
- * @param entityType Tipo da entidade para obter as configurações dos campos
- * @returns Objeto com campos filtrados
+ * Filters out non-addable fields (canAdd: false) from an object
+ * @template T - Type extending IBaseModel
+ * @param data - Data to filter
+ * @param entityType - Entity type to get field configurations
+ * @returns Object with filtered fields
  */
 export function filterNonAddableFields<T extends IBaseModel>(
   data: DeepPartial<T>,
@@ -78,10 +81,11 @@ export function filterNonAddableFields<T extends IBaseModel>(
 }
 
 /**
- * Filtra campos não editáveis (canEdit: false) de um objeto
- * @param data Dados a serem filtrados
- * @param entityType Tipo da entidade para obter as configurações dos campos
- * @returns Objeto com campos filtrados
+ * Filters out non-editable fields (canEdit: false) from an object
+ * @template T - Type extending IBaseModel
+ * @param data - Data to filter
+ * @param entityType - Entity type to get field configurations
+ * @returns Object with filtered fields
  */
 export function filterNonEditableFields<T extends IBaseModel>(
   data: DeepPartial<T>,
@@ -100,6 +104,9 @@ export function filterNonEditableFields<T extends IBaseModel>(
   return filteredData;
 }
 
+/**
+ * Field filter utility functions
+ */
 export default {
   filterNonBrowsableFields,
   filterNonReadableFields,

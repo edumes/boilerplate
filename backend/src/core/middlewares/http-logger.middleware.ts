@@ -2,6 +2,20 @@ import { logger } from '@core/utils/logger';
 import chalk from 'chalk';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+/**
+ * HTTP request logger middleware that logs:
+ * - Request method and URL
+ * - Response status code
+ * - Request duration
+ * - User agent
+ * - IP address
+ * 
+ * Uses chalk for colored console output and logs to both console and file
+ * 
+ * @param {FastifyRequest} request - The Fastify request object
+ * @param {FastifyReply} reply - The Fastify reply object
+ * @returns {Promise<void>}
+ */
 export async function httpLogger(request: FastifyRequest, reply: FastifyReply) {
   const startTime = Date.now();
 

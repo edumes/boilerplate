@@ -22,45 +22,114 @@ export interface SearchOptions extends PaginationOptions {
   searchTerm?: string;
 }
 
+/**
+ * Interface for service hooks that can be implemented to add custom behavior
+ * @template T - Type extending IBaseModel
+ */
 export interface IServiceHooks<T> {
+  /**
+   * Hook executed before creating an entity
+   * @param data - The data to be used for entity creation
+   */
   beforeCreate?(data: DeepPartial<T>): Promise<void>;
+  /**
+   * Hook executed after creating an entity
+   * @param entity - The created entity
+   */
   afterCreate?(entity: T): Promise<void>;
+  /**
+   * Hook executed before updating an entity
+   * @param id - The ID of the entity to update
+   * @param data - The data to update the entity with
+   */
   beforeUpdate?(id: number, data: QueryDeepPartialEntity<T>): Promise<void>;
+  /**
+   * Hook executed after updating an entity
+   * @param entity - The updated entity
+   */
   afterUpdate?(entity: T): Promise<void>;
+  /**
+   * Hook executed before deleting an entity
+   * @param id - The ID of the entity to delete
+   */
   beforeDelete?(id: number): Promise<void>;
+  /**
+   * Hook executed after deleting an entity
+   * @param entity - The deleted entity
+   */
   afterDelete?(entity: T): Promise<void>;
+  /**
+   * Hook to define custom relation fields
+   * @param defaultRelations - The default relations array
+   * @returns Array of relation field names
+   */
   defineRelationFields?(defaultRelations): string[];
 }
 
+/**
+ * Interface for service context containing user and token information
+ */
 export interface ServiceContext {
+  /** The current user */
   user?: User;
+  /** The current authentication token */
   token?: string;
 }
 
+/**
+ * Interface for select option items
+ */
 interface SelectOption {
+  /** The value of the option */
   value: number;
+  /** The label to display */
   label: string;
 }
 
+/**
+ * Interface for select picker options
+ */
 export interface SelectPickerOptions {
+  /** Fields to use for the label */
   labelFields?: string[];
+  /** Delimiter to use between label fields */
   delimiter?: string;
+  /** Search term to filter options */
   searchTerm?: string;
 }
 
+/**
+ * Base service class that provides common CRUD operations and utility methods
+ * @template T - Type extending IBaseModel
+ */
 export class BaseService<T extends IBaseModel> {
+  /** Service hooks for custom behavior */
   protected hooks: IServiceHooks<T> = {};
+  /** Service context containing user and token information */
   protected context: ServiceContext = {};
 
+  /**
+   * Creates an instance of BaseService
+   * @param repository - The TypeORM repository instance
+   * @param modelName - The name of the model
+   */
   constructor(
     protected repository: Repository<T>,
     protected modelName: string
   ) {}
 
+  /**
+   * Gets the model name
+   * @returns The model name
+   */
   public getModelName(): string {
     return this.modelName;
   }
 
+  /**
+   * Gets the form configuration and field configurations
+   * @returns Object containing form config and field configs
+   */
   public getFields(): { config: FormConfig; fields: Record<string, FieldConfigOptions> } {
     const entityClass = this.repository.target;
 
@@ -73,18 +142,34 @@ export class BaseService<T extends IBaseModel> {
     };
   }
 
+  /**
+   * Sets the service hooks
+   * @param hooks - The hooks to set
+   */
   setHooks(hooks: IServiceHooks<T>) {
     this.hooks = hooks;
   }
 
+  /**
+   * Sets the service context
+   * @param context - The context to set
+   */
   setContext(context: ServiceContext) {
     this.context = context;
   }
 
+  /**
+   * Gets the current user from context
+   * @returns The current user or undefined
+   */
   protected getCurrentUser(): User | undefined {
     return this.context.user;
   }
 
+  /**
+   * Gets the relation fields for the entity
+   * @returns Array of relation field names
+   */
   private getRelationFields(): string[] {
     const relations: string[] = [];
     const metadata = this.repository.metadata;
@@ -126,6 +211,11 @@ export class BaseService<T extends IBaseModel> {
     return relations;
   }
 
+  /**
+   * Finds all entities with pagination
+   * @param options - Pagination options
+   * @returns Promise with array of entities and total count
+   */
   async findAll(options: PaginationOptions = {}): Promise<[T[], number]> {
     const page = options.page || 1;
     const limit = options.limit || 10;
@@ -144,6 +234,11 @@ export class BaseService<T extends IBaseModel> {
     });
   }
 
+  /**
+   * Finds an entity by ID
+   * @param id - The ID or UUID of the entity
+   * @returns Promise with the found entity or null
+   */
   async findById(id: number | string): Promise<T | null> {
     const relations = this.getRelationFields();
 
@@ -160,6 +255,12 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Creates a new entity
+   * @param data - The data to create the entity with
+   * @returns Promise with the created entity
+   * @throws Error if creation fails
+   */
   async create(data: DeepPartial<T>): Promise<T> {
     try {
       const user = this.getCurrentUser();
@@ -192,6 +293,13 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Updates an existing entity
+   * @param id - The ID or UUID of the entity to update
+   * @param data - The data to update the entity with
+   * @returns Promise with the updated entity or null
+   * @throws Error if update fails
+   */
   async update(id: number | string, data: QueryDeepPartialEntity<T>): Promise<T | null> {
     try {
       const oldEntity = await this.findById(id);
@@ -228,6 +336,11 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Deletes an entity
+   * @param id - The ID of the entity to delete
+   * @throws Error if deletion fails
+   */
   async delete(id: number): Promise<void> {
     try {
       const entity = await this.findById(id);
@@ -256,6 +369,12 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Finds entities based on conditions
+   * @param where - The where conditions
+   * @param options - Pagination options
+   * @returns Promise with array of entities and total count
+   */
   async findByConditions(
     where: WhereConditions<T>,
     options: PaginationOptions = {}
@@ -278,6 +397,11 @@ export class BaseService<T extends IBaseModel> {
     });
   }
 
+  /**
+   * Searches entities based on search term and fields
+   * @param options - Search options including pagination and search parameters
+   * @returns Promise with array of entities and total count
+   */
   async search(options: SearchOptions = {}): Promise<[T[], number]> {
     const {
       page = 1,
@@ -325,10 +449,22 @@ export class BaseService<T extends IBaseModel> {
     });
   }
 
+  /**
+   * Counts entities based on conditions
+   * @param where - The where conditions
+   * @returns Promise with the count
+   */
   async count(where: FindOptionsWhere<T> | FindOptionsWhere<T>[] = {}): Promise<number> {
     return this.repository.count({ where });
   }
 
+  /**
+   * Clones an existing entity
+   * @param id - The ID or UUID of the entity to clone
+   * @param overrideData - Optional data to override in the clone
+   * @returns Promise with the cloned entity
+   * @throws Error if cloning fails
+   */
   async clone(id: number | string, overrideData?: DeepPartial<T>): Promise<T> {
     try {
       const originalEntity = await this.findById(id);
@@ -364,6 +500,12 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Gets select options for the entity
+   * @param options - Select picker options
+   * @returns Promise with array of select options
+   * @throws Error if getting select options fails
+   */
   async getSelectOptions(options: SelectPickerOptions = {}): Promise<SelectOption[]> {
     try {
       const metadata = this.repository.metadata;
@@ -417,6 +559,12 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Generates a report based on options
+   * @param options - Report options
+   * @returns Promise with the generated report path
+   * @throws Error if report generation fails
+   */
   async generateReport(options: ReportOptions = {}): Promise<string> {
     try {
       return ReportService.generateReport(this, options);
@@ -425,6 +573,10 @@ export class BaseService<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Gets the entity type
+   * @returns The entity type
+   */
   getEntityType(): any {
     return this.repository.target;
   }

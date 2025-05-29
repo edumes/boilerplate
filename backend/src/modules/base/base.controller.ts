@@ -17,9 +17,21 @@ import i18next from 'i18next';
 import { DeepPartial } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 
+/**
+ * Base controller class that provides common CRUD operations and utility methods
+ * @template T - Type extending IBaseModel
+ */
 export class BaseController<T extends IBaseModel> {
-  constructor(protected service: BaseService<T>) {}
+  /**
+   * Creates an instance of BaseController
+   * @param service - The base service instance
+   */
+  constructor(protected service: BaseService<T>) { }
 
+  /**
+   * Sets the service context with user and token information
+   * @param request - The Fastify request object
+   */
   protected setServiceContext(request: FastifyRequest) {
     this.service.setContext({
       user: request.user,
@@ -27,6 +39,11 @@ export class BaseController<T extends IBaseModel> {
     });
   }
 
+  /**
+   * Validates required fields based on entity metadata
+   * @param data - The data object to validate
+   * @throws {ValidationError} If required fields are missing
+   */
   protected validateRequiredFields(data: DeepPartial<T>) {
     const entityType = this.service.getEntityType();
     const metadata = Reflect.getMetadata('fieldConfig', entityType.prototype) || {};
@@ -51,7 +68,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
-  // @RouteSchema(genericRoutes.findAll)
+  /**
+   * Retrieves all items with pagination
+   * @param request - The Fastify request object containing pagination options
+   * @param reply - The Fastify reply object
+   * @returns Promise with filtered items and pagination metadata
+   */
   async findAll(request: FastifyRequest<{ Querystring: PaginationOptions }>, reply: FastifyReply) {
     try {
       const options = request.query;
@@ -74,6 +96,14 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Retrieves an item by its ID
+   * @param request - The Fastify request object containing the item ID
+   * @param reply - The Fastify reply object
+   * @returns Promise with the found item
+   * @throws {ValidationError} If the ID is not a valid UUID
+   * @throws {NotFoundError} If the item is not found
+   */
   async findById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const id = request.params.id;
 
@@ -91,12 +121,20 @@ export class BaseController<T extends IBaseModel> {
     return reply.send(ApiResponseBuilder.success(filteredItem));
   }
 
+  /**
+   * Creates a new item
+   * @param request - The Fastify request object containing the item data
+   * @param reply - The Fastify reply object
+   * @returns Promise with the created item
+   * @throws {ValidationError} If required fields are missing
+   */
   async create(
     request: FastifyRequest<{ Body: Partial<T> & Record<string, unknown> }>,
     reply: FastifyReply
   ) {
     try {
       this.setServiceContext(request);
+
       const filteredData = filterNonAddableFields(
         request.body as DeepPartial<T>,
         this.service.getEntityType()
@@ -124,6 +162,13 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Updates an existing item
+   * @param request - The Fastify request object containing the item ID and update data
+   * @param reply - The Fastify reply object
+   * @returns Promise with the updated item
+   * @throws {ValidationError} If the ID is not a valid UUID or required fields are missing
+   */
   async update(
     request: FastifyRequest<{
       Params: { id: string };
@@ -169,6 +214,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Deletes an item by its ID
+   * @param request - The Fastify request object containing the item ID
+   * @param reply - The Fastify reply object
+   * @returns Promise with no content on success
+   */
   async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     try {
       const id = parseInt(request.params.id);
@@ -187,6 +238,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Finds items based on provided conditions
+   * @param request - The Fastify request object containing search conditions and pagination options
+   * @param reply - The Fastify reply object
+   * @returns Promise with filtered items and pagination metadata
+   */
   async findByConditions(
     request: FastifyRequest<{
       Querystring: PaginationOptions & Record<string, any>;
@@ -214,6 +271,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Searches items based on search term and fields
+   * @param request - The Fastify request object containing search options
+   * @param reply - The Fastify reply object
+   * @returns Promise with search results and pagination metadata
+   */
   async search(
     request: FastifyRequest<{
       Querystring: SearchOptions & { searchFields?: string };
@@ -248,6 +311,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Counts items based on provided conditions
+   * @param request - The Fastify request object containing count conditions
+   * @param reply - The Fastify reply object
+   * @returns Promise with the count result
+   */
   async count(
     request: FastifyRequest<{
       Querystring: Record<string, any>;
@@ -272,6 +341,13 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Clones an existing item with optional override data
+   * @param request - The Fastify request object containing the item ID and override data
+   * @param reply - The Fastify reply object
+   * @returns Promise with the cloned item
+   * @throws {ValidationError} If the ID is not a valid UUID
+   */
   async clone(
     request: FastifyRequest<{
       Params: { id: string };
@@ -305,6 +381,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Retrieves select options for the entity
+   * @param request - The Fastify request object containing select options parameters
+   * @param reply - The Fastify reply object
+   * @returns Promise with select options
+   */
   async getSelectOptions(
     request: FastifyRequest<{
       Querystring: {
@@ -339,6 +421,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Retrieves available fields for the entity
+   * @param request - The Fastify request object
+   * @param reply - The Fastify reply object
+   * @returns Promise with available fields
+   */
   async getFields(request: FastifyRequest, reply: FastifyReply) {
     try {
       const fields = this.service.getFields();
@@ -356,6 +444,12 @@ export class BaseController<T extends IBaseModel> {
     }
   }
 
+  /**
+   * Generates a report based on provided options
+   * @param request - The Fastify request object containing report options
+   * @param reply - The Fastify reply object
+   * @returns Promise with the generated report path
+   */
   async generateReport(
     request: FastifyRequest<{
       Querystring: ReportOptions;

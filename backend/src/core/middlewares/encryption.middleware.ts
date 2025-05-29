@@ -2,8 +2,21 @@ import { env } from '@config/env.config';
 import { EncryptionService } from '@core/utils/encryption.util';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+/**
+ * Encryption service instance for handling encrypted requests/responses
+ */
 const encryptionService = new EncryptionService(env.ENCRYPTION_KEY);
 
+/**
+ * Middleware that handles encryption/decryption of request and response data
+ * - Decrypts encrypted request bodies
+ * - Encrypts response data
+ * Only active when encryption is enabled in environment config
+ * 
+ * @param {FastifyRequest} request - The Fastify request object
+ * @param {FastifyReply} reply - The Fastify reply object
+ * @returns {Promise<void>}
+ */
 export async function encryptionMiddleware(request: FastifyRequest, reply: FastifyReply) {
   if (!env.ENCRYPTION_ENABLED) return;
 

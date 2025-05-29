@@ -1,4 +1,4 @@
-import './config/alias.config'; // deixar esse import sempre no topo
+import './config/alias.config'; // leave this import at the top
 import { appConfig } from '@config/app.config';
 import { AppDataSource } from '@config/database.config';
 import { env } from '@config/env.config';
@@ -19,8 +19,21 @@ import fastifyStatic from '@fastify/static';
 import Fastify from 'fastify';
 import path from 'path';
 
+/**
+ * Fastify server instance
+ * @type {FastifyInstance}
+ */
 const server = Fastify({ logger: false });
 
+/**
+ * Configures server middlewares including:
+ * - Security headers (Helmet)
+ * - Static file serving
+ * - Error handling
+ * - HTTP logging
+ * - Rate limiting (if Redis enabled)
+ * - i18n middleware
+ */
 const configureMiddlewares = () => {
   server.register(fastifyHelmet, {
     contentSecurityPolicy: {
@@ -53,11 +66,24 @@ const configureMiddlewares = () => {
   server.addHook('preHandler', i18nMiddleware);
 };
 
+/**
+ * Registers all application routes
+ * @returns {Promise<void>}
+ */
 const configureRoutes = async () => {
   await registerRoutes(server);
   logger.info('Routes registered successfully');
 };
 
+/**
+ * Initializes external services including:
+ * - i18n internationalization
+ * - Swagger documentation
+ * - WebSocket server
+ * - Database connection
+ * - Redis connection (if enabled)
+ * @returns {Promise<void>}
+ */
 const configureExternalServices = async () => {
   await setupI18n();
 
@@ -75,6 +101,10 @@ const configureExternalServices = async () => {
   }
 };
 
+/**
+ * Initializes the server and all required services
+ * @returns {Promise<void>}
+ */
 const initializeServer = async () => {
   try {
     await configureExternalServices();
@@ -88,6 +118,10 @@ const initializeServer = async () => {
   }
 };
 
+/**
+ * Handles server startup errors and attempts to retry initialization
+ * @param {Error} error - The error that occurred during startup
+ */
 const handleStartupError = (error: Error) => {
   logger.error('Server startup failed', { error });
 
@@ -97,10 +131,19 @@ const handleStartupError = (error: Error) => {
   }
 };
 
+/**
+ * Handles uncaught process errors
+ * @param {Error | any} error - The error that occurred
+ * @param {string} type - The type of error (uncaughtException or unhandledRejection)
+ */
 const handleProcessError = (error: Error | any, type: string) => {
   globalErrorHandler(error, type);
 };
 
+/**
+ * Closes all active connections (server, database, Redis)
+ * @returns {Promise<void>}
+ */
 const closeConnections = async () => {
   if (server.server.listening) {
     await server.close();
@@ -118,6 +161,11 @@ const closeConnections = async () => {
   }
 };
 
+/**
+ * Handles graceful shutdown of the application
+ * @param {string} signal - The signal that triggered the shutdown
+ * @returns {Promise<void>}
+ */
 const gracefulShutdown = async (signal: string) => {
   logger.info(`Received ${signal}. Shutting down...`);
   try {
@@ -130,12 +178,16 @@ const gracefulShutdown = async (signal: string) => {
   }
 };
 
+// Register process error handlers
 process.on('uncaughtException', error => handleProcessError(error, 'uncaughtException'));
 process.on('unhandledRejection', reason => handleProcessError(reason, 'unhandledRejection'));
 
+// Register shutdown handlers
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
+// Health check endpoint
 server.get('/health', async () => getSystemStatus());
 
+// Start the server
 initializeServer();
