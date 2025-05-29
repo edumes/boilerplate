@@ -58,6 +58,14 @@ const configureMiddlewares = () => {
     prefix: '/'
   });
 
+  server.setNotFoundHandler((request, reply) => {
+    if (request.url.startsWith('/api/')) {
+      reply.code(404).send({ error: 'Not Found' });
+      return;
+    }
+    reply.sendFile('index.html');
+  });
+
   server.setErrorHandler(fastifyErrorHandler);
   server.addHook('onRequest', httpLogger);
   if (appConfig.features.redis.enabled) {
