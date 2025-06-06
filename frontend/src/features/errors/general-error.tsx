@@ -1,5 +1,3 @@
-import { useNavigate, useRouter } from '@tanstack/react-router';
-import { cn } from '@/lib/utils';
 import {
   Accordion,
   AccordionContent,
@@ -7,6 +5,8 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router';
 
 interface GeneralErrorProps extends React.HTMLAttributes<HTMLDivElement> {
   minimal?: boolean;
@@ -15,7 +15,6 @@ interface GeneralErrorProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function GeneralError({ className, minimal = false, error }: GeneralErrorProps) {
   const navigate = useNavigate();
-  const { history } = useRouter();
 
   const errorName = error instanceof Error ? error.name : 'Unknown Error';
   const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
@@ -47,10 +46,10 @@ export default function GeneralError({ className, minimal = false, error }: Gene
 
         {!minimal && (
           <div className='mt-6 flex gap-4'>
-            <Button variant='outline' onClick={() => history.go(-1)}>
+            <Button variant='outline' onClick={() => navigate(-1)}>
               Go Back
             </Button>
-            <Button onClick={() => navigate({ to: '/' })}>Back to Home</Button>
+            <Button onClick={() => navigate('/')}>Back to Home</Button>
           </div>
         )}
       </div>

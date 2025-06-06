@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from 'react-router';
 import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/authStore';
@@ -57,7 +57,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       console.log(response);
       setAccessToken(response.token);
       setUser(response.user);
-      navigate({ to: '/' });
+      navigate('/');
     },
     onError: (error: AxiosError) => {
       console.error(error);

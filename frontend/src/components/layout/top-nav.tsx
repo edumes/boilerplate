@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link } from 'react-router';
 import { IconMenu } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -31,13 +31,14 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
           <DropdownMenuContent side='bottom' align='start'>
             {links.map(({ title, href, isActive, disabled }) => (
               <DropdownMenuItem key={`${title}-${href}`} asChild>
-                <Link
-                  to={href}
-                  className={!isActive ? 'text-muted-foreground' : ''}
+                <Button
+                  variant="ghost"
+                  className={cn(!isActive ? 'text-muted-foreground' : '', 'w-full justify-start')}
                   disabled={disabled}
+                  asChild
                 >
-                  {title}
-                </Link>
+                  <Link to={href}>{title}</Link>
+                </Button>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -49,14 +50,18 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
         {...props}
       >
         {links.map(({ title, href, isActive, disabled }) => (
-          <Link
+          <Button
             key={`${title}-${href}`}
-            to={href}
+            variant="ghost"
+            className={cn(
+              'text-sm font-medium transition-colors hover:text-primary',
+              isActive ? '' : 'text-muted-foreground'
+            )}
             disabled={disabled}
-            className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? '' : 'text-muted-foreground'}`}
+            asChild
           >
-            {title}
-          </Link>
+            <Link to={href}>{title}</Link>
+          </Button>
         ))}
       </nav>
     </>

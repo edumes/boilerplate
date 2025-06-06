@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link, useLocation } from '@tanstack/react-router';
+import { Link, useLocation } from 'react-router';
 import { ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
@@ -26,7 +26,7 @@ import { NavCollapsible, NavItem, NavLink, type NavGroup } from './types';
 
 export function NavGroup({ title, items }: NavGroup) {
   const { state } = useSidebar();
-  const href = useLocation({ select: location => location.href });
+  const { pathname } = useLocation();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
@@ -34,12 +34,12 @@ export function NavGroup({ title, items }: NavGroup) {
         {items.map(item => {
           const key = `${item.title}-${item.url}`;
 
-          if (!item.items) return <SidebarMenuLink key={key} item={item} href={href} />;
+          if (!item.items) return <SidebarMenuLink key={key} item={item} href={pathname} />;
 
           if (state === 'collapsed')
-            return <SidebarMenuCollapsedDropdown key={key} item={item} href={href} />;
+            return <SidebarMenuCollapsedDropdown key={key} item={item} href={pathname} />;
 
-          return <SidebarMenuCollapsible key={key} item={item} href={href} />;
+          return <SidebarMenuCollapsible key={key} item={item} href={pathname} />;
         })}
       </SidebarMenu>
     </SidebarGroup>

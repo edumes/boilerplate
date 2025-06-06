@@ -1,6 +1,5 @@
 import { useState, type JSX } from 'react';
-import { useLocation, useNavigate } from '@tanstack/react-router';
-import { Link } from '@tanstack/react-router';
+import { useLocation, useNavigate, Link } from 'react-router';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -27,7 +26,7 @@ export default function SidebarNav({ className, items, ...props }: SidebarNavPro
 
   const handleSelect = (e: string) => {
     setVal(e);
-    navigate({ to: e });
+    navigate(e);
   };
 
   return (

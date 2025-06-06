@@ -1,9 +1,9 @@
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useNavigate, useParams } from 'react-router';
 import { ArrowLeftIcon, CirclePlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function CrudPrimaryButtons(config: any) {
-  const params = useParams({ strict: false });
+  const params = useParams();
   const { crud } = params;
   const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ export function CrudPrimaryButtons(config: any) {
         effect='gooeyLeft'
         icon={ArrowLeftIcon}
         iconPlacement='left'
-        onClick={() => navigate({ to: `/general/${crud}` })}
+        onClick={() => navigate(`/general/${crud}`)}
       >
         Back
       </Button>
@@ -24,7 +24,7 @@ export function CrudPrimaryButtons(config: any) {
           effect='gooeyRight'
           icon={CirclePlusIcon}
           iconPlacement='right'
-          onClick={() => navigate({ to: `/general/${crud}/add` })}
+          onClick={() => navigate(`/general/${crud}/add`)}
         >
           <span className='capitalize'>Add {config.singularName}</span>
         </Button>

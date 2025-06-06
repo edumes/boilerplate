@@ -428,6 +428,7 @@ export class BaseController<T extends IBaseModel> {
    * @returns Promise with available fields
    */
   async getFields(request: FastifyRequest, reply: FastifyReply) {
+    console.log("aaa")
     try {
       const fields = this.service.getFields();
       return reply.send(ApiResponseBuilder.success(fields));

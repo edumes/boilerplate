@@ -35,7 +35,7 @@ export async function httpLogger(request: FastifyRequest, reply: FastifyReply) {
     const userAgentColored = chalk.cyan(request.headers['user-agent'] || 'unknown');
     const ipColored = chalk.gray(request.ip);
 
-    const message = `${methodColored} ${urlColored} - ${statusColored} - ${durationColored} - UA: ${userAgentColored} - IP: ${ipColored}`;
+    const message = `${methodColored} ${urlColored} - ${statusColored} - ${durationColored} - IP: ${ipColored}`;
 
     logger.http(message, {
       method: request.method,

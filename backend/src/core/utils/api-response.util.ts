@@ -73,7 +73,7 @@ export class ApiResponseBuilder {
       meta
     };
 
-    logger.info('API Success Response', { response });
+    // logger.info('API Success Response', { response });
     return response;
   }
 

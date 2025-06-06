@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useNavigate, useParams } from 'react-router';
 import { TabConfig } from '@/types/forms';
 import { House, SaveIcon } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -18,7 +18,7 @@ export function CrudTabs() {
   const { crudConfig, crudEditData, isLoadingEditData } = useCrud();
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { crud, id: uuid } = useParams({ strict: false });
+  const { crud, id: uuid } = useParams();
   const isEdit = !!uuid;
 
   const validationSchema = createValidationSchema(crudConfig.fields);
@@ -50,7 +50,7 @@ export function CrudTabs() {
         variant: 'default',
         title: `${isEdit ? 'Updated' : 'Created'} successfully!`
       });
-      navigate({ to: `/general/${crud}` });
+      navigate(`/general/${crud}`);
     },
     onError: (error: any) => {
       toast({

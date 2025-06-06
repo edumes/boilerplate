@@ -1,3 +1,4 @@
+import { AppError } from '@core/utils/errors.util';
 import { logger } from '@core/utils/logger';
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
@@ -45,6 +46,15 @@ export async function fastifyErrorHandler(
       body: request.body
     }
   });
+
+  if (error instanceof AppError) {
+    return reply.status(error.status).send({
+      error: true,
+      message: error.message,
+      code: error.code,
+      details: error.details
+    });
+  }
 
   if (error.name === 'BadRequestError' && 'validationErrors' in error) {
     return reply.status(400).send({

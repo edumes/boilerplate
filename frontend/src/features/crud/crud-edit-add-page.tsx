@@ -1,4 +1,4 @@
-import { Outlet, useParams } from '@tanstack/react-router';
+import { Outlet, useParams } from 'react-router';
 import { Card } from '@/components/ui/card';
 import { Header } from '@/components/layout/header';
 import { Main } from '@/components/layout/main';
@@ -10,7 +10,7 @@ import { CrudTabs } from './components/crud-tabs';
 import CrudProvider, { CrudProviderProps, useCrud } from './context/crud-context';
 
 export default function CrudEditAddPage() {
-  const params = useParams({ strict: false });
+  const params = useParams();
   const { crud, id } = params as Required<CrudProviderProps>;
   const isEdit = !!id;
 

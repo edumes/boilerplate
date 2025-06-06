@@ -1,83 +1,77 @@
-import { StrictMode } from 'react';
-import ReactDOM from 'react-dom/client';
-import { AxiosError } from 'axios';
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { toast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/stores/authStore';
 import { handleServerError } from '@/utils/handle-server-error';
-import { toast } from '@/hooks/use-toast';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider } from './context/theme-context';
 import './index.css';
-// Generated Routes
-import { routeTree } from './routeTree.gen';
+import { router } from './routes';
 
-const queryClient = new QueryClient({
+const queryClientConfig = {
   defaultOptions: {
     queries: {
-      retry: (failureCount, error) => {
-        // eslint-disable-next-line no-console
-        if (import.meta.env.DEV) console.log({ failureCount, error });
-
-        if (failureCount >= 0 && import.meta.env.DEV) return false;
+      retry: (failureCount: number, error: unknown) => {
+        if (import.meta.env.DEV) {
+          console.log({ failureCount, error });
+          return false;
+        }
         if (failureCount > 3 && import.meta.env.PROD) return false;
-
         return !(error instanceof AxiosError && [401, 403].includes(error.response?.status ?? 0));
       },
       refetchOnWindowFocus: import.meta.env.PROD,
       staleTime: 10 * 1000 // 10s
     },
     mutations: {
-      onError: error => {
-        handleServerError(error);
-
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 304) {
-            toast({
-              variant: 'destructive',
-              title: 'Content not modified!'
-            });
-          }
-        }
-      }
+      onError: handleMutationError
     }
   },
   queryCache: new QueryCache({
-    onError: error => {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
-          toast({
-            variant: 'destructive',
-            title: 'Session expired!'
-          });
-          useAuthStore.getState().reset();
-          const redirect = `${router.history.location.href}`;
-          router.navigate({ to: '/sign-in', search: { redirect } });
-        }
-        if (error.response?.status === 500) {
-          toast({
-            variant: 'destructive',
-            title: 'Internal Server Error!'
-          });
-          router.navigate({ to: '/500' });
-        }
-        if (error.response?.status === 403) {
-          // router.navigate("/forbidden", { replace: true });
-        }
-      }
-    }
+    onError: handleQueryError
   })
-});
+};
 
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  context: { queryClient },
-  defaultPreload: 'intent',
-  defaultPreloadStaleTime: 0
-});
+function handleMutationError(error: unknown) {
+  handleServerError(error);
+  if (error instanceof AxiosError && error.response?.status === 304) {
+    toast({
+      variant: 'destructive',
+      title: 'Content not modified!'
+    });
+  }
+}
 
-// Register the router instance for type safety
-declare module '@tanstack/react-router' {
+function handleQueryError(error: unknown) {
+  if (!(error instanceof AxiosError)) return;
+
+  const status = error.response?.status;
+  switch (status) {
+    case 401:
+      toast({
+        variant: 'destructive',
+        title: 'Session expired!'
+      });
+      useAuthStore.getState().reset();
+      router.navigate('/sign-in?redirect=' + encodeURIComponent(window.location.href));
+      break;
+    case 500:
+      toast({
+        variant: 'destructive',
+        title: 'Internal Server Error!'
+      });
+      router.navigate('/500');
+      break;
+    case 403:
+      router.navigate('/403', { replace: true });
+      break;
+  }
+}
+
+const queryClient = new QueryClient(queryClientConfig);
+
+declare module 'react-router-dom' {
   interface Register {
     router: typeof router;
   }
@@ -90,7 +84,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
+        <ThemeProvider defaultTheme='dark' storageKey='boilerplate-ui-theme'>
           <RouterProvider router={router} />
         </ThemeProvider>
       </QueryClientProvider>

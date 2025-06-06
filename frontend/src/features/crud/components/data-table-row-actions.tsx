@@ -1,7 +1,3 @@
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { useNavigate, useParams } from '@tanstack/react-router';
-import { Row } from '@tanstack/react-table';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,6 +7,10 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { Row } from '@tanstack/react-table';
+import { useNavigate, useParams } from 'react-router';
 import { useCrud } from '../context/crud-context';
 
 interface DataTableRowActionsProps {
@@ -20,7 +20,7 @@ interface DataTableRowActionsProps {
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useCrud();
   const navigate = useNavigate();
-  const { crud } = useParams({ strict: false });
+  const { crud } = useParams();
 
   return (
     <>
@@ -34,7 +34,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         <DropdownMenuContent align='end' className='w-[160px]'>
           <DropdownMenuItem
             onClick={() => {
-              navigate({ to: `/general/${crud}/${row.original.uuid}` });
+              navigate(`/general/${crud}/${row.original.uuid}`);
             }}
           >
             Edit

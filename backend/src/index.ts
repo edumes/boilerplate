@@ -59,11 +59,13 @@ const configureMiddlewares = () => {
   });
 
   server.setNotFoundHandler((request, reply) => {
-    if (request.url.startsWith('/api/')) {
-      reply.code(404).send({ error: 'Not Found' });
-      return;
+    const { url } = request;
+
+    if (url.startsWith('/api/')) {
+      return reply.status(404).send({ error: 'Not Found' });
     }
-    reply.sendFile('index.html');
+
+    return reply.sendFile('index.html');
   });
 
   server.setErrorHandler(fastifyErrorHandler);

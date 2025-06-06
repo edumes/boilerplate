@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Outlet, useParams } from '@tanstack/react-router';
+import { Outlet, useParams } from 'react-router';
 import { api } from '@/lib/api';
 import { Header } from '@/components/layout/header';
 import { Main } from '@/components/layout/main';
@@ -12,7 +12,7 @@ import { CrudTable, PaginationProps } from './components/crud-table';
 import CrudProvider, { CrudProviderProps } from './context/crud-context';
 
 export default function Crud() {
-  const params = useParams({ strict: false });
+  const params = useParams();
   const { crud } = params as Required<CrudProviderProps>;
 
   const { data: crudConfig, isLoading: isLoadingConfig } = useQuery({

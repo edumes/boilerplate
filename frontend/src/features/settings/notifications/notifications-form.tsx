@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from '@tanstack/react-router';
+import { Link } from 'react-router';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
